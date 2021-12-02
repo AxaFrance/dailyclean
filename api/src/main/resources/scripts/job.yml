@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{name}}
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+        - name: dailyclean
+          image: '{{imgName}}'
+          args:
+            - {{argument}}
+          resources: { }
+          env:
+            - name: CURRENT_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+      restartPolicy: Never
+      serviceAccountName: flux

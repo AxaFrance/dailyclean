@@ -1,0 +1,26 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{name}}
+spec:
+  concurrencyPolicy: Forbid
+  schedule: '{{schedule}}'
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: dailyclean
+              image: '{{imgName}}'
+              args:
+                - {{argument}}
+              resources: {}
+              env:
+                - name: CURRENT_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      apiVersion: v1
+                      fieldPath: metadata.namespace
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 30
+          serviceAccountName: flux

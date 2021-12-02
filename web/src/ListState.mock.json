@@ -1,0 +1,170 @@
+{
+    "namespace": "ri-openfaas-fn-dev-fr",
+    "state": "STARTED",
+    "deployments": [
+      {
+        "id": "alertmanager",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      },
+      {
+        "id": "dailyclean-api",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": false
+      },
+      {
+        "id": "flux",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      },
+      {
+        "id": "helm-operator",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true,
+        "containers":[
+          {
+             "name":"helm-operator",
+             "image":"docker.io/fluxcd/helm-operator:1.2.0",
+             "resource_limits":[
+                {
+                   "name":"cpu",
+                   "amount":200,
+                   "raw_amount":"200",
+                   "format":"m"
+                },
+                {
+                   "name":"memory",
+                   "amount":512,
+                   "raw_amount":"512",
+                   "format":"Mi"
+                }
+             ],
+             "resource_requests":[
+                {
+                   "name":"cpu",
+                   "amount":100,
+                   "raw_amount":"100",
+                   "format":"m"
+                },
+                {
+                   "name":"memory",
+                   "amount":256,
+                   "raw_amount":"256",
+                   "format":"Mi"
+                }
+             ],
+             "ports":[
+                {
+                   "port":3030,
+                   "protocol":"TCP"
+                }
+             ]
+          }
+       ]
+      },
+      {
+        "id": "jaeger-collector",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      },
+      {
+        "id": "jaeger-query",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      },
+      {
+        "id": "kube-state-metrics",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      },
+      {
+        "id": "memcached",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      },
+      {
+        "id": "redis-ha-haproxy",
+        "current": 3,
+        "target": 3,
+        "isDailycleaned": true,
+        "containers":[
+          {
+             "name":"helm-operator",
+             "image":"docker.io/fluxcd/helm-operator:1.2.0",
+             "resource_limits":[
+                {
+                   "name":"cpu",
+                   "amount":200,
+                   "raw_amount":"200",
+                   "format":"m"
+                },
+                {
+                   "name":"memory",
+                   "amount":300,
+                   "raw_amount":"300",
+                   "format":"Mi"
+                }
+             ],
+             "resource_requests":[
+                {
+                   "name":"cpu",
+                   "amount":100,
+                   "raw_amount":"100",
+                   "format":"m"
+                },
+                {
+                   "name":"memory",
+                   "amount":256,
+                   "raw_amount":"256",
+                   "format":"Mi"
+                }
+             ],
+             "ports":[
+                {
+                   "port":3030,
+                   "protocol":"TCP"
+                }
+             ]
+          }
+       ]
+      },
+      {
+        "id": "ri",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      },
+      {
+        "id": "ri-classify",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      },
+      {
+        "id": "ri-file",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      },
+      {
+        "id": "ri-ocr",
+        "current": 2,
+        "target": 2,
+        "isDailycleaned": true
+      },
+      {
+        "id": "ri-splitter",
+        "current": 1,
+        "target": 1,
+        "isDailycleaned": true
+      }
+    ]
+  }

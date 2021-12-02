@@ -1,0 +1,202 @@
+openapi: 3.0.1
+info:
+  title: Dailyclean API
+  description: This API allows to stop and run Kubernetes Deployments in the current namespace.
+  version: 0.0.1-SNAPSHOT
+servers:
+  - url: https://www.axa.fr
+paths:
+  /timeranges:
+    post:
+      summary: Créé une timerange
+      description: Cette ressource permet de créer des time ranges. Annule et remplace les précédents timeranges pour ce service. Attention, un cron nul supprime le précédent.
+      requestBody:
+        description: La time range à créer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeRange'
+      responses:
+        200:
+          description: Le time range créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeRange'
+        400:
+          description: La syntaxe de la requête est erronée. Il se peut qu'un attribut obligatoire manque. Lire le message pour avoir le détail.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Vous n'êtes pas authentifié ou votre token est invalide. Lire le message pour avoir le détail.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        403:
+          description: Vos droits sont insuffisants pour accéder à cette ressource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Erreur technique renvoyée
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Permet de récupérer les crons existants pour ce service
+      description: Cette ressource permet de créer des time ranges
+      responses:
+        200:
+          description: Le time range créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeRange'
+  /status:
+    get:
+      summary: Une liste de status
+      description: Permet de récupérer la liste des status pour le service
+      responses:
+        200:
+          description: Une liste de status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        404:
+          description: Aucun status trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /pods/stop:
+    post:
+      responses:
+        200:
+          description: La réponse de la commande
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StartStopResponse'
+        400:
+          description: Commande impossible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /pods/start:
+    post:
+      responses:
+        200:
+          description: La réponse de la commande
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StartStopResponse'
+        400:
+          description: Commande impossible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    TimeRange:
+      type: object
+      properties:
+        cron_start:
+          type: string
+        cron_stop:
+          type: string
+    Status:
+      properties:
+        namespace:
+          type: string
+        state:
+          type: string
+          enum:
+            - STARTED
+            - STOPPED
+            - IN_PROGRESS
+        deployments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deployment'
+    Deployment:
+      properties:
+        id:
+          type: string
+        current:
+          type: number
+          format: int32
+        target:
+          type: number
+          format: int32
+        isDailycleaned:
+          type: boolean
+        containers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Container'
+    Container:
+      properties:
+        name:
+          type: string
+        image:
+          type: string
+        resource_limits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+        resource_requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+        ports:
+          type: array
+          items:
+            $ref: '#/components/schemas/Port'
+    Resource:
+      properties:
+        name:
+          type: string
+        amount:
+          type: integer
+        raw_amount:
+          type: string
+        format:
+          type: string
+    Port:
+      properties:
+        port:
+          type: integer
+        protocol:
+          type: string
+    StartStopResponse:
+      properties:
+        message:
+          type: string
+    Error:
+      required:
+        - code
+        - message
+      description: La représentation d'une erreur. N'est retournée qu'en cas d'erreur technique, ou si la requête n'est pas valide, authentifiée ou autorisée.
+      properties:
+        code:
+          description: Un code de retour permettant d'identifier cette erreur.
+          type: string
+          example:
+            "401-1"
+        message:
+          description: Le message de l'erreur.
+          type: string

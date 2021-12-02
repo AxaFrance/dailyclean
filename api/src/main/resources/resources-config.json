@@ -1,0 +1,10 @@
+{
+  "resources": [
+    {
+      "pattern": "scripts/job\\.yml$"
+    },
+    {
+      "pattern": "scripts/cronjob\\.yml$"
+    }
+  ]
+}
