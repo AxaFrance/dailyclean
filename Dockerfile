@@ -7,9 +7,9 @@ FROM ${nodeImage} AS web
 WORKDIR ${APP_ROOT}
 COPY --chown=${USER} ./web .
 
-RUN npm ci && \
-    npm run build && \
-    npm test --  --runInBand --coverage --watchAll=false
+RUN npm ci 
+RUN npm run build 
+RUN npm test --  --runInBand --coverage --watchAll=false
 
 FROM ${buildImage} AS build
 
