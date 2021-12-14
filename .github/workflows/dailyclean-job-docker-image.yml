@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+    paths:
+      - 'job'  
 
 jobs:
 
@@ -37,4 +39,4 @@ jobs:
         # Don't skip pull requests
         include pull requests: True
         # Path to Dockerfile
-        dockerfile path: .
+        dockerfile path: ./job/dailyclean
