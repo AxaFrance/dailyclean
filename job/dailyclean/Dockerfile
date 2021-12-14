@@ -1,18 +1,18 @@
-ARG buildImage
-ARG runtimeImage
 
-FROM ${buildImage} as build
+FROM registry.access.redhat.com/ubi8/python-39:1-22.1638364042 as build
 
-WORKDIR ${APP_ROOT}/
+WORKDIR /workdir
+#USER root
+#RUN python3 -m pip install --upgrade --user pip wheel && find ${APP_ROOT}/.local -type d -exec chmod 0755 {} \;
+RUN python3 -m pip install --compile --no-cache-dir --root /workdir/packages kubernetes
+#RUN ls /workdir/packages
+RUN echo $(ls -1 /workdir/packages)
 
-RUN python3 -m pip install --compile --no-cache-dir --root ${APP_ROOT}/packages kubernetes
+FROM registry.access.redhat.com/ubi8/python-39:1-22.1638364042 as run
 
+WORKDIR /workdir
 
-FROM ${runtimeImage} as run
-
-WORKDIR ${APP_ROOT}/
-
-COPY --chown=1001 --from=build ${APP_ROOT}/packages/usr/local ./.local
-COPY --chown=1001 dailyclean.py ${APP_ROOT}/
+COPY --chown=1001 --from=build /workdir/packages/usr/local ./.local
+COPY --chown=1001 dailyclean.py /workdir/
 
 ENTRYPOINT ["/usr/bin/python3", "dailyclean.py"]
