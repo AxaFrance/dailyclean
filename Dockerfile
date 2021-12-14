@@ -9,7 +9,7 @@
     
 FROM registry.access.redhat.com/ubi8/ubi:8.5-200 AS build
 
-WORKDIR ${APP_ROOT}
+WORKDIR /APP_ROOT
 USER root
 
 
@@ -54,7 +54,7 @@ ENV JAVA_VERSION java11
 ENV MANDREL_VERSION 21.0.0.0-Final
 ENV MANDREL_DOWNLOAD_SUM 85c5d39997e373fa488a1e5555a1040bebb98f307968f3614a002f75ebf678ff
 
-WORKDIR ${APP_ROOT}
+WORKDIR /APP_ROOT
 
 RUN curl -fsSL https://github.com/graalvm/mandrel/releases/download/mandrel-${MANDREL_VERSION}/mandrel-${JAVA_VERSION}-linux-amd64-${MANDREL_VERSION}.tar.gz -O && \
     echo "$MANDREL_DOWNLOAD_SUM  mandrel-${JAVA_VERSION}-linux-amd64-${MANDREL_VERSION}.tar.gz" | sha256sum -c - && \
@@ -63,22 +63,22 @@ RUN curl -fsSL https://github.com/graalvm/mandrel/releases/download/mandrel-${MA
     mv mandrel-${JAVA_VERSION}-${MANDREL_VERSION} mandrel && \
     rm -Rf mandrel/demo mandrel/man 
 
-ENV JAVA_HOME=${APP_ROOT}/mandrel
-ENV GRAALVM_HOME=${APP_ROOT}/mandrel
+ENV JAVA_HOME=/APP_ROOT/mandrel
+ENV GRAALVM_HOME=/APP_ROOT/mandrel
 ENV PATH=${JAVA_HOME}/bin:${PATH}
 
 
 
 COPY --chown=${USER} ./api .
 #RUN rm -Rf ./src/main/resources/META-INF/resources
-#COPY --chown=${USER} --from=web ${APP_ROOT}/build ./src/main/resources/META-INF/resources
+#COPY --chown=${USER} --from=web /APP_ROOT/build ./src/main/resources/META-INF/resources
 
 RUN mvn package -Pnative -B
 
 #FROM registry.access.redhat.com/ubi8/python-39:1-22.1638364042 AS runtime
 #
-#WORKDIR ${APP_ROOT}
-#COPY --chown=${USER} --from=build ${APP_ROOT}/target/*-runner ./application
+#WORKDIR /APP_ROOT
+#COPY --chown=${USER} --from=build /APP_ROOT/target/*-runner ./application
 #
 #EXPOSE 8080
 #USER ${USER}
