@@ -1,18 +1,18 @@
 
 FROM registry.access.redhat.com/ubi8/python-38:1-75.1638364053 as build
 
-WORKDIR /workdir
-#USER root
-#RUN python3 -m pip install --upgrade --user pip wheel && find ${APP_ROOT}/.local -type d -exec chmod 0755 {} \;
-RUN python3 -m pip install --compile --no-cache-dir --root /workdir/packages kubernetes
-#RUN ls /workdir/packages
-RUN echo $(ls -1 /workdir/packages)
+ENV APP_ROOT /app_root
+WORKDIR ${APP_ROOT}
+USER root
+RUN python3 -m pip install --compile --no-cache-dir --root ${APP_ROOT}/packages kubernetes
+RUN echo $(ls -1 ${APP_ROOT})
 
 FROM registry.access.redhat.com/ubi8/python-38:1-75.1638364053 as run
 
-WORKDIR /workdir
+ENV APP_ROOT /app_root
+WORKDIR ${APP_ROOT}
 
-COPY --chown=1001 --from=build /workdir/packages/usr/local ./.local
-COPY --chown=1001 dailyclean.py /workdir/
+COPY --chown=1001 --from=build ${APP_ROOT}/packages/usr/local ./.local
+COPY --chown=1001 dailyclean.py ${APP_ROOT}
 
 ENTRYPOINT ["/usr/bin/python3", "dailyclean.py"]

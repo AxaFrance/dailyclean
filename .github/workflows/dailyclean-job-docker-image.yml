@@ -11,8 +11,9 @@ on:
 jobs:
 
   build:
-
+    environment: dailyclean
     runs-on: ubuntu-latest
+    
 
     steps:
     - uses: actions/checkout@v2
