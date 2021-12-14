@@ -2,7 +2,6 @@
 FROM node:lts-buster-slim AS web
 
 ENV APP_ROOT /app_root
-ENV HOME /home
 
 WORKDIR ${APP_ROOT}
 COPY --chown=${USER} ./web .
@@ -12,6 +11,9 @@ RUN npm test --  --runInBand --coverage --watchAll=false
 RUN npm run build 
     
 FROM registry.access.redhat.com/ubi8/ubi:8.5-200 AS build
+
+ENV APP_ROOT /app_root
+ENV HOME /home
 
 WORKDIR ${APP_ROOT}
 USER root
@@ -76,6 +78,8 @@ COPY --chown=${USER} --from=web ${APP_ROOT}/build ./src/main/resources/META-INF/
 RUN mvn package -Pnative -B
 
 FROM registry.access.redhat.com/ubi8-minimal:8.5-204 AS runtime
+
+ENV APP_ROOT /app_root
 
 WORKDIR ${APP_ROOT}
 COPY --chown=${USER} --from=build ${APP_ROOT}/target/*-runner ./application
