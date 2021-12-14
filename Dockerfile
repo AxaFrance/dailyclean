@@ -23,7 +23,7 @@ RUN INSTALL_PKGS="java-11-openjdk java-11-openjdk-devel" && \
   rpm -V $INSTALL_PKGS && \
   dnf -y clean all --enablerepo='*'
 
-WORKDIR ${HOME}
+WORKDIR /HOME
 
 RUN curl -fsSL https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O && \
     echo "$MAVEN_DOWNLOAD_SUM  apache-maven-${MAVEN_VERSION}-bin.tar.gz" | sha512sum -c - && \
