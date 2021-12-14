@@ -19,6 +19,9 @@ jobs:
     - name: Build the Docker image
       working-directory: ./job/dailyclean
       run: docker build . --file Dockerfile --tag dailyclean-job:$(date +%s)
+    - name: Build the Docker image
+      working-directory: ./job/dailyclean
+      run: echo ${{ secrets.DOCKER_LOGIN }}
 
     - name: Docker Publish
       # You may pin to the exact commit or the version.
