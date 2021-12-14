@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag dailyclean-api:$(date +%s)
+      run: docker build ./api --file Dockerfile --tag dailyclean-api:$(date +%s)
 
     - name: Docker Publish
       # You may pin to the exact commit or the version.
