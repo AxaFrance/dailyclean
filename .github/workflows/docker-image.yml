@@ -29,9 +29,9 @@ jobs:
         # Script body to compute tag name for the Docker image, has context as the main function argument
         #tag script: # optional
         # Username for Docker registry
-        username: ${{ secrets.DOKCER_LOGIN }}
+        username: ${{ secrets.DOCKER_LOGIN }}
         # Password for Docker registry
-        password: ${{ secrets.DOKCER_PASSWORD }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
         # Registry URL
         registry: docker.io
         # Don't skip pull requests
