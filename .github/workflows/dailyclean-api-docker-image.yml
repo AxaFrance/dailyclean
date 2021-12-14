@@ -21,7 +21,7 @@ jobs:
         fetch-depth: 0
     - name: Build the Docker image
       working-directory: ./api
-      run: docker build . --file Dockerfile --tag docker.io/axaguildev/kubernetes/dailyclean-api:${GITHUB_RUN_NUMBER}
+      run: docker build . --file Dockerfile --tag axaguildev/kubernetes/dailyclean-api:${GITHUB_RUN_NUMBER}
 #
     - name: Docker Login
       uses: docker/login-action@v1.10.0
@@ -31,6 +31,5 @@ jobs:
 
     - name: Build the Docker image
       working-directory: ./api
-      run: | 
-        docker image push docker.io/axaguildev/kubernetes/dailyclean-api:${GITHUB_RUN_NUMBER}
+      run: docker image push axaguildev/kubernetes/dailyclean-api:${GITHUB_RUN_NUMBER}
   
