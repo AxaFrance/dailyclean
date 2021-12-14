@@ -12,6 +12,7 @@ on:
 jobs:
 
   build:
+    environment: dailyclean
 
     runs-on: ubuntu-latest
 
@@ -23,7 +24,8 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
       working-directory: ./job/dailyclean
-      run: echo $DOCKER_LOGIN
+      run: |
+        echo ${{ secrets.DOCKER_LOGIN }}
   #  - name: Build the Docker image
   #    working-directory: ./api
   #    run: docker build . --file Dockerfile --tag dailyclean-api:$(date +%s)
