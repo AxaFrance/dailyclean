@@ -18,7 +18,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build api --file Dockerfile --tag dailyclean-api:$(date +%s)
+      working-directory: ./api
+      run: docker build . --file Dockerfile --tag dailyclean-api:$(date +%s)
 
     - name: Docker Publish
       # You may pin to the exact commit or the version.
@@ -40,4 +41,4 @@ jobs:
         # Don't skip pull requests
         include pull requests: True
         # Path to Dockerfile
-        dockerfile path: api
+        dockerfile path: ./api/Dockerfile
