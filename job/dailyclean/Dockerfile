@@ -1,5 +1,5 @@
 
-FROM registry.access.redhat.com/ubi8/python-39:1-22.1638364042 as build
+FROM registry.access.redhat.com/ubi8/python-38:1-75.1638364053 as build
 
 WORKDIR /workdir
 #USER root
@@ -8,7 +8,7 @@ RUN python3 -m pip install --compile --no-cache-dir --root /workdir/packages kub
 #RUN ls /workdir/packages
 RUN echo $(ls -1 /workdir/packages)
 
-FROM registry.access.redhat.com/ubi8/python-39:1-22.1638364042 as run
+FROM registry.access.redhat.com/ubi8/python-38:1-75.1638364053 as run
 
 WORKDIR /workdir
 

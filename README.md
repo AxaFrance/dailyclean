@@ -6,6 +6,7 @@
 - [Getting Started](#getting-started)
 - [How Does It Work](#how-does-it-work)
 - [Contribute](#contribute)
+- [Authors](#authors)
 
 ## About
 
@@ -36,3 +37,12 @@ It create cron job that start or stop your pods.
 
 - [How to run the solution and to contribute](./CONTRIBUTING.md)
 - [Please respect our code of conduct](./CODE_OF_CONDUCT.md)
+
+## Authors
+
+The awesome team :
+
+- Thomas Lemarchand 
+- Pierre-Henri Gache
+- Guillaume Thomas
+- Guillaume Chervet

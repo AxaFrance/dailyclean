@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: DailyClean JOB Docker Image CI
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag dailyclean-api:$(date +%s)
+      run: docker build . --file Dockerfile --tag dailyclean-job:$(date +%s)
 
     - name: Docker Publish
       # You may pin to the exact commit or the version.
@@ -23,15 +23,15 @@ jobs:
       uses: manusa/actions-publish-docker@v1.1.2
       with:
         # Name of the Docker image
-        name: dailyclean-api
+        name: dailyclean-job:$(date +%s)
         # Tag for the Docker image
         tag: $(date +%s)
         # Script body to compute tag name for the Docker image, has context as the main function argument
         #tag script: # optional
         # Username for Docker registry
-        username: ${{ secrets.DOCKER_LOGIN }}
+        username: '${{ secrets.DOCKER_LOGIN }}'
         # Password for Docker registry
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        password: '${{ secrets.DOCKER_PASSWORD }}'
         # Registry URL
         registry: docker.io
         # Don't skip pull requests
