@@ -25,6 +25,9 @@ jobs:
       # You may pin to the exact commit or the version.
       # uses: manusa/actions-publish-docker@db938e45d2a3487e0eab9646e83550f554c17af3
       uses: manusa/actions-publish-docker@v1.1.2
+      env:
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
       with:
         # Name of the Docker image
         name: dailyclean-api:$(date +%s)
@@ -33,9 +36,9 @@ jobs:
         # Script body to compute tag name for the Docker image, has context as the main function argument
         #tag script: # optional
         # Username for Docker registry
-        username: ${{ secrets.DOCKER_LOGIN }}
+        username: ${{ env.DOCKER_LOGIN }}
         # Password for Docker registry
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        password: ${{ env.DOCKER_PASSWORD }}
         # Registry URL
         registry: docker.io
         # Don't skip pull requests

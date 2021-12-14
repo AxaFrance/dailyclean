@@ -17,6 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
+      working-directory: ./job/dailyclean
       run: docker build . --file Dockerfile --tag dailyclean-job:$(date +%s)
 
     - name: Docker Publish
@@ -42,4 +43,4 @@ jobs:
         # Don't skip pull requests
         include pull requests: True
         # Path to Dockerfile
-        dockerfile path: ./job/dailyclean
+        dockerfile path: ./job/dailyclean/Dockerfile
