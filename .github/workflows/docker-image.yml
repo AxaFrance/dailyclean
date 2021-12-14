@@ -16,3 +16,25 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag dailyclean-api:$(date +%s)
+
+    - name: Docker Publish
+      # You may pin to the exact commit or the version.
+      # uses: manusa/actions-publish-docker@db938e45d2a3487e0eab9646e83550f554c17af3
+      uses: manusa/actions-publish-docker@v1.1.2
+      with:
+        # Name of the Docker image
+        name: dailyclean-api
+        # Tag for the Docker image
+        tag: $(date +%s)
+        # Script body to compute tag name for the Docker image, has context as the main function argument
+        #tag script: # optional
+        # Username for Docker registry
+        #username: 
+        # Password for Docker registry
+        #password: 
+        # Registry URL
+        registry: docker.io
+        # Don't skip pull requests
+        include pull requests: True
+        # Path to Dockerfile
+        dockerfile path: .
