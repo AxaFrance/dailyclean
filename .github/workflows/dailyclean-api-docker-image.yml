@@ -34,6 +34,6 @@ jobs:
         file: ./api/Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/dailyclean-api:latest
-        cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/dailyclean-api:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/dailyclean-api:buildcache,mode=max
+        tags: axaguildev/kubernetes/dailyclean-api:latest
+        cache-from: type=registry,ref=axaguildev/kubernetes/dailyclean-api:buildcache
+        cache-to: type=registry,ref=axaguildev/kubernetes/dailyclean-api:buildcache,mode=max
