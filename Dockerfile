@@ -1,21 +1,20 @@
-#FROM node:lts-buster-slim AS web
-#
-#WORKDIR /src
-#COPY --chown=${USER} ./web .
-#
-#RUN npm ci 
-##RUN npm test --  --runInBand --coverage --watchAll=false
-#RUN npm run build 
-    
-FROM registry.access.redhat.com/ubi8/ubi:8.5-200 AS build
+
+FROM node:lts-buster-slim AS web
 
 ENV APP_ROOT /app_root
 ENV HOME /home
 
 WORKDIR ${APP_ROOT}
+COPY --chown=${USER} ./web .
+
+RUN npm ci 
+RUN npm test --  --runInBand --coverage --watchAll=false
+RUN npm run build 
+    
+FROM registry.access.redhat.com/ubi8/ubi:8.5-200 AS build
+
+WORKDIR ${APP_ROOT}
 USER root
-
-
 
 ENV MAVEN_VERSION 3.6.3
 ENV MAVEN_DOWNLOAD_SUM c35a1803a6e70a126e80b2b3ae33eed961f83ed74d18fcd16909b2d44d7dada3203f1ffe726c17ef8dcca2dcaa9fca676987befeadc9b9f759967a8cb77181c0
@@ -70,21 +69,19 @@ ENV JAVA_HOME=${APP_ROOT}/mandrel
 ENV GRAALVM_HOME=${APP_ROOT}/mandrel
 ENV PATH=${JAVA_HOME}/bin:${PATH}
 
-
-
 COPY --chown=${USER} ./api .
-#RUN rm -Rf ./src/main/resources/META-INF/resources
-#COPY --chown=${USER} --from=web ${APP_ROOT}/build ./src/main/resources/META-INF/resources
+RUN rm -Rf ./src/main/resources/META-INF/resources
+COPY --chown=${USER} --from=web ${APP_ROOT}/build ./src/main/resources/META-INF/resources
 
 RUN mvn package -Pnative -B
 
-#FROM registry.access.redhat.com/ubi8/python-39:1-22.1638364042 AS runtime
-#
-#WORKDIR ${APP_ROOT}
-#COPY --chown=${USER} --from=build ${APP_ROOT}/target/*-runner ./application
-#
-#EXPOSE 8080
-#USER ${USER}
-#
-#CMD ["./application", "-Dquarkus.http.host=0.0.0.0", "-Xms40m", "-Xmx60m", "-Xmn20m"]
+FROM registry.access.redhat.com/ubi8-minimal:8.5-204 AS runtime
+
+WORKDIR ${APP_ROOT}
+COPY --chown=${USER} --from=build ${APP_ROOT}/target/*-runner ./application
+
+EXPOSE 8080
+USER ${USER}
+
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0", "-Xms40m", "-Xmx60m", "-Xmn20m"]
 
