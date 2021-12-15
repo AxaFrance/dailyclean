@@ -3,7 +3,8 @@ FROM registry.access.redhat.com/ubi8/python-38:1-75.1638364053 as build
 
 ENV APP_ROOT /app_root
 WORKDIR ${APP_ROOT}
-#USER root
+
+RUN python3 -m pip install --upgrade --user pip wheel && find ${APP_ROOT}/.local -type d -exec chmod 0755 {} \;
 RUN python3 -m pip install --compile --no-cache-dir --root ${APP_ROOT}/packages kubernetes
 RUN echo $(ls -1 ${APP_ROOT})
 
