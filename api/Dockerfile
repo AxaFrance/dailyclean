@@ -18,7 +18,7 @@ ENV HOME /home
 WORKDIR ${APP_ROOT}
 USER root
 
-ENV MAVEN_VERSION 3.8.4
+ENV MAVEN_VERSION 3.6.3
 ENV MAVEN_DOWNLOAD_SUM c35a1803a6e70a126e80b2b3ae33eed961f83ed74d18fcd16909b2d44d7dada3203f1ffe726c17ef8dcca2dcaa9fca676987befeadc9b9f759967a8cb77181c0
 ENV MAVEN_DIR=/opt/maven
 
@@ -35,6 +35,7 @@ RUN curl -fsSL https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/bi
     mkdir -p ${MAVEN_DIR} && \
     cp -R apache-maven-${MAVEN_VERSION}/* ${MAVEN_DIR} && \
     rm ${MAVEN_DIR}/conf/settings.xml && \
+    #cp /opt/configurations/settings.xml ${MAVEN_DIR}/conf/settings.xml && \
     rm -Rf apache-maven-${MAVEN_VERSION}
     
 
