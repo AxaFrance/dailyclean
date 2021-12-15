@@ -19,10 +19,14 @@ Daily clean only use kubernetes native API.
 ## Getting Started
 
 ```
-docker build --build-arg buildImage=factory/build/linux/java:11-ubi8-21-mandrel-alpha-quarkus --build-arg runtimeImage=factory/runtime/linux/java:11-ubi8-21-mandrel-alpha-quarkus --build-arg nodeImage=factory/build/linux/node:12-ubi8 -t quarkus/hello-quarkus .
-docker run -i -d --rm -p 8080:8080 quarkus/hello-quarkus
+# The API 
+docker pull axaguildev/dailyclean-api:pr-7
+docker run -i --rm -p 8080:8080 axaguildev/dailyclean-api:pr-7
 # now you can open your browser to http://localhost:8080 
 # you can change the price ratio by adding price_by_month query string: http://localhost:8080?price_by_month=100 the default price is 75
+
+The Job 
+docker pull axaguildev/dailyclean-job:pr-7
 ```
 
 ## How Does It Work
