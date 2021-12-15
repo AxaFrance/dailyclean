@@ -1,4 +1,5 @@
 # DailyClean
+![workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-docker-images.yml/badge.svg) 
 
 ![DailyClean](./dailyclean.gif "DailyClean")
 
@@ -6,6 +7,7 @@
 - [Getting Started](#getting-started)
 - [How Does It Work](#how-does-it-work)
 - [Contribute](#contribute)
+- [Authors](#authors)
 
 ## About
 
@@ -17,12 +19,20 @@ Daily clean only use kubernetes native API.
 
 ## Getting Started
 
+Kubernetes script is comming soon in this section.
+
 ```
-docker build --build-arg buildImage=factory/build/linux/java:11-ubi8-21-mandrel-alpha-quarkus --build-arg runtimeImage=factory/runtime/linux/java:11-ubi8-21-mandrel-alpha-quarkus --build-arg nodeImage=factory/build/linux/node:12-ubi8 -t quarkus/hello-quarkus .
-docker run -i -d --rm -p 8080:8080 quarkus/hello-quarkus
+# The API 
+docker pull axaguildev/dailyclean-api:latest
+docker run -i --rm -p 8080:8080 axaguildev/dailyclean-api:latest
 # now you can open your browser to http://localhost:8080 
 # you can change the price ratio by adding price_by_month query string: http://localhost:8080?price_by_month=100 the default price is 75
+
+# The Job 
+docker pull axaguildev/dailyclean-job:latest
+# The job run only run on kubernetes
 ```
+
 
 ## How Does It Work
 
@@ -36,3 +46,12 @@ It create cron job that start or stop your pods.
 
 - [How to run the solution and to contribute](./CONTRIBUTING.md)
 - [Please respect our code of conduct](./CODE_OF_CONDUCT.md)
+
+## Authors
+
+The awesome team :
+
+- Thomas Lemarchand 
+- Pierre-Henri Gache
+- Guillaume Thomas
+- Guillaume Chervet
