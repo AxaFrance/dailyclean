@@ -28,7 +28,7 @@ docker run -i --rm -p 8080:8080 axaguildev/dailyclean-api:pr-7
 # now you can open your browser to http://localhost:8080 
 # you can change the price ratio by adding price_by_month query string: http://localhost:8080?price_by_month=100 the default price is 75
 
-The Job 
+# The Job 
 docker pull axaguildev/dailyclean-job:pr-7
 # The job run only run on kubernetes
 ```
