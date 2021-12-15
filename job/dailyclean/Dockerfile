@@ -15,8 +15,6 @@ RUN INSTALL_PKGS="python38 python38-devel python38-setuptools python38-pip gcc d
   rpm -V $INSTALL_PKGS && \
   dnf -y clean all --enablerepo='*'
 
-#RUN python3 -m pip install --upgrade --user pip wheel && find ${APP_ROOT}/.local -type d -exec chmod 0755 {} \;
-
 RUN python3 -m pip install --compile --no-cache-dir --root ${APP_ROOT}/packages kubernetes
 RUN echo $(ls -1 ${APP_ROOT})
 
