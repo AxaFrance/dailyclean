@@ -18,6 +18,8 @@ Daily clean only use kubernetes native API.
 
 ## Getting Started
 
+Kubernetes script is comming soon in this section.
+
 ```
 # The API 
 docker pull axaguildev/dailyclean-api:pr-7
@@ -27,7 +29,9 @@ docker run -i --rm -p 8080:8080 axaguildev/dailyclean-api:pr-7
 
 The Job 
 docker pull axaguildev/dailyclean-job:pr-7
+# The job run only run on kubernetes
 ```
+
 
 ## How Does It Work
 
