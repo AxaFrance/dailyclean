@@ -117,7 +117,7 @@ jobs:
         file: ./job/dailyclean/Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: axaguildev/dailyclean-job:${{ steps.meta.outputs.tags }}
+        tags: axaguildev/dailyclean-job:${{ needs.tags.outputs.new_version }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=registry,ref=axaguildev/dailyclean-job:buildcache
         cache-to: type=registry,ref=axaguildev/dailyclean-job:buildcache,mode=max
