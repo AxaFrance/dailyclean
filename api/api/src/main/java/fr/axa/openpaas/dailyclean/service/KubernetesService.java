@@ -29,6 +29,9 @@ public class KubernetesService {
     @ConfigProperty(name = "service.job.imageName")
     String imgName;
 
+    @ConfigProperty(name = "service.job.serviceAccountName")
+    String serviceAccountName;
+
     @ConfigProperty(name = "service.deployment.label.dailyclean")
     String dailycleanLabelName;
 
@@ -132,7 +135,8 @@ public class KubernetesService {
 
         logger.info("Creating cron job from object");
         kubernetesClient.batch().cronjobs().inNamespace(namespace)
-                .load(KubernetesUtils.createCronJobAsInputStream(argument, cron, imgName)).createOrReplace();
+                .load(KubernetesUtils.createCronJobAsInputStream(argument, cron, imgName,serviceAccountName))
+                .createOrReplace();
         logger.info("Successfully created cronjob with name {}", KubernetesUtils.getCronName(argument));
     }
 
@@ -150,7 +154,8 @@ public class KubernetesService {
 
         logger.info("Creating job from object");
         kubernetesClient.batch().jobs().inNamespace(namespace)
-                .load(KubernetesUtils.createJobAsInputStream(argument, imgName)).createOrReplace();
+                .load(KubernetesUtils.createJobAsInputStream(argument, imgName, serviceAccountName))
+                .createOrReplace();
         logger.info("Successfully created job with name {}", jobName);
     }
 

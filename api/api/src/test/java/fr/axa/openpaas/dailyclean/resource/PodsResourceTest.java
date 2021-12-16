@@ -71,7 +71,7 @@ public class PodsResourceTest {
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
 
-        InputStream is = KubernetesUtils.createJobAsInputStream(KubernetesArgument.START, "imgName");
+        InputStream is = KubernetesUtils.createJobAsInputStream(KubernetesArgument.START, "imgName", "default");
         client.batch().jobs().load(is).createOrReplace();
 
         given()

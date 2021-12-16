@@ -19,4 +19,4 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.namespace
       restartPolicy: Never
-      serviceAccountName: flux
+      serviceAccountName: {{serviceAccountName}}
