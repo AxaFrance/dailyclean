@@ -40,7 +40,7 @@ jobs:
           git config --global user.name "Build-CI"
           git tag -a ${{steps.bump_version_and_push_tag.outputs.new_tag}} -m "tag ${{steps.bump_version_and_push_tag.outputs.new_tag}}" 
       - name: "Hello world when it's Monday"
-        run: echo "Hello ${{steps.bump_version_and_push_tag.outputs.new_tag}} youhou ${{steps.bump_version_and_push_tag.outputs.previous_tag}} "
+        run: echo "Hello ${{steps.bump_version_and_push_tag.outputs.new_tag}} youhou ${{steps.bump_version_and_push_tag.outputs.new_version}} "
         env:
           FIRST_NAME: ${{steps.bump_version_and_push_tag.outputs.new_tag}}
       - name: Push changes
