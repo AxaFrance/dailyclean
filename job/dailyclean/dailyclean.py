@@ -57,14 +57,18 @@ def start(aApiClient, namespace):
 def stop(aApiClient, namespace):
     appsV1Api_instance = client.AppsV1Api(aApiClient)
 
-    while appsV1Api_instance.read_namespaced_deployment(namespace=namespace, name='flux').spec.replicas != 0:
-        print('Trying to set deployment flux replicas to 0.')
-        flux_deployment = appsV1Api_instance.read_namespaced_deployment(namespace=namespace, name='flux')
-        flux_deployment.spec.replicas = 0
-        appsV1Api_instance.patch_namespaced_deployment(namespace=namespace,name='flux', body=flux_deployment)
-        time.sleep(10)
-
-    print('Deployment flux replicas set to 0.')
+    try:
+        appsV1Api_instance.read_namespaced_deployment(namespace=namespace, name='flux')
+    except client.exceptions.ApiException as e:
+        print('No flux deployed. Skipping')
+    else:
+        while appsV1Api_instance.read_namespaced_deployment(namespace=namespace, name='flux').spec.replicas != 0:
+            print('Trying to set deployment flux replicas to 0.')
+            flux_deployment = appsV1Api_instance.read_namespaced_deployment(namespace=namespace, name='flux')
+            flux_deployment.spec.replicas = 0
+            appsV1Api_instance.patch_namespaced_deployment(namespace=namespace,name='flux', body=flux_deployment)
+            time.sleep(10)
+        print('Deployment flux replicas set to 0.')
 
     try:
         helm_deployment = appsV1Api_instance.read_namespaced_deployment(namespace=namespace, name='helm-operator')
