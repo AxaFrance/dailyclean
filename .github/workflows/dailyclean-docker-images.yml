@@ -15,17 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Bump version and push tag
-        id: bump-version-and-push-tag
+        id: bump_version_and_push_tag
         if: github.event_name != 'pull_request'
         uses: hennejg/github-tag-action@v4.3.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: "Hello world when it's Monday"
-        run: echo "Hello ${{steps.bump-version-and-push-tag.outputs.new_tag}}"
+        run: echo "Hello ${{steps.bump_version_and_push_tag.outputs.new_tag}} youhou ${{steps.bump_version_and_push_tag.outputs.previous_tag}} "
         env:
-          FIRST_NAME: steps.bump-version-and-push-tag.outputs.new_tag
+          FIRST_NAME: ${{steps.bump_version_and_push_tag.outputs.new_tag}}
       - name: Push changes
-        if: github.event_name != 'pull_request' && steps.bump-version-and-push-tag.outputs.new_tag != ''
+        if: github.event_name != 'pull_request' && steps.bump_version_and_push_tag.outputs.new_tag != ''
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
