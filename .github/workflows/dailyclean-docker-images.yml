@@ -14,6 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - name: "✏️ Generate release changelog"
+        id: auto_changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} 
+      - name: "Commit Tag"
+        if: github.event_name != 'pull_request' && steps.bump_version_and_push_tag.outputs.new_tag != ''
+        run: |
+          ${{steps.auto_changelog.outputs.changelog}} >> CHANGELOG.md
+          git config --global user.email "build-ci@axa.fr"
+          git config --global user.name "Build-CI"
+          git add .
+          git commit -m - "auto update changelog" 
       - name: Bump version and push tag
         id: bump_version_and_push_tag
         if: github.event_name != 'pull_request'
