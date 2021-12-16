@@ -36,12 +36,16 @@ public final class KubernetesUtils {
      * @param imgName The docker image of the job
      * @return The cronjob script as an @{@link InputStream}
      */
-    public static InputStream createCronJobAsInputStream(KubernetesArgument argument, String cron, String imgName) {
+    public static InputStream createCronJobAsInputStream(KubernetesArgument argument,
+                                                         String cron,
+                                                         String imgName,
+                                                         String serviceAccountName) {
         String text = getFileAsString("scripts/cronjob.yml");
         String cronJobAsdString = text.replace(NAME.getPlaceholder(), getCronName(argument))
                 .replace(ARGUMENT.getPlaceholder(), argument.getValue())
                 .replace(SCHEDULE.getPlaceholder(), cron)
-                .replace(IMG_NAME.getPlaceholder(), imgName);
+                .replace(IMG_NAME.getPlaceholder(), imgName)
+                .replace(SERVICE_ACCOUNT_NAME.getPlaceholder(), serviceAccountName);
 
         return new ByteArrayInputStream(cronJobAsdString.getBytes());
     }
@@ -52,11 +56,14 @@ public final class KubernetesUtils {
      * @param imgName The docker image of the job
      * @return The cronjob script as an @{@link InputStream}
      */
-    public static InputStream createJobAsInputStream(KubernetesArgument argument, String imgName) {
+    public static InputStream createJobAsInputStream(KubernetesArgument argument,
+                                                     String imgName,
+                                                     String serviceAccountName) {
         String text = getFileAsString("scripts/job.yml");
         String cronJobAsdString = text.replace(NAME.getPlaceholder(), getJobName(argument))
                 .replace(ARGUMENT.getPlaceholder(), argument.getValue())
-                .replace(IMG_NAME.getPlaceholder(), imgName);
+                .replace(IMG_NAME.getPlaceholder(), imgName)
+                .replace(SERVICE_ACCOUNT_NAME.getPlaceholder(), serviceAccountName);
 
         return new ByteArrayInputStream(cronJobAsdString.getBytes());
     }

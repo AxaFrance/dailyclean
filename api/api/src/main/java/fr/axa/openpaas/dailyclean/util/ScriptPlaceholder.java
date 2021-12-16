@@ -5,7 +5,8 @@ public enum ScriptPlaceholder {
     NAME("{{name}}"),
     ARGUMENT("{{argument}}"),
     SCHEDULE("{{schedule}}"),
-    IMG_NAME("{{imgName}}");
+    IMG_NAME("{{imgName}}"),
+    SERVICE_ACCOUNT_NAME("{{serviceAccountName}}"),;
 
     private String placeholder;
     ScriptPlaceholder(String placeholder) {

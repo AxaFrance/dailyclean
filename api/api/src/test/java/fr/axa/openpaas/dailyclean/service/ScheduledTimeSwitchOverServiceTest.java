@@ -224,11 +224,11 @@ public class ScheduledTimeSwitchOverServiceTest {
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
         if(cronStart != null) {
-            InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, "imgName");
+            InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, "imgName", "default");
             client.load(cronJobStart).inNamespace(namespace).createOrReplace();
         }
         if(cronStop != null) {
-            InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, "imgName");
+            InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, "imgName", "default");
             client.load(cronJobStop).inNamespace(namespace).createOrReplace();
         }
     }
