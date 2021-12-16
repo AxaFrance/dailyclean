@@ -1,4 +1,4 @@
-name: DailyClean API Docker Image CI
+name: DailyClean Docker Images CI
 
 on:
   push:
