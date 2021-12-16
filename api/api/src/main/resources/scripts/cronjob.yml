@@ -23,4 +23,4 @@ spec:
                       fieldPath: metadata.namespace
           restartPolicy: Never
           terminationGracePeriodSeconds: 30
-          serviceAccountName: flux
+          serviceAccountName: {{serviceAccountName}}

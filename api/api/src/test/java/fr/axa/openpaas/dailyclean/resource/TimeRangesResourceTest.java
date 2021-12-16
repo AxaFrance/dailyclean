@@ -149,7 +149,7 @@ public class TimeRangesResourceTest {
     public void shouldUpsertExistingTimerangeWithNewOneAndCreate() {
         String cronStart = "0 10 * * *";
 
-        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, "imgName");
+        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, "imgName", "default");
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
@@ -174,8 +174,8 @@ public class TimeRangesResourceTest {
     }
 
     private void initializeExistingCronJobs(String cronStart, String cronStop) {
-        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, "imgName");
-        InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, "imgName");
+        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, "imgName", "default");
+        InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, "imgName", "default");
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
