@@ -51,7 +51,8 @@ It create cron job that start or stop your pods.
 
 The awesome team :
 
-- Thomas Lemarchand 
-- Pierre-Henri Gache
-- Guillaume Thomas
-- Guillaume Chervet
+- __[Thomas Lemarchand](https://github.com/tlemarchand)__ : Conception, Architecture, Dailyclean job developer
+- __[Pierre-Henri Gache](https://github.com/phgache)__ : Architecture, CI/CD Pipelines
+- __[Guillaume Thomas](https://github.com/guillaume-thomas)__ : API developer
+- __[Guillaume Chervet](https://github.com/guillaume-chervet)__: Frontend developer, CI/CD Pipelines
+- Charles Herriau: Developer of the statefulset management feature
