@@ -21,7 +21,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: "Hello world when it's Monday"
-        run: echo "Hello $FIRST_NAME"
+        run: echo "Hello ${{steps.bump-version-and-push-tag.outputs.new_tag}}"
         env:
           FIRST_NAME: steps.bump-version-and-push-tag.outputs.new_tag
       - name: Push changes
