@@ -17,20 +17,52 @@ Daily clean only use kubernetes native API.
 
 ![DailyClean Automation](./dailyclean-configuration.png "DailyClean Automation")
 
-## Getting Started
+## Configure your Kubernetes cluster
 
-Kubernetes script is comming soon in this section.
+We assume that you have a proper kubernetes installed on your machine (for instance, the docker desktop one).
+
+You have to make sure that you have a service account (for exemple, default) which has sufficient rights to access resources.
+If not, you can use this command (!!!DO NOT USE IT IN PRODUCTION !!!)
 
 ```
-# The API 
-docker pull axaguildev/dailyclean-api:latest
-docker run -i --rm -p 8080:8080 axaguildev/dailyclean-api:latest
-# now you can open your browser to http://localhost:8080 
-# you can change the price ratio by adding price_by_month query string: http://localhost:8080?price_by_month=100 the default price is 75
+kubectl create clusterrolebinding cluster-admin-default --clusterrole=admin --serviceaccount=default:default
+```
 
-# The Job 
-docker pull axaguildev/dailyclean-job:latest
-# The job run only run on kubernetes
+To test, you have to know the ip or the domain of your cluster. With docker desktop, it is usually kubernetes.docker.internal.
+To find it, use this command :
+
+```
+kubectl cluster-info
+```
+
+## Getting Started
+
+```
+git clone https://github.com/AxaGuilDEv/dailyclean.git
+cd dailyclean/demo
+# Install dailyclean for the default service account
+kubectl apply -f deployment-dailyclean.yml
+# Install three instances of kubernetes-bootcamp
+kubectl apply -f deployment-others.yml
+```
+
+Now, open your favorite browser and enter the url of dailyclean-api service : http://${your_cluster_domain_or_ip}:30001
+
+Enjoy dailyclean !!!!
+
+## Clean your local cluster
+
+To clean your kubernetes cluster, use these commands : 
+
+```
+kubectl delete service dailyclean-api
+kubectl delete service kubernetes-bootcamp1
+kubectl delete service kubernetes-bootcamp2
+kubectl delete service kubernetes-bootcamp3
+kubectl delete deployment dailyclean-api
+kubectl delete deployment kubernetes-bootcamp1
+kubectl delete deployment kubernetes-bootcamp2
+kubectl delete deployment kubernetes-bootcamp3
 ```
 
 
