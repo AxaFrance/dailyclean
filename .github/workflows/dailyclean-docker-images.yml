@@ -21,7 +21,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Push changes
-        if: github.event_name != 'pull_request' && steps.bump-version-and-push-tag.outputs.new_tag != undefined'
+        if: github.event_name != 'pull_request' && !steps.bump-version-and-push-tag.outputs.new_tag != undefined
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
