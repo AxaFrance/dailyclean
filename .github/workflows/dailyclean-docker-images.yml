@@ -22,7 +22,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: "Commit Tag"
         if: github.event_name != 'pull_request' && steps.bump_version_and_push_tag.outputs.new_tag != ''
-        run: git tag -a ${{steps.bump_version_and_push_tag.outputs.new_tag}} -m "tag ${{steps.bump_version_and_push_tag.outputs.new_tag}}" 
+        run: |
+          git config --global user.email "build-ci@axa.fr"
+          git config --global user.name "Build-CI"
+          git tag -a ${{steps.bump_version_and_push_tag.outputs.new_tag}} -m "tag ${{steps.bump_version_and_push_tag.outputs.new_tag}}" 
       - name: "Hello world when it's Monday"
         run: echo "Hello ${{steps.bump_version_and_push_tag.outputs.new_tag}} youhou ${{steps.bump_version_and_push_tag.outputs.previous_tag}} "
         env:
