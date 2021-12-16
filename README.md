@@ -1,5 +1,5 @@
 # DailyClean
-![API workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-api-docker-image.yml/badge.svg) ![JOB workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-job-docker-image.yml/badge.svg)
+![API workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-docker-images.yml/badge.svg) 
 
 ![DailyClean](./dailyclean.gif "DailyClean")
 
