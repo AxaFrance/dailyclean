@@ -20,6 +20,10 @@ jobs:
         uses: hennejg/github-tag-action@v4.3.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Hello world when it's Monday"
+        run: echo "Hello $FIRST_NAME"
+        env:
+          FIRST_NAME: steps.bump-version-and-push-tag.outputs.new_tag
       - name: Push changes
         if: github.event_name != 'pull_request' && steps.bump-version-and-push-tag.outputs.new_tag != ''
         uses: ad-m/github-push-action@master
