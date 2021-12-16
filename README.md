@@ -1,5 +1,5 @@
 # DailyClean
-![API workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-docker-images.yml/badge.svg) 
+![workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-docker-images.yml/badge.svg) 
 
 ![DailyClean](./dailyclean.gif "DailyClean")
 
@@ -23,13 +23,13 @@ Kubernetes script is comming soon in this section.
 
 ```
 # The API 
-docker pull axaguildev/dailyclean-api:pr-7
-docker run -i --rm -p 8080:8080 axaguildev/dailyclean-api:pr-7
+docker pull axaguildev/dailyclean-api:latest
+docker run -i --rm -p 8080:8080 axaguildev/dailyclean-api:latest
 # now you can open your browser to http://localhost:8080 
 # you can change the price ratio by adding price_by_month query string: http://localhost:8080?price_by_month=100 the default price is 75
 
 # The Job 
-docker pull axaguildev/dailyclean-job:pr-7
+docker pull axaguildev/dailyclean-job:latest
 # The job run only run on kubernetes
 ```
 
