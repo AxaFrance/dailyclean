@@ -11,6 +11,7 @@ on:
 jobs:
 
   tags:
+    environment: dailyclean
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
