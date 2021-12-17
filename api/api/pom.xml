@@ -18,6 +18,8 @@
     <quarkus.platform.version>1.12.1.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
     <package>fr.axa.openpaas.dailyclean</package>
+    <sonar.organization>axaguildev</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
   <dependencyManagement>
     <dependencies>
