@@ -19,7 +19,6 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: my-custom-directory
           args: >
             -Dsonar.organization=axaguildev
             -Dsonar.projectKey=AxaGuilDEv_dailyclean
