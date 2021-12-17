@@ -73,7 +73,6 @@ jobs:
         cache-from: type=registry,ref=axaguildev/dailyclean-api:buildcache
         cache-to: type=registry,ref=axaguildev/dailyclean-api:buildcache,mode=max
 
-
   build_job:
     environment: dailyclean
     needs: tags
