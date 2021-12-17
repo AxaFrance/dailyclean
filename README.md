@@ -1,5 +1,5 @@
 # DailyClean
-![workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-docker-images.yml/badge.svg) 
+![workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-docker-images.yml/badge.svg) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=AxaGuilDEv_dailyclean&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=AxaGuilDEv_dailyclean)
 
 ![DailyClean](./dailyclean.gif "DailyClean")
 
