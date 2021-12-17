@@ -9,7 +9,8 @@ on:
 jobs:
 
   sonar:
-    name: Sonar CLoud
+    environment: dailyclean
+    name: Sonar Cloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
