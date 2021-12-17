@@ -11,23 +11,21 @@ on:
 jobs:
 
   tags:
-    environment: dailyclean
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.tag.outputs.new_version }}
     steps:
       - uses: actions/checkout@master
-        with:
-          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-      - name: "Commit Tag"
-        if: github.event_name != 'pull_request'
-        run: |
-          git config --global user.email "build-ci@axa.fr"
-          git config --global user.name "Build-CI"
       - name: Bump version and push tag
         id: tag_version
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main'
         uses: mathieudutour/github-tag-action@v6.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN  }}
+      - name: Add tag to output step
+        id: tag
+        if: github.ref == 'refs/heads/main'
+        run: echo "::set-output name=new_version::${{ steps.tag_version.outputs.new_version }}"
 
   build_api:
     environment: dailyclean
@@ -52,6 +50,18 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Build and push
+      if: github.ref == 'refs/heads/main'
+      uses: docker/build-push-action@v2
+      with:
+        context: ./api
+        file: ./api/Dockerfile
+        builder: ${{ steps.buildx.outputs.name }}
+        push: true
+        tags: axaguildev/dailyclean-api:${{ needs.tags.outputs.new_version }},axaguildev/dailyclean-api:latest
+        cache-from: type=registry,ref=axaguildev/dailyclean-api:buildcache
+        cache-to: type=registry,ref=axaguildev/dailyclean-api:buildcache,mode=max
+    - name: Build and push
+      if: github.ref != 'refs/heads/main'
       uses: docker/build-push-action@v2
       with:
         context: ./api
@@ -87,12 +97,25 @@ jobs:
       uses: docker/setup-buildx-action@v1
     - name: Build and push
       uses: docker/build-push-action@v2
+      if: github.ref != 'refs/heads/main'
       with:
         context: ./job/dailyclean
         file: ./job/dailyclean/Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=registry,ref=axaguildev/dailyclean-job:buildcache
+        cache-to: type=registry,ref=axaguildev/dailyclean-job:buildcache,mode=max
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      if: github.ref == 'refs/heads/main'
+      with:
+        context: ./job/dailyclean
+        file: ./job/dailyclean/Dockerfile
+        builder: ${{ steps.buildx.outputs.name }}
+        push: true
+        tags: axaguildev/dailyclean-job:${{ needs.tags.outputs.new_version }},axaguildev/dailyclean-job:latest
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=registry,ref=axaguildev/dailyclean-job:buildcache
         cache-to: type=registry,ref=axaguildev/dailyclean-job:buildcache,mode=max

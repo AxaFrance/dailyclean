@@ -37,6 +37,8 @@ kubectl cluster-info
 
 ## Getting Started
 
+Kubernetes script is comming soon in this section.
+
 ```
 git clone https://github.com/AxaGuilDEv/dailyclean.git
 cd dailyclean/demo
