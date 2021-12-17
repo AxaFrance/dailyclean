@@ -3,12 +3,30 @@ name: DailyClean Docker Images CI
 on:
   push:
     branches: [ main ]
-    tags:
-      - 'v*'
   pull_request:
     branches: [ main ]
 
 jobs:
+
+  sonar:
+    environment: dailyclean
+    name: Sonar Cloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=axaguildev
+            -Dsonar.projectKey=AxaGuilDEv_dailyclean
+            -Dsonar.exclusions=api/api/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   tags:
     runs-on: ubuntu-latest
