@@ -216,6 +216,76 @@ public class TimeRangesResourceTest {
         });
     }
 
+    @Test
+    public void shouldUpdateTheImageVersionOnStartupOnlyIfStartExisted() {
+        KubernetesClient client = mockServer.getClient();
+        final String namespace = client.getNamespace();
+
+        String startCronJobName = KubernetesUtils.getCronName(START);
+        String cronStart = "0 10 * * *";
+
+
+        // Create cron jobs with old versions
+        InputStream cronJobStart =
+                KubernetesUtils.createCronJobAsInputStream(START, cronStart, OLD_IMAGE_NAME, "default");
+
+        client.load(cronJobStart).inNamespace(namespace).createOrReplace();
+
+        resource.onStart(null);
+
+        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        assertThat(cronJobs.size(), is(1));
+
+        cronJobs.forEach(cronJob -> {
+            Container container = cronJob.getSpec()
+                    .getJobTemplate()
+                    .getSpec()
+                    .getTemplate()
+                    .getSpec()
+                    .getContainers()
+                    .stream().findFirst().orElseThrow();
+
+            assertThat(container.getImage(), is(imgName));
+            assertThat(cronJob.getSpec().getSchedule(), is(cronStart));
+            assertThat(cronJob.getMetadata().getName(), is(startCronJobName));
+        });
+    }
+
+    @Test
+    public void shouldUpdateTheImageVersionOnStartupOnlyIfStopExisted() {
+        KubernetesClient client = mockServer.getClient();
+        final String namespace = client.getNamespace();
+
+        String stopCronJobName = KubernetesUtils.getCronName(STOP);
+        String cronStop = "0 10 * * *";
+
+
+        // Create cron jobs with old versions
+        InputStream cronJobStop =
+                KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, OLD_IMAGE_NAME, "default");
+
+        client.load(cronJobStop).inNamespace(namespace).createOrReplace();
+
+        resource.onStart(null);
+
+        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        assertThat(cronJobs.size(), is(1));
+
+        cronJobs.forEach(cronJob -> {
+            Container container = cronJob.getSpec()
+                    .getJobTemplate()
+                    .getSpec()
+                    .getTemplate()
+                    .getSpec()
+                    .getContainers()
+                    .stream().findFirst().orElseThrow();
+
+            assertThat(container.getImage(), is(imgName));
+            assertThat(cronJob.getSpec().getSchedule(), is(cronStop));
+            assertThat(cronJob.getMetadata().getName(), is(stopCronJobName));
+        });
+    }
+
     private void initializeExistingCronJobs(String cronStart, String cronStop) {
         InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, "imgName", "default");
         InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, "imgName", "default");
