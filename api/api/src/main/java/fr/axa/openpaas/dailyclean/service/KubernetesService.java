@@ -2,6 +2,7 @@ package fr.axa.openpaas.dailyclean.service;
 
 import fr.axa.openpaas.dailyclean.model.Deployment;
 import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
+import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.batch.CronJob;
 import io.fabric8.kubernetes.api.model.batch.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -115,6 +116,30 @@ public class KubernetesService {
                 .collect(Collectors.toList());
     }
 
+    public void updatingCronJobIfNeeded() {
+        CronJob start = getCronJob(START);
+        CronJob stop = getCronJob(STOP);
+
+        if(isUpdatingCronJobNeeded(start) || isUpdatingCronJobNeeded(stop)) {
+            String startCronJobAsString = getCronAsStringFromCronJob(start);
+            String stopCronJobAsString = getCronAsStringFromCronJob(stop);
+
+            deleteCronJobs();
+
+            createStartCronJob(startCronJobAsString);
+            createStopCronJob(stopCronJobAsString);
+        }
+    }
+
+    private boolean isUpdatingCronJobNeeded(CronJob cronJob) {
+        boolean res = false;
+        if(cronJob != null) {
+            String cronImageName = getContainerImageName(cronJob);
+            res = !imgName.equals(cronImageName);
+        }
+        return res;
+    }
+
     private CronJob getCronJob(KubernetesArgument argument) {
         final String namespace = getNamespace();
         List<CronJob> cronJobs = kubernetesClient.batch().cronjobs().inNamespace(namespace).list().getItems();
@@ -126,7 +151,25 @@ public class KubernetesService {
 
     private String getCronAsString(KubernetesArgument argument) {
         CronJob job = getCronJob(argument);
-        return job != null ? job.getSpec().getSchedule() : null;
+        return getCronAsStringFromCronJob(job);
+    }
+
+    private String getCronAsStringFromCronJob(CronJob cronJob) {
+        return cronJob != null ? cronJob.getSpec().getSchedule() : null;
+    }
+
+    private String getContainerImageName(CronJob cronJob) {
+        String res = null;
+        if(cronJob != null) {
+            Container container = cronJob.getSpec()
+                    .getJobTemplate()
+                    .getSpec()
+                    .getTemplate()
+                    .getSpec()
+                    .getContainers().stream().findFirst().orElseThrow();
+            res = container.getImage();
+        }
+        return res;
     }
 
     private void createCronJob(String cron, KubernetesArgument argument) {
@@ -173,6 +216,4 @@ public class KubernetesService {
             cronJob.delete();
         }
     }
-
-
 }
