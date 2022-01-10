@@ -1,24 +1,27 @@
 package fr.axa.openpaas.dailyclean.resource;
 
 import fr.axa.openpaas.dailyclean.model.TimeRange;
+import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
+import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.batch.CronJob;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
-import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
 import org.apache.http.HttpStatus;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
 import static fr.axa.openpaas.dailyclean.service.KubernetesArgument.START;
 import static fr.axa.openpaas.dailyclean.service.KubernetesArgument.STOP;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -28,8 +31,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @QuarkusTest
 public class TimeRangesResourceTest {
 
+    private static final String OLD_IMAGE_NAME = "imagename:1.0.0";
+
     @KubernetesTestServer
     KubernetesServer mockServer;
+
+    @Inject
+    TimeRangesResource resource;
+
+    @ConfigProperty(name = "service.job.imageName")
+    String imgName;
 
     @BeforeEach
     public void before() {
@@ -171,6 +182,108 @@ public class TimeRangesResourceTest {
                 .body("cron_stop", is(newCronStop));
 
         assertThatCronJobsExist(newCronStart, newCronStop);
+    }
+
+    @Test
+    public void shouldUpdateTheImageVersionOnStartup() {
+        KubernetesClient client = mockServer.getClient();
+        final String namespace = client.getNamespace();
+
+        // Create cron jobs with old versions
+        InputStream cronJobStart =
+                KubernetesUtils.createCronJobAsInputStream(START, "0 10 * * *", OLD_IMAGE_NAME, "default");
+        InputStream cronJobStop =
+                KubernetesUtils.createCronJobAsInputStream(STOP, "0 10 * * *", OLD_IMAGE_NAME, "default");
+
+        client.load(cronJobStart).inNamespace(namespace).createOrReplace();
+        client.load(cronJobStop).inNamespace(namespace).createOrReplace();
+
+        resource.onStart(null);
+
+        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        assertThat(cronJobs.size(), is(2));
+
+        cronJobs.forEach(cronJob -> {
+            Container container = cronJob.getSpec()
+                    .getJobTemplate()
+                    .getSpec()
+                    .getTemplate()
+                    .getSpec()
+                    .getContainers()
+                    .stream().findFirst().orElseThrow();
+
+            assertThat(container.getImage(), is(imgName));
+        });
+    }
+
+    @Test
+    public void shouldUpdateTheImageVersionOnStartupOnlyIfStartExisted() {
+        KubernetesClient client = mockServer.getClient();
+        final String namespace = client.getNamespace();
+
+        String startCronJobName = KubernetesUtils.getCronName(START);
+        String cronStart = "0 10 * * *";
+
+
+        // Create cron jobs with old versions
+        InputStream cronJobStart =
+                KubernetesUtils.createCronJobAsInputStream(START, cronStart, OLD_IMAGE_NAME, "default");
+
+        client.load(cronJobStart).inNamespace(namespace).createOrReplace();
+
+        resource.onStart(null);
+
+        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        assertThat(cronJobs.size(), is(1));
+
+        cronJobs.forEach(cronJob -> {
+            Container container = cronJob.getSpec()
+                    .getJobTemplate()
+                    .getSpec()
+                    .getTemplate()
+                    .getSpec()
+                    .getContainers()
+                    .stream().findFirst().orElseThrow();
+
+            assertThat(container.getImage(), is(imgName));
+            assertThat(cronJob.getSpec().getSchedule(), is(cronStart));
+            assertThat(cronJob.getMetadata().getName(), is(startCronJobName));
+        });
+    }
+
+    @Test
+    public void shouldUpdateTheImageVersionOnStartupOnlyIfStopExisted() {
+        KubernetesClient client = mockServer.getClient();
+        final String namespace = client.getNamespace();
+
+        String stopCronJobName = KubernetesUtils.getCronName(STOP);
+        String cronStop = "0 10 * * *";
+
+
+        // Create cron jobs with old versions
+        InputStream cronJobStop =
+                KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, OLD_IMAGE_NAME, "default");
+
+        client.load(cronJobStop).inNamespace(namespace).createOrReplace();
+
+        resource.onStart(null);
+
+        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        assertThat(cronJobs.size(), is(1));
+
+        cronJobs.forEach(cronJob -> {
+            Container container = cronJob.getSpec()
+                    .getJobTemplate()
+                    .getSpec()
+                    .getTemplate()
+                    .getSpec()
+                    .getContainers()
+                    .stream().findFirst().orElseThrow();
+
+            assertThat(container.getImage(), is(imgName));
+            assertThat(cronJob.getSpec().getSchedule(), is(cronStop));
+            assertThat(cronJob.getMetadata().getName(), is(stopCronJobName));
+        });
     }
 
     private void initializeExistingCronJobs(String cronStart, String cronStop) {
