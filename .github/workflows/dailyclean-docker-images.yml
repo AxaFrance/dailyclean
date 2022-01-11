@@ -16,7 +16,23 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0 
-
+          
+      - name: GitHub Action for GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '11'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Example step
+        run: |
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          gu --version
+          native-image --version
+      
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
