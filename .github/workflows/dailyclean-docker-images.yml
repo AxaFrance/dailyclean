@@ -32,7 +32,8 @@ jobs:
         with:
           args: >
             -Dsonar.organization=axaguildev
-            -Dsonar.projectKey=AxaGuilDEv_dailyclean
+            -Dsonar.projectKey=AxaGuilDEv_dailyclean*
+            -Dsonar.java.binaries=api/api
            # -Dsonar.exclusions=api/api/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
