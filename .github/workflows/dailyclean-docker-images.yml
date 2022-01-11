@@ -47,10 +47,11 @@ jobs:
             -Dsonar.projectKey=AxaGuilDEv_dailyclean
             -Dsonar.java.binaries=api/api/target/classes
             -Dsonar.java.libraries=.
-            -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml
+            -Dsonar.coverage.jacoco.xmlReportPaths=**/target/jacoco-report/jacoco.xml
             -Dsonar.javascript.lcov.reportPaths=api/web/coverage/lcov.info
             -Dsonar.python.version=3
             -Dsonar.exclusions=**/*.spec.js,**/*.stories.js,**/src/coverage/**,**/*.scss,**/__snapshots__/**,**/node_modules/**,**/src/.storybook/**,**/src/storybook-static/**,**/__mocks__/**
+            -Dsonar.coverage.exlusions=**src/test/**/*.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
