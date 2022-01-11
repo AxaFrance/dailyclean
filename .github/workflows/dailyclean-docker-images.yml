@@ -47,7 +47,7 @@ jobs:
             -Dsonar.projectKey=AxaGuilDEv_dailyclean
             -Dsonar.java.binaries=api/api/target/classes
             -Dsonar.javascript.lcov.reportPaths=api/web/coverage/lcov.info
-           # -Dsonar.exclusions=api/api/**
+            -Dsonar.exclusions=**/*.spec.js,**/*.stories.js,**/src/coverage/**,**/*.scss,**/__snapshots__/**,**/node_modules/**,**/src/.storybook/**,**/src/storybook-static/**,**/__mocks__/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
