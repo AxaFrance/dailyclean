@@ -26,6 +26,18 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
         working-directory: ./api/api
+        
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          
+      - name: npm install
+        run: npm install
+        working-directory: ./api/web
+        
+      - name: npm test
+        run: npm test -- --runInBand --coverage --watchAll=false
+        working-directory: ./api/web
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -34,6 +46,7 @@ jobs:
             -Dsonar.organization=axaguildev
             -Dsonar.projectKey=AxaGuilDEv_dailyclean*
             -Dsonar.java.binaries=api/api
+            -Dsonar.javascript.lcov.reportPaths=api/web/coverage/lcov.info
            # -Dsonar.exclusions=api/api/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
