@@ -32,6 +32,7 @@ jobs:
           java --version
           gu --version
           native-image --version
+          RUN mvn package -Pnative -B
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
