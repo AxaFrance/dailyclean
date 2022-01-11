@@ -44,7 +44,7 @@ jobs:
         with:
           args: >
             -Dsonar.organization=axaguildev
-            -Dsonar.projectKey=AxaGuilDEv_dailyclean*
+            -Dsonar.projectKey=AxaGuilDEv_dailyclean
             -Dsonar.java.binaries=api/api/target/classes
             -Dsonar.javascript.lcov.reportPaths=api/web/coverage/lcov.info
            # -Dsonar.exclusions=api/api/**
