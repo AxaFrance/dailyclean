@@ -10,9 +10,10 @@ import javax.ws.rs.Path;
 @Path("pods")
 public class PodsResource {
 
-    private final KubernetesService kubernetesService;
     public final static String STOP_MESSAGE = "Service is stoping ...";
     public final static String START_MESSAGE = "Service is starting ...";
+
+    private final KubernetesService kubernetesService;
 
     public PodsResource(KubernetesService kubernetesService) {
         this.kubernetesService = kubernetesService;

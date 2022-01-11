@@ -212,7 +212,7 @@ public class KubernetesService {
         Resource<CronJob> cronJob =
                 kubernetesClient.batch().cronjobs()
                         .inNamespace(namespace).withName(KubernetesUtils.getCronName(argument));
-        if (cronJob.isReady()) {
+        if (Boolean.TRUE.equals(cronJob.isReady())) {
             cronJob.delete();
         }
     }

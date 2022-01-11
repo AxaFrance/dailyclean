@@ -32,6 +32,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TimeRangesResourceTest {
 
     private static final String OLD_IMAGE_NAME = "imagename:1.0.0";
+    private static final String TIMERANGES_URI = "/timeranges";
+    private static final String CRON_START = "cron_start";
+    private static final String CRON_STOP = "cron_stop";
+    private static final String CRON_9_00 = "0 9 * * *";
+    private static final String CRON_19_00 = "0 19 * * *";
+    private static final String CRON_10_00 = "0 10 * * *";
+    private static final String CRON_20_00 = "0 20 * * *";
+    private static final String IMG_NAME = "imgName";
+    private static final String SERVICE_ACCOUNT_NAME = "default";
 
     @KubernetesTestServer
     KubernetesServer mockServer;
@@ -51,8 +60,8 @@ public class TimeRangesResourceTest {
 
     @Test
     public void shouldCreateCronJobs() {
-        String cronStart = "0 9 * * *";
-        String cronStop = "0 19 * * *";
+        String cronStart = CRON_9_00;
+        String cronStop = CRON_19_00;
 
         TimeRange timeRange = new TimeRange();
         timeRange.setCronStart(cronStart);
@@ -60,11 +69,11 @@ public class TimeRangesResourceTest {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .when().body(timeRange)
-                .post("/timeranges")
+                .post(TIMERANGES_URI)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("cron_start", is(cronStart))
-                .body("cron_stop", is(cronStop));
+                .body(CRON_START, is(cronStart))
+                .body(CRON_STOP, is(cronStop));
 
         assertThatCronJobsExist(cronStart, cronStop);
     }
@@ -74,26 +83,26 @@ public class TimeRangesResourceTest {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .post("/timeranges")
+                .post(TIMERANGES_URI)
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
     @Test
     public void shouldGetTimeRanges() {
-        String cronStart = "0 10 * * *";
-        String cronStop = "0 20 * * *";
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
 
         initializeExistingCronJobs(cronStart, cronStop);
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .get("/timeranges")
+                .get(TIMERANGES_URI)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("cron_start", is(cronStart))
-                .body("cron_stop", is(cronStop));
+                .body(CRON_START, is(cronStart))
+                .body(CRON_STOP, is(cronStop));
     }
 
     @Test
@@ -101,24 +110,24 @@ public class TimeRangesResourceTest {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .get("/timeranges")
+                .get(TIMERANGES_URI)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("cron_start", is(nullValue()))
-                .body("cron_stop", is(nullValue()));
+                .body(CRON_START, is(nullValue()))
+                .body(CRON_STOP, is(nullValue()));
     }
 
     @Test
     public void shouldNotDeleteCronJobsIfTimeRangesAreNotSet() {
-        String cronStart = "0 10 * * *";
-        String cronStop = "0 20 * * *";
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
 
         initializeExistingCronJobs(cronStart, cronStop);
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .post("/timeranges")
+                .post(TIMERANGES_URI)
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST);
 
@@ -127,23 +136,23 @@ public class TimeRangesResourceTest {
 
     @Test
     public void shouldUpsertExistingTimerangesWithNewOnes() {
-        String cronStart = "0 10 * * *";
-        String cronStop = "0 20 * * *";
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
 
         initializeExistingCronJobs(cronStart, cronStop);
 
-        String newCronStart = "0 9 * * *";
+        String newCronStart = CRON_9_00;
 
         TimeRange timeRange = new TimeRange();
         timeRange.setCronStart(newCronStart);
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .when().body(timeRange)
-                .post("/timeranges")
+                .post(TIMERANGES_URI)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("cron_start", is(newCronStart))
-                .body("cron_stop", is(nullValue()));
+                .body(CRON_START, is(newCronStart))
+                .body(CRON_STOP, is(nullValue()));
 
         KubernetesClient client = mockServer.getClient();
 
@@ -158,16 +167,16 @@ public class TimeRangesResourceTest {
 
     @Test
     public void shouldUpsertExistingTimerangeWithNewOneAndCreate() {
-        String cronStart = "0 10 * * *";
+        String cronStart = CRON_10_00;
 
-        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, "imgName", "default");
+        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME);
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
         client.load(cronJobStart).inNamespace(namespace).createOrReplace();
 
-        String newCronStart = "0 9 * * *";
-        String newCronStop = "0 20 * * *";
+        String newCronStart = CRON_9_00;
+        String newCronStop = CRON_20_00;
 
         TimeRange timeRange = new TimeRange();
         timeRange.setCronStart(newCronStart);
@@ -175,11 +184,11 @@ public class TimeRangesResourceTest {
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .when().body(timeRange)
-                .post("/timeranges")
+                .post(TIMERANGES_URI)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("cron_start", is(newCronStart))
-                .body("cron_stop", is(newCronStop));
+                .body(CRON_START, is(newCronStart))
+                .body(CRON_STOP, is(newCronStop));
 
         assertThatCronJobsExist(newCronStart, newCronStop);
     }
@@ -191,9 +200,9 @@ public class TimeRangesResourceTest {
 
         // Create cron jobs with old versions
         InputStream cronJobStart =
-                KubernetesUtils.createCronJobAsInputStream(START, "0 10 * * *", OLD_IMAGE_NAME, "default");
+                KubernetesUtils.createCronJobAsInputStream(START, CRON_10_00, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME);
         InputStream cronJobStop =
-                KubernetesUtils.createCronJobAsInputStream(STOP, "0 10 * * *", OLD_IMAGE_NAME, "default");
+                KubernetesUtils.createCronJobAsInputStream(STOP, CRON_10_00, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME);
 
         client.load(cronJobStart).inNamespace(namespace).createOrReplace();
         client.load(cronJobStop).inNamespace(namespace).createOrReplace();
@@ -222,12 +231,12 @@ public class TimeRangesResourceTest {
         final String namespace = client.getNamespace();
 
         String startCronJobName = KubernetesUtils.getCronName(START);
-        String cronStart = "0 10 * * *";
+        String cronStart = CRON_10_00;
 
 
         // Create cron jobs with old versions
         InputStream cronJobStart =
-                KubernetesUtils.createCronJobAsInputStream(START, cronStart, OLD_IMAGE_NAME, "default");
+                KubernetesUtils.createCronJobAsInputStream(START, cronStart, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME);
 
         client.load(cronJobStart).inNamespace(namespace).createOrReplace();
 
@@ -257,12 +266,12 @@ public class TimeRangesResourceTest {
         final String namespace = client.getNamespace();
 
         String stopCronJobName = KubernetesUtils.getCronName(STOP);
-        String cronStop = "0 10 * * *";
+        String cronStop = CRON_10_00;
 
 
         // Create cron jobs with old versions
         InputStream cronJobStop =
-                KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, OLD_IMAGE_NAME, "default");
+                KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME);
 
         client.load(cronJobStop).inNamespace(namespace).createOrReplace();
 
@@ -287,8 +296,8 @@ public class TimeRangesResourceTest {
     }
 
     private void initializeExistingCronJobs(String cronStart, String cronStop) {
-        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, "imgName", "default");
-        InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, "imgName", "default");
+        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME);
+        InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, IMG_NAME, SERVICE_ACCOUNT_NAME);
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();

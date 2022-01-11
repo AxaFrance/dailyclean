@@ -27,6 +27,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @QuarkusTest
 public class ScheduledTimeSwitchOverServiceTest {
 
+    private static final String CRON_10_00 = "0 10 * * *";
+    private static final String CRON_11_00 = "0 11 * * *";
+    private static final String CRON_9_00 = "0 9 * * *";
+    private static final String CRON_20_00 = "0 20 * * *";
+
     @KubernetesTestServer
     KubernetesServer mockServer;
 
@@ -52,10 +57,10 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldChangeSchedulesToSummerTime() {
         dateUtils.setCurrentNow(SUMMER_TIME_DATE);
 
-        String cronStart = "0 10 * * *";
-        String cronStop = "0 20 * * *";
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
 
-        String summerCronStart = "0 11 * * *";
+        String summerCronStart = CRON_11_00;
         String summerCronStop = "0 21 * * *";
 
         initializeExistingCronJobs(cronStart, cronStop);
@@ -68,8 +73,8 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldNotChangeSchedulesToSummerTimeIfItIsNotSunday() {
         dateUtils.setCurrentNow(NOT_SUNDAY_DATE);
 
-        String cronStart = "0 10 * * *";
-        String cronStop = "0 20 * * *";
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
 
         initializeExistingCronJobs(cronStart, cronStop);
         service.switchToSummerTime();
@@ -81,8 +86,8 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldNotChangeSchedulesToSummerTimeIfItIsNotLastSundayOfMonth() {
         dateUtils.setCurrentNow(NOT_LAST_SUNDAY_OF_MONTH_DATE);
 
-        String cronStart = "0 10 * * *";
-        String cronStop = "0 20 * * *";
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
 
         initializeExistingCronJobs(cronStart, cronStop);
         service.switchToSummerTime();
@@ -94,10 +99,10 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldChangeSchedulesToSummerTimeMidnight() {
         dateUtils.setCurrentNow(SUMMER_TIME_DATE);
 
-        String cronStart = "0 10 * * *";
+        String cronStart = CRON_10_00;
         String cronStop = "0 23 * * *";
 
-        String summerCronStart = "0 11 * * *";
+        String summerCronStart = CRON_11_00;
         String summerCronStop = "0 0 * * *";
 
         initializeExistingCronJobs(cronStart, cronStop);
@@ -110,10 +115,10 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldChangeSchedulesToSummerTimeWithDoW() {
         dateUtils.setCurrentNow(SUMMER_TIME_DATE);
 
-        String cronStart = "0 10 * * *";
+        String cronStart = CRON_10_00;
         String cronStop = "0 20 21 10 1-5";
 
-        String summerCronStart = "0 11 * * *";
+        String summerCronStart = CRON_11_00;
         String summerCronStop = "0 21 21 10 1-5";
 
         initializeExistingCronJobs(cronStart, cronStop);
@@ -126,10 +131,10 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldChangeSchedulesToWinterTime() {
         dateUtils.setCurrentNow(WINTER_TIME_DATE);
 
-        String cronStart = "0 10 * * *";
-        String cronStop = "0 20 * * *";
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
 
-        String winterCronStart = "0 9 * * *";
+        String winterCronStart = CRON_9_00;
         String winterCronStop = "0 19 * * *";
 
         initializeExistingCronJobs(cronStart, cronStop);
@@ -142,8 +147,8 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldNotChangeSchedulesToWinterTimeIfItIsNotSunday() {
         dateUtils.setCurrentNow(NOT_SUNDAY_DATE);
 
-        String cronStart = "0 10 * * *";
-        String cronStop = "0 20 * * *";
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
 
         initializeExistingCronJobs(cronStart, cronStop);
         service.switchToWinterTime();
@@ -155,8 +160,8 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldNotChangeSchedulesToWinterTimeIfItIsNotLastSundayOfMonth() {
         dateUtils.setCurrentNow(NOT_LAST_SUNDAY_OF_MONTH_DATE);
 
-        String cronStart = "0 10 * * *";
-        String cronStop = "0 20 * * *";
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
 
         initializeExistingCronJobs(cronStart, cronStop);
         service.switchToWinterTime();
@@ -168,10 +173,10 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldChangeSchedulesToWinterTimeMidnight() {
         dateUtils.setCurrentNow(WINTER_TIME_DATE);
 
-        String cronStart = "0 10 * * *";
+        String cronStart = CRON_10_00;
         String cronStop = "0 0 * * *";
 
-        String winterCronStart = "0 9 * * *";
+        String winterCronStart = CRON_9_00;
         String winterCronStop = "0 23 * * *";
 
         initializeExistingCronJobs(cronStart, cronStop);
@@ -184,10 +189,10 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldChangeSchedulesToWinterTimeWithDow() {
         dateUtils.setCurrentNow(WINTER_TIME_DATE);
 
-        String cronStart = "0 10 * * *";
+        String cronStart = CRON_10_00;
         String cronStop = "0 20 * * 1-5";
 
-        String winterCronStart = "0 9 * * *";
+        String winterCronStart = CRON_9_00;
         String winterCronStop = "0 19 * * 1-5";
 
         initializeExistingCronJobs(cronStart, cronStop);
@@ -200,9 +205,9 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void shouldWorkWithOnlyOneCronSet() {
         dateUtils.setCurrentNow(WINTER_TIME_DATE);
 
-        String cronStart = "0 10 * * *";
+        String cronStart = CRON_10_00;
 
-        String summerCronStart = "0 11 * * *";
+        String summerCronStart = CRON_11_00;
 
         initializeExistingCronJobs(cronStart, null);
         service.switchToSummerTime();

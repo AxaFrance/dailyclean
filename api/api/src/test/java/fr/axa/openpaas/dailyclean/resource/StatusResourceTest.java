@@ -1,6 +1,5 @@
 package fr.axa.openpaas.dailyclean.resource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import fr.axa.openpaas.dailyclean.model.Status;
 import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
 import io.fabric8.kubernetes.api.model.Container;
@@ -36,19 +35,20 @@ import static fr.axa.openpaas.dailyclean.model.Status.StateEnum.STOPPED;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.in;
 
 @WithKubernetesTestServer
 @QuarkusTest
 public class StatusResourceTest {
+
+    private static final String DEPLOY_ML = "deployMl";
+    private static final String DEPLOY_ES = "deployEs";
+    private static final String DEPLOYMENT_JSON_PATH = "deployments.find { deployment -> deployment.id == '%s' }.%s";
 
     @KubernetesTestServer
     KubernetesServer mockServer;
 
     @ConfigProperty(name = "service.deployment.label.dailyclean")
     String dailycleanLabelName;
-
-    private static final String DEPLOYMENT_JSON_PATH = "deployments.find { deployment -> deployment.id == '%s' }.%s";
 
     @BeforeEach
     public void before() {
@@ -58,11 +58,11 @@ public class StatusResourceTest {
     }
 
     @Test
-    public void getStatusWithStateStarted() throws InterruptedException, JsonProcessingException {
+    public void getStatusWithStateStarted() {
         // Initialize Data
         Deployment deploymentDailyclean = getDeploymentDailyclean();
-        Deployment deploymentMl = getDeployment("deployMl", 1, 3);
-        Deployment deploymentEs = getDeployment("deployEs", 2, 2);
+        Deployment deploymentMl = getDeployment(DEPLOY_ML, 1, 3);
+        Deployment deploymentEs = getDeployment(DEPLOY_ES, 2, 2);
 
         final String namespace = createDeploymentsAndGetNamespace(deploymentDailyclean, deploymentMl, deploymentEs);
 
@@ -82,8 +82,8 @@ public class StatusResourceTest {
     public void getStatusWithStateStopped() {
         // Initialize Data
         Deployment deploymentDailyclean = getDeploymentDailyclean();
-        Deployment deploymentMl = getDeployment("deployMl", 0, 3);
-        Deployment deploymentEs = getDeployment("deployEs", 0, 2);
+        Deployment deploymentMl = getDeployment(DEPLOY_ML, 0, 3);
+        Deployment deploymentEs = getDeployment(DEPLOY_ES, 0, 2);
 
         final String namespace = createDeploymentsAndGetNamespace(deploymentDailyclean, deploymentMl, deploymentEs);
 
@@ -103,8 +103,8 @@ public class StatusResourceTest {
     public void getStatusWithStateInProgress() {
         // Initialize Data
         Deployment deploymentDailyclean = getDeploymentDailyclean();
-        Deployment deploymentMl = getDeployment("deployMl", 3, 3);
-        Deployment deploymentEs = getDeployment("deployEs", 0, 2);
+        Deployment deploymentMl = getDeployment(DEPLOY_ML, 3, 3);
+        Deployment deploymentEs = getDeployment(DEPLOY_ES, 0, 2);
 
         final String namespace = createDeploymentsAndGetNamespace(deploymentDailyclean, deploymentMl, deploymentEs);
 
