@@ -23,6 +23,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @QuarkusTest
 public class PodsResourceTest {
 
+    private static final String MESSAGE = "message";
+
     @KubernetesTestServer
     KubernetesServer mockServer;
 
@@ -38,7 +40,7 @@ public class PodsResourceTest {
                 .when().post("/pods/start")
                 .then()
                     .statusCode(HttpStatus.SC_OK)
-                    .body("message", is(PodsResource.START_MESSAGE));
+                    .body(MESSAGE, is(PodsResource.START_MESSAGE));
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
@@ -55,7 +57,7 @@ public class PodsResourceTest {
                 .when().post("/pods/stop")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("message", is(PodsResource.STOP_MESSAGE));
+                .body(MESSAGE, is(PodsResource.STOP_MESSAGE));
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
@@ -78,7 +80,7 @@ public class PodsResourceTest {
                 .when().post("/pods/start")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("message", is(PodsResource.START_MESSAGE));
+                .body(MESSAGE, is(PodsResource.START_MESSAGE));
 
         List<Job> jobs = client.batch().jobs().inNamespace(namespace).list().getItems();
         assertThat(jobs.size(), is(1));

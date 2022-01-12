@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/timeranges")
 public class TimeRangesResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TimeRangesResource.class);
     private final KubernetesService kubernetesService;
 
     public TimeRangesResource(KubernetesService kubernetesService) {
