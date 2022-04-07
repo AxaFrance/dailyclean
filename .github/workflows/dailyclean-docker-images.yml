@@ -121,7 +121,7 @@ jobs:
         file: ./api/Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: registry.hub.docker.com/${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=registry,ref=axaguildev/dailyclean-api:buildcache
         cache-to: type=registry,ref=axaguildev/dailyclean-api:buildcache,mode=max
@@ -160,7 +160,7 @@ jobs:
         file: ./job/dailyclean/Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: registry.hub.docker.com/${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=registry,ref=axaguildev/dailyclean-job:buildcache
         cache-to: type=registry,ref=axaguildev/dailyclean-job:buildcache,mode=max
