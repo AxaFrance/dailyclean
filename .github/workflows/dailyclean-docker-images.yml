@@ -119,12 +119,12 @@ jobs:
       with:
         context: ./api
         file: ./api/Dockerfile
-        builder: ${{ steps.buildx.outputs.name }}
+      #  builder: ${{ steps.buildx.outputs.name }}
         push: true
         tags: registry.hub.docker.com/${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=registry,ref=axaguildev/dailyclean-api:buildcache
-        cache-to: type=registry,ref=axaguildev/dailyclean-api:buildcache,mode=max
+       # cache-from: type=registry,ref=axaguildev/dailyclean-api:buildcache
+       # cache-to: type=registry,ref=axaguildev/dailyclean-api:buildcache,mode=max
 
   build_job:
     environment: dailyclean
