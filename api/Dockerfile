@@ -6,7 +6,7 @@ ENV APP_ROOT /app_root
 RUN groupadd -r usersdocker && useradd -r -g usersdocker patrick
 USER patrick
 
-ENV USER patrick
+RUN if [ "${USER}" = "" ]; then export USER=patrick; fi
 
 WORKDIR ${APP_ROOT}
 COPY --chown=${USER} ./web .
