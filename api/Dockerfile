@@ -1,12 +1,10 @@
 
 FROM node:16-buster AS web
 
-
 ENV \
     APP_ROOT=/app_root \
     USER=patrick \
     HOME=/home
-
 
 RUN groupadd -r usersdocker && useradd -r -g usersdocker patrick
 
@@ -19,11 +17,19 @@ RUN npm run build
     
 FROM registry.access.redhat.com/ubi8/ubi:8.5-200 AS build
 
-#ENV \ 
-#    APP_ROOT=/app_root \
-#    HOME=/home
+ENV \
+    APP_ROOT=/app_root \
+    USER=1004 \
+    HOME=/home
 
 WORKDIR ${APP_ROOT}
+
+RUN \
+  useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
+  -c "Default Application User" default && \
+  chown -R ${USER}:0 ${APP_ROOT}
+
+
 USER root
 
 ENV MAVEN_VERSION 3.8.6
@@ -88,11 +94,17 @@ RUN mvn package -Pnative -B
 
 FROM registry.access.redhat.com/ubi8-minimal:8.5-204 AS runtime
 
-#ENV \ 
-#    APP_ROOT=/app_root \
-#    HOME=/home
+ENV \
+    APP_ROOT=/app_root \
+    USER=1004 \
+    HOME=/home
 
 WORKDIR ${APP_ROOT}
+
+RUN \
+  useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
+  -c "Default Application User" default && \
+  chown -R ${USER}:0 ${APP_ROOT}
 COPY --chown=${USER} --from=build ${APP_ROOT}/target/*-runner ./application
 
 EXPOSE 8080
