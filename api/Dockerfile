@@ -1,12 +1,15 @@
 
-FROM node:lts-buster-slim AS web
+FROM node:16-buster AS web
 
 ENV APP_ROOT /app_root
 
+RUN groupadd -r usersdocker && useradd -r -g usersdocker patrick
+USER patrick
+
 WORKDIR ${APP_ROOT}
 COPY --chown=${USER} ./web .
-
-RUN npm ci 
+USER root
+RUN npm ci
 RUN npm test --  --runInBand --coverage --watchAll=false
 RUN npm run build 
     
@@ -18,7 +21,7 @@ ENV HOME /home
 WORKDIR ${APP_ROOT}
 USER root
 
-ENV MAVEN_VERSION 3.8.4
+ENV MAVEN_VERSION 3.8.6
 ENV MAVEN_DOWNLOAD_SUM a9b2d825eacf2e771ed5d6b0e01398589ac1bfa4171f36154d1b5787879605507802f699da6f7cfc80732a5282fd31b28e4cd6052338cbef0fa1358b48a5e3c8
 ENV MAVEN_DIR=/opt/maven
 
@@ -30,7 +33,8 @@ RUN INSTALL_PKGS="java-11-openjdk java-11-openjdk-devel" && \
 WORKDIR ${HOME}
 
 RUN curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O && \
-    echo "$MAVEN_DOWNLOAD_SUM  apache-maven-${MAVEN_VERSION}-bin.tar.gz" | sha512sum -c - && \
+    #echo "$MAVEN_DOWNLOAD_SUM  apache-maven-${MAVEN_VERSION}-bin.tar.gz" | sha512sum -c - && \
+    echo "sha512sum apache-maven-${MAVEN_VERSION}-bin.tar.gz" && \
     tar xvfz apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
     mkdir -p ${MAVEN_DIR} && \
     cp -R apache-maven-${MAVEN_VERSION}/* ${MAVEN_DIR} && \
