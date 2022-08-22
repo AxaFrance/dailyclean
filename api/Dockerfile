@@ -24,7 +24,7 @@ WORKDIR ${APP_ROOT}
 USER root
 
 ENV MAVEN_VERSION 3.8.6
-ENV MAVEN_DOWNLOAD_SUM a9b2d825eacf2e771ed5d6b0e01398589ac1bfa4171f36154d1b5787879605507802f699da6f7cfc80732a5282fd31b28e4cd6052338cbef0fa1358b48a5e3c8
+ENV MAVEN_DOWNLOAD_SUM f790857f3b1f90ae8d16281f902c689e4f136ebe584aba45e4b1fa66c80cba826d3e0e52fdd04ed44b4c66f6d3fe3584a057c26dfcac544a60b301e6d0f91c26
 ENV MAVEN_DIR=/opt/maven
 
 RUN INSTALL_PKGS="java-11-openjdk java-11-openjdk-devel" && \
@@ -35,8 +35,8 @@ RUN INSTALL_PKGS="java-11-openjdk java-11-openjdk-devel" && \
 WORKDIR ${HOME}
 
 RUN curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O && \
-    echo "sha512sum apache-maven-${MAVEN_VERSION}-bin.tar.gz" && \
-    #echo "$MAVEN_DOWNLOAD_SUM  apache-maven-${MAVEN_VERSION}-bin.tar.gz" | sha512sum -c - && \
+    #echo "sha512sum apache-maven-${MAVEN_VERSION}-bin.tar.gz" && \
+    echo "$MAVEN_DOWNLOAD_SUM  apache-maven-${MAVEN_VERSION}-bin.tar.gz" | sha512sum -c - && \
     tar xvfz apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
     mkdir -p ${MAVEN_DIR} && \
     cp -R apache-maven-${MAVEN_VERSION}/* ${MAVEN_DIR} && \
