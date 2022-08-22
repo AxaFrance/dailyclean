@@ -1,12 +1,11 @@
 
 FROM node:16-buster AS web
 
-ENV APP_ROOT /app_root
-
-RUN groupadd -r usersdocker && useradd -r -g usersdocker patrick
 RUN if [ "${USER}" = "" ]; then export USER=patrick; fi
 USER ${USER}
 
+ENV APP_ROOT /app_root
+RUN groupadd -r usersdocker && useradd -r -g usersdocker patrick
 WORKDIR ${APP_ROOT}
 COPY --chown=${USER} ./web .
 USER root
@@ -16,8 +15,16 @@ RUN npm run build
     
 FROM registry.access.redhat.com/ubi8/ubi:8.5-200 AS build
 
-ENV APP_ROOT /app_root
-ENV HOME /home
+ENV \ 
+    APP_ROOT=/app_root \
+    HOME=/home
+
+# Reset permissions of modified directories and add default user
+RUN rpm-file-permissions && \
+  useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
+  -c "Default Application User" default && \
+  chown -R ${USER}:0 ${APP_ROOT}
+
 
 WORKDIR ${APP_ROOT}
 USER root
@@ -84,7 +91,15 @@ RUN mvn package -Pnative -B
 
 FROM registry.access.redhat.com/ubi8-minimal:8.5-204 AS runtime
 
-ENV APP_ROOT /app_root
+ENV \ 
+    APP_ROOT=/app_root \
+    HOME=/home
+# Reset permissions of modified directories and add default user
+RUN rpm-file-permissions && \
+  useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
+  -c "Default Application User" default && \
+  mkdir -p ${APP_ROOT} && \
+  chown -R ${USER}:0 ${APP_ROOT}
 
 WORKDIR ${APP_ROOT}
 COPY --chown=${USER} --from=build ${APP_ROOT}/target/*-runner ./application
