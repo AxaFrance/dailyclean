@@ -24,14 +24,6 @@ ENV \
 
 WORKDIR ${APP_ROOT}
 
-# Copy extra files to the image.
-COPY ./docker/ /
-RUN rpm-file-permissions && \
-  useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
-  -c "Default Application User" default && \
-  chown -R ${USER}:0 ${APP_ROOT}
-
-
 USER root
 
 ENV MAVEN_VERSION 3.8.6
@@ -102,11 +94,6 @@ ENV \
     HOME=/home
 
 WORKDIR ${APP_ROOT}
-COPY ./docker/ /
-RUN rpm-file-permissions && \
-  useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
-  -c "Default Application User" default && \
-  chown -R ${USER}:0 ${APP_ROOT}
 COPY --chown=${USER} --from=build ${APP_ROOT}/target/*-runner ./application
 
 EXPOSE 8080
