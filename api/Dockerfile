@@ -24,7 +24,9 @@ ENV \
 
 WORKDIR ${APP_ROOT}
 
-RUN \
+# Copy extra files to the image.
+COPY ./docker/ /
+RUN rpm-file-permissions && \
   useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
   -c "Default Application User" default && \
   chown -R ${USER}:0 ${APP_ROOT}
@@ -100,8 +102,8 @@ ENV \
     HOME=/home
 
 WORKDIR ${APP_ROOT}
-
-RUN \
+COPY ./docker/ /
+RUN rpm-file-permissions && \
   useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
   -c "Default Application User" default && \
   chown -R ${USER}:0 ${APP_ROOT}
