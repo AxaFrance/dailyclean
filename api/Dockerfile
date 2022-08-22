@@ -94,8 +94,7 @@ ENV \
     APP_ROOT=/app_root \
     HOME=/home
 # Reset permissions of modified directories and add default user
-RUN rpm-file-permissions && \
-  useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
+RUN useradd -u ${USER} -r -g 0 -d ${HOME} -s /sbin/nologin \
   -c "Default Application User" default && \
   mkdir -p ${APP_ROOT} && \
   chown -R ${USER}:0 ${APP_ROOT}
