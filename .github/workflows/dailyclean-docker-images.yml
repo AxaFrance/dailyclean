@@ -101,7 +101,7 @@ jobs:
       with:
         context: ./api
         push: true
-        tags: axaguildev/dailyclean-api:${{ needs.tags.outputs.new_version }}
+        tags: axaguildev/dailyclean-api:${{ needs.tags.outputs.new_version }},axaguildev/dailyclean-api:latest
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Build and push Docker image
@@ -141,7 +141,7 @@ jobs:
       with:
         context: ./job/dailyclean
         push: true
-        tags: axaguildev/dailyclean-job:${{ needs.tags.outputs.new_version }}
+        tags: axaguildev/dailyclean-job:${{ needs.tags.outputs.new_version }},axaguildev/dailyclean-job:latest
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Build and push Docker image
