@@ -1,10 +1,11 @@
 
 FROM node:16-buster AS web
 
-RUN if [ "${USER}" = "" ]; then export USER=patrick; fi
-USER ${USER}
 
-ENV APP_ROOT /app_root
+ENV \
+    APP_ROOT=/app_root \
+    USER=patrick
+USER ${USER}
 RUN groupadd -r usersdocker && useradd -r -g usersdocker patrick
 WORKDIR ${APP_ROOT}
 COPY --chown=${USER} ./web .
