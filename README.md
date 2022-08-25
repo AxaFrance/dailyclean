@@ -26,7 +26,9 @@ git clone https://github.com/AxaGuilDEv/dailyclean.git
 cd dailyclean/demo
 kubectl create namespace license-preproduction
 kubectl config set-context --current --namespace=license-preproduction
-# Install dailyclean for the default service account
+# Create a custom service account
+kubectl apply -f dailyclean-serviceaccount.yml
+# Install dailyclean for the dailyclean service account
 kubectl apply -f deployment-dailyclean.yml
 # Install three instances of kubernetes-bootcamp
 kubectl apply -f deployment-others.yml
