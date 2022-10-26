@@ -3,7 +3,7 @@ package fr.axa.openpaas.dailyclean.resource;
 import fr.axa.openpaas.dailyclean.model.TimeRange;
 import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
 import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.batch.CronJob;
+import io.fabric8.kubernetes.api.model.batch.v1.CronJob;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
@@ -55,7 +55,7 @@ public class TimeRangesResourceTest {
     public void before() {
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
-        client.batch().cronjobs().inNamespace(namespace).delete();
+        client.batch().v1().cronjobs().inNamespace(namespace).delete();
     }
 
     @Test
@@ -157,7 +157,7 @@ public class TimeRangesResourceTest {
         KubernetesClient client = mockServer.getClient();
 
         final String namespace = client.getNamespace();
-        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        List<CronJob> cronJobs = client.batch().v1().cronjobs().inNamespace(namespace).list().getItems();
         assertThat(cronJobs.size(), is(1));
 
         CronJob cronJob = cronJobs.get(0);
@@ -209,7 +209,7 @@ public class TimeRangesResourceTest {
 
         resource.onStart(null);
 
-        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        List<CronJob> cronJobs = client.batch().v1().cronjobs().inNamespace(namespace).list().getItems();
         assertThat(cronJobs.size(), is(2));
 
         cronJobs.forEach(cronJob -> {
@@ -242,7 +242,7 @@ public class TimeRangesResourceTest {
 
         resource.onStart(null);
 
-        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        List<CronJob> cronJobs = client.batch().v1().cronjobs().inNamespace(namespace).list().getItems();
         assertThat(cronJobs.size(), is(1));
 
         cronJobs.forEach(cronJob -> {
@@ -277,7 +277,7 @@ public class TimeRangesResourceTest {
 
         resource.onStart(null);
 
-        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        List<CronJob> cronJobs = client.batch().v1().cronjobs().inNamespace(namespace).list().getItems();
         assertThat(cronJobs.size(), is(1));
 
         cronJobs.forEach(cronJob -> {
@@ -309,7 +309,7 @@ public class TimeRangesResourceTest {
         KubernetesClient client = mockServer.getClient();
 
         final String namespace = client.getNamespace();
-        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        List<CronJob> cronJobs = client.batch().v1().cronjobs().inNamespace(namespace).list().getItems();
         assertThat(cronJobs.size(), is(2));
 
         String startCronJobName = KubernetesUtils.getCronName(START);

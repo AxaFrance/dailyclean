@@ -2,7 +2,7 @@ package fr.axa.openpaas.dailyclean.service;
 
 import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
 import fr.axa.openpaas.dailyclean.util.MockedDateUtils;
-import io.fabric8.kubernetes.api.model.batch.CronJob;
+import io.fabric8.kubernetes.api.model.batch.v1.CronJob;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
@@ -50,7 +50,7 @@ public class ScheduledTimeSwitchOverServiceTest {
     public void before() {
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
-        client.batch().cronjobs().inNamespace(namespace).delete();
+        client.batch().v1().cronjobs().inNamespace(namespace).delete();
     }
 
     @Test
@@ -242,7 +242,7 @@ public class ScheduledTimeSwitchOverServiceTest {
         KubernetesClient client = mockServer.getClient();
 
         final String namespace = client.getNamespace();
-        List<CronJob> cronJobs = client.batch().cronjobs().inNamespace(namespace).list().getItems();
+        List<CronJob> cronJobs = client.batch().v1().cronjobs().inNamespace(namespace).list().getItems();
 
         if(cronStart == null || cronStop == null) {
             assertThat(cronJobs.size(), is(1));
