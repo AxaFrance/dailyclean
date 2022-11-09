@@ -48,7 +48,7 @@ const Resources = ({container, deployment, priceByMonth, apiState, locale, curre
             <li>{formatPrice(monthlyCost(findMaxGoResource(deployment), 1, deployment.isDailycleaned, 1, priceByMonth, apiState.data.state), locale, currency)} / month</li>
             <li>{formatPrice(yearlyCost(findMaxGoResource(deployment), 1, deployment.isDailycleaned, 1, priceByMonth, apiState.data.state, true), locale, currency)} / year</li>
         </ul>
-        <h4>Price by month by 1 Go</h4>
+        <h4>Price by month for 1 Go:</h4>
         <ul>{formatPrice(priceByMonth, locale, currency)}</ul>
     </>
 }
@@ -205,7 +205,7 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
                         <Popover.Pop>
                             <h3>Warning</h3>
                             <p>This is cost estimation only, not the real price.</p>
-                            <p>Price by month by 1 Go: <b>{formatPrice(priceByMonth, locale, currency)}</b></p>
+                            <p>Price by month for 1 Go: <b>{formatPrice(priceByMonth, locale, currency)}</b></p>
                         </Popover.Pop>
                         <Popover.Over>
                             <span className="af-table-th-content">Estimated cost *</span>
