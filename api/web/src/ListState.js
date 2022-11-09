@@ -36,19 +36,26 @@ const Containers = ({deployment}) => {
     return <>{deployment.containers.map(c =>c.image)}</>
 }
 
-const Resources = ({container}) => {
+const Resources = ({container, deployment, priceByMonth, apiState, locale, currency}) => {
     if(!container.resource_limits || !container.resource_requests) return <span>No resource found</span>
     return <> <h2>{container.name}</h2>
          <h4>Resource limits:</h4>
         <ul> {container.resource_limits.map(r =><li>{r.name} : {r.amount}{r.format}</li>)}</ul>
         <h4>Resource Requests:</h4>
         <ul> {container.resource_requests.map(r =><li>{r.name} : {r.amount}{r.format}</li>)}</ul>
+        <h4>Estimated cost for 1 pod:</h4>
+        <ul>
+            <li>{formatPrice(monthlyCost(findMaxGoResource(deployment), 1, deployment.isDailycleaned, 1, priceByMonth, apiState.data.state), locale, currency)} / month</li>
+            <li>{formatPrice(yearlyCost(findMaxGoResource(deployment), 1, deployment.isDailycleaned, 1, priceByMonth, apiState.data.state, true), locale, currency)} / year</li>
+        </ul>
+        <h4>Price by month by 1 Go</h4>
+        <ul>{formatPrice(priceByMonth, locale, currency)}</ul>
     </>
 }
 
-const ContainerResources = ({deployment}) => {
+const ContainerResources = ({deployment, priceByMonth, apiState, locale, currency}) => {
     if(!deployment.containers) return <span>No container</span>;;
-    return <>{deployment.containers.map(c =><Resources container={c} />)}</>
+    return <>{deployment.containers.map(c =><Resources container={c} deployment={deployment} priceByMonth={priceByMonth} apiState={apiState} locale={locale} currency={currency} />)}</>
 }
 
 
@@ -141,15 +148,16 @@ const formatPrice =(price, local, currency) =>{
 const computeRatio = (state, apiState)=>{
     const form = state;
 
+    const isStopped = apiState.data.state === "STOPPED";
+
     if(form.endWeekMode === endWeekModeEnum.disabled){
         if(form.startWeekMode !== startWeekModeEnum.disabled){
             return { ratio: 1, isFullYear: true};
         }
-        return { ratio: apiState.data.state === "STOPPED" ? 0:1, isFullYear: true};
+        return { ratio: isStopped ? 0:1, isFullYear: true};
     }
 
     if(form.startWeekMode === startWeekModeEnum.disabled){
-        
         return { ratio: 0, isFullYear: false};
     }
 
@@ -221,9 +229,10 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
                     <Popover
                         placement="right"
                         mode="hover"
+                        classModifier='deployment'
                     >
                         <Popover.Pop>
-                            <ContainerResources deployment={d}></ContainerResources>
+                            <ContainerResources deployment={d} priceByMonth={priceByMonth} apiState={apiState} locale={locale} currency={currency} />
                         </Popover.Pop>
                         <Popover.Over>
                             <span className={cssState(d, "af-table-body-content--more")}>{d.id}</span>    
@@ -254,7 +263,7 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
             </Table.Tr>
             <Table.Tr>
                 <Table.Td colSpan="2">
-                    <span className="af-table-body-content--total-without-daily">Without dailyclean you should pay</span>
+                    <span className="af-table-body-content--total-without-daily">Without dailyclean you should pay (for 1 pod instead of 0)</span>
                 </Table.Td>
                 <Table.Td>
                     <span className="af-table-body-content--total-without-daily">{formatPrice(costTotalMwithoutDailyClean, locale, currency)}</span>
@@ -265,7 +274,7 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
             </Table.Tr>
             <Table.Tr>
                 <Table.Td colSpan="2">
-                    <span className="af-table-body-content--total-with-daily">With dailyclean you save</span>
+                    <span className="af-table-body-content--total-with-daily">With dailyclean you save (for 1 pod instead of 0)</span>
                 </Table.Td>
                 <Table.Td>
                     <span className="af-table-body-content--total-with-daily">{formatPrice(costTotalMwithoutDailyClean-costTotalM, locale, currency)}</span>

@@ -144,10 +144,50 @@
       },
       {
         "id": "ri-classify",
-        "current": 1,
-        "target": 1,
-        "isDailycleaned": true
-      },
+        "current": 0,
+        "target": 0,
+        "isDailycleaned": true,
+        "containers":[
+         {
+            "name":"helm-operator",
+            "image":"docker.io/fluxcd/helm-operator:1.2.0",
+            "resource_limits":[
+               {
+                  "name":"cpu",
+                  "amount":200,
+                  "raw_amount":"200",
+                  "format":"m"
+               },
+               {
+                  "name":"memory",
+                  "amount":4012,
+                  "raw_amount":"512",
+                  "format":"Mi"
+               }
+            ],
+            "resource_requests":[
+               {
+                  "name":"cpu",
+                  "amount":100,
+                  "raw_amount":"100",
+                  "format":"m"
+               },
+               {
+                  "name":"memory",
+                  "amount":256,
+                  "raw_amount":"256",
+                  "format":"Mi"
+               }
+            ],
+            "ports":[
+               {
+                  "port":3030,
+                  "protocol":"TCP"
+               }
+            ]
+         }
+      ]
+     },
       {
         "id": "ri-file",
         "current": 1,
