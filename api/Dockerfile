@@ -30,7 +30,7 @@ ENV MAVEN_VERSION 3.8.6
 ENV MAVEN_DOWNLOAD_SUM f790857f3b1f90ae8d16281f902c689e4f136ebe584aba45e4b1fa66c80cba826d3e0e52fdd04ed44b4c66f6d3fe3584a057c26dfcac544a60b301e6d0f91c26
 ENV MAVEN_DIR=/opt/maven
 
-RUN INSTALL_PKGS="java-11-openjdk java-11-openjdk-devel" && \
+RUN INSTALL_PKGS="java-17-openjdk java-17-openjdk-devel" && \
   dnf -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
   rpm -V $INSTALL_PKGS && \
   dnf -y clean all --enablerepo='*'
@@ -63,9 +63,9 @@ RUN rm -r /var/cache/dnf && curl -fsSL https://git.centos.org/rpms/centos-repos/
     rpm -V libstdc++-static && \
     dnf -y clean all --enablerepo='*'
 
-ENV JAVA_VERSION java11
-ENV MANDREL_VERSION 21.0.0.0-Final
-ENV MANDREL_DOWNLOAD_SUM 85c5d39997e373fa488a1e5555a1040bebb98f307968f3614a002f75ebf678ff
+ENV JAVA_VERSION java17
+ENV MANDREL_VERSION 22.2.0.0-Final
+ENV MANDREL_DOWNLOAD_SUM b338fb26ec1ad956c8b7f890d9e978e0f580afec492a7ff8eeea78e85720c4de
 
 WORKDIR ${APP_ROOT}
 

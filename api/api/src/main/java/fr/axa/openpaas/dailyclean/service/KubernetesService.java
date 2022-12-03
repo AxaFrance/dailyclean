@@ -3,8 +3,8 @@ package fr.axa.openpaas.dailyclean.service;
 import fr.axa.openpaas.dailyclean.model.Deployment;
 import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
 import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.batch.CronJob;
-import io.fabric8.kubernetes.api.model.batch.Job;
+import io.fabric8.kubernetes.api.model.batch.v1.CronJob;
+import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.Resource;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
@@ -142,7 +142,7 @@ public class KubernetesService {
 
     private CronJob getCronJob(KubernetesArgument argument) {
         final String namespace = getNamespace();
-        List<CronJob> cronJobs = kubernetesClient.batch().cronjobs().inNamespace(namespace).list().getItems();
+        List<CronJob> cronJobs = kubernetesClient.batch().v1().cronjobs().inNamespace(namespace).list().getItems();
         return cronJobs.stream()
                 .filter(cronJob -> KubernetesUtils.getCronName(argument).equals(cronJob.getMetadata().getName()))
                 .findFirst()
@@ -177,7 +177,7 @@ public class KubernetesService {
         final String namespace = getNamespace();
 
         logger.info("Creating cron job from object");
-        kubernetesClient.batch().cronjobs().inNamespace(namespace)
+        kubernetesClient.batch().v1().cronjobs().inNamespace(namespace)
                 .load(KubernetesUtils.createCronJobAsInputStream(argument, cron, imgName,serviceAccountName))
                 .createOrReplace();
         logger.info("Successfully created cronjob with name {}", KubernetesUtils.getCronName(argument));
@@ -210,7 +210,7 @@ public class KubernetesService {
 
     private void deleteCronJobIfExists(KubernetesArgument argument, String namespace) {
         Resource<CronJob> cronJob =
-                kubernetesClient.batch().cronjobs()
+                kubernetesClient.batch().v1().cronjobs()
                         .inNamespace(namespace).withName(KubernetesUtils.getCronName(argument));
         if (Boolean.TRUE.equals(cronJob.isReady())) {
             cronJob.delete();
