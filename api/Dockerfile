@@ -15,7 +15,7 @@ RUN npm ci
 RUN npm test --  --runInBand --coverage --watchAll=false
 RUN npm run build 
     
-FROM registry.access.redhat.com/ubi8/ubi:8.5-200 AS build
+FROM registry.access.redhat.com/ubi9/ubi:9.1.0-1782 AS build
 
 ENV \
     APP_ROOT=/app_root \
@@ -26,8 +26,8 @@ WORKDIR ${APP_ROOT}
 
 USER root
 
-ENV MAVEN_VERSION 3.8.6
-ENV MAVEN_DOWNLOAD_SUM f790857f3b1f90ae8d16281f902c689e4f136ebe584aba45e4b1fa66c80cba826d3e0e52fdd04ed44b4c66f6d3fe3584a057c26dfcac544a60b301e6d0f91c26
+ENV MAVEN_VERSION 3.9.0
+ENV MAVEN_DOWNLOAD_SUM 1ea149f4e48bc7b34d554aef86f948eca7df4e7874e30caf449f3708e4f8487c71a5e5c072a05f17c60406176ebeeaf56b5f895090c7346f8238e2da06cf6ecd
 ENV MAVEN_DIR=/opt/maven
 
 RUN INSTALL_PKGS="java-17-openjdk java-17-openjdk-devel" && \
@@ -50,22 +50,18 @@ RUN curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/
 
 ENV PATH ${MAVEN_DIR}/bin:$PATH
 
-RUN rm -r /var/cache/dnf && curl -fsSL https://git.centos.org/rpms/centos-repos/raw/c8/f/SOURCES/CentOS-Stream-PowerTools.repo -O && \
-    mv CentOS-Stream-PowerTools.repo /etc/yum.repos.d/ && \
-    curl -fsSL https://git.centos.org/rpms/centos-repos/raw/c8/f/SOURCES/RPM-GPG-KEY-centosofficial -O && \
-    mv RPM-GPG-KEY-centosofficial /etc/pki/rpm-gpg/ && \
+RUN rm -r /var/cache/dnf && \
     INSTALL_PKGS="glibc-devel zlib-devel gcc" && \
     dnf -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    echo 8-stream > /etc/yum/vars/stream && \
     dnf makecache && \
-    dnf --nobest --enablerepo=powertools -y install libstdc++-static && \
+    dnf --nobest -y install libstdc++-static && \
     rpm -V libstdc++-static && \
     dnf -y clean all --enablerepo='*'
 
 ENV JAVA_VERSION java17
-ENV MANDREL_VERSION 22.2.0.0-Final
-ENV MANDREL_DOWNLOAD_SUM b338fb26ec1ad956c8b7f890d9e978e0f580afec492a7ff8eeea78e85720c4de
+ENV MANDREL_VERSION 22.3.1.0-Final
+ENV MANDREL_DOWNLOAD_SUM 3c31169724c1fa23dc5cf5688d9d7f90d0d7bef9e90c9aea2419db9eb946b62c
 
 WORKDIR ${APP_ROOT}
 
@@ -86,7 +82,7 @@ COPY --chown=${USER} --from=web ${APP_ROOT}/build ./src/main/resources/META-INF/
 
 RUN mvn package -Pnative -B
 
-FROM registry.access.redhat.com/ubi8-minimal:8.5-204 AS runtime
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.1.0-1793 AS runtime
 
 ENV \
     APP_ROOT=/app_root \
