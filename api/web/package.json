@@ -2,7 +2,7 @@
   "name": "dailyclean",
   "version": "1.0.0",
   "dependencies": {
-    "@axa-fr/react-toolkit-all": "1.4.1",
+    "@axa-fr/react-toolkit-all": "2.0.0",
     "mw.validation": "^1.0.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
