@@ -59,9 +59,9 @@ RUN rm -r /var/cache/dnf && \
     rpm -V libstdc++-static && \
     dnf -y clean all --enablerepo='*'
 
-ENV JAVA_VERSION java17
-ENV MANDREL_VERSION 22.3.1.0-Final
-ENV MANDREL_DOWNLOAD_SUM 3c31169724c1fa23dc5cf5688d9d7f90d0d7bef9e90c9aea2419db9eb946b62c
+ENV JAVA_VERSION java20
+ENV MANDREL_VERSION 23.0.0.0-Final
+ENV MANDREL_DOWNLOAD_SUM 4b120a3272b4e637c3832b6245e100105ff07f46ad5b304f4844de5fad6b7fb7
 
 WORKDIR ${APP_ROOT}
 
