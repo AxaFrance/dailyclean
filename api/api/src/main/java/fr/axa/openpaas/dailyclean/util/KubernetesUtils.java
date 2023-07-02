@@ -19,7 +19,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public final class KubernetesUtils {
@@ -89,8 +91,9 @@ public final class KubernetesUtils {
 
         Boolean dailycleaned = null;
         if(deployment.getMetadata().getLabels() != null) {
-            dailycleaned = BooleanUtils.toBooleanObject(
-                    deployment.getMetadata().getLabels().get(dailycleanLabelName));
+            Map<String, String> labels = deployment.getMetadata().getLabels();
+            dailycleaned = BooleanUtils.toBooleanObject(labels.get(dailycleanLabelName));
+            res.setLabels(new HashMap<>(labels));
         }
         res.setIsDailycleaned(dailycleaned == null || dailycleaned);
 
