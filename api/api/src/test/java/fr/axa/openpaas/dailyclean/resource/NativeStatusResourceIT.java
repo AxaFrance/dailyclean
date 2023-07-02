@@ -1,7 +1,7 @@
 package fr.axa.openpaas.dailyclean.resource;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@NativeImageTest
+@QuarkusIntegrationTest
 public class NativeStatusResourceIT extends StatusResourceTest {
 }

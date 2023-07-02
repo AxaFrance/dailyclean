@@ -4,8 +4,8 @@ package fr.axa.openpaas.dailyclean.resource;
 import fr.axa.openpaas.dailyclean.model.StartStopResponse;
 import fr.axa.openpaas.dailyclean.service.KubernetesService;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
 
 @Path("pods")
 public class PodsResource {

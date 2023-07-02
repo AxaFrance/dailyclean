@@ -21,11 +21,10 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.response.ValidatableResponseOptions;
 import org.apache.http.HttpStatus;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -47,8 +46,7 @@ public class StatusResourceTest {
     @KubernetesTestServer
     KubernetesServer mockServer;
 
-    @ConfigProperty(name = "service.deployment.label.dailyclean")
-    String dailycleanLabelName;
+    private static final String DAILYCLEAN_LABEL_NAME = "axa.com/dailyclean";
 
     @BeforeEach
     public void before() {
@@ -68,11 +66,11 @@ public class StatusResourceTest {
 
         // Map
         fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedDailyclean =
-                KubernetesUtils.mapDeployment(deploymentDailyclean, dailycleanLabelName);
+                KubernetesUtils.mapDeployment(deploymentDailyclean, DAILYCLEAN_LABEL_NAME);
         fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedMl =
-                KubernetesUtils.mapDeployment(deploymentMl, dailycleanLabelName);
+                KubernetesUtils.mapDeployment(deploymentMl, DAILYCLEAN_LABEL_NAME);
         fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedEs =
-                KubernetesUtils.mapDeployment(deploymentEs, dailycleanLabelName);
+                KubernetesUtils.mapDeployment(deploymentEs, DAILYCLEAN_LABEL_NAME);
 
         // Test
         assertGetStatus(namespace, STARTED, deploymentReturnedDailyclean, deploymentReturnedMl, deploymentReturnedEs);
@@ -89,11 +87,11 @@ public class StatusResourceTest {
 
         // Map
         fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedDailyclean =
-                KubernetesUtils.mapDeployment(deploymentDailyclean, dailycleanLabelName);
+                KubernetesUtils.mapDeployment(deploymentDailyclean, DAILYCLEAN_LABEL_NAME);
         fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedMl =
-                KubernetesUtils.mapDeployment(deploymentMl, dailycleanLabelName);
+                KubernetesUtils.mapDeployment(deploymentMl, DAILYCLEAN_LABEL_NAME);
         fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedEs =
-                KubernetesUtils.mapDeployment(deploymentEs, dailycleanLabelName);
+                KubernetesUtils.mapDeployment(deploymentEs, DAILYCLEAN_LABEL_NAME);
 
         // Test
         assertGetStatus(namespace, STOPPED, deploymentReturnedDailyclean, deploymentReturnedMl, deploymentReturnedEs);
@@ -110,11 +108,11 @@ public class StatusResourceTest {
 
         // Map
         fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedDailyclean =
-                KubernetesUtils.mapDeployment(deploymentDailyclean, dailycleanLabelName);
+                KubernetesUtils.mapDeployment(deploymentDailyclean, DAILYCLEAN_LABEL_NAME);
         fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedMl =
-                KubernetesUtils.mapDeployment(deploymentMl, dailycleanLabelName);
+                KubernetesUtils.mapDeployment(deploymentMl, DAILYCLEAN_LABEL_NAME);
         fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedEs =
-                KubernetesUtils.mapDeployment(deploymentEs, dailycleanLabelName);
+                KubernetesUtils.mapDeployment(deploymentEs, DAILYCLEAN_LABEL_NAME);
 
         // Test
         assertGetStatus(namespace, IN_PROGRESS, deploymentReturnedDailyclean, deploymentReturnedMl, deploymentReturnedEs);
@@ -235,7 +233,7 @@ public class StatusResourceTest {
         deploymentDailyclean.setMetadata(new ObjectMeta());
         deploymentDailyclean.getMetadata().setName("deployDailyclean");
         deploymentDailyclean.getMetadata().setLabels(new HashMap<>());
-        deploymentDailyclean.getMetadata().getLabels().put(dailycleanLabelName, "false");
+        deploymentDailyclean.getMetadata().getLabels().put(DAILYCLEAN_LABEL_NAME, "false");
         deploymentDailyclean.getMetadata().getLabels().put("name", "deployDailyclean");
         DeploymentStatus statusDailyclean = new DeploymentStatus();
         deploymentDailyclean.setStatus(statusDailyclean);

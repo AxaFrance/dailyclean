@@ -1,6 +1,6 @@
 package fr.axa.openpaas.dailyclean.util;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 

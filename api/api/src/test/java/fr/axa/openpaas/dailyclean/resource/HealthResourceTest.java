@@ -3,7 +3,6 @@ package fr.axa.openpaas.dailyclean.resource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 import org.apache.http.HttpStatus;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -13,11 +12,9 @@ import static org.hamcrest.CoreMatchers.is;
 @QuarkusTest
 public class HealthResourceTest {
 
-    @ConfigProperty(name = "service.name", defaultValue = "TO DEFINE !!!")
-    String serviceName;
+    private static final String SERVICE_NAME = "Dailyclean";
+    private static final String SERVICE_VERSION = "1.0.0";
 
-    @ConfigProperty(name = "service.version", defaultValue = "TO DEFINE !!!")
-    String serviceVersion;
 
     @Test
     public void testHelloEndpoint() {
@@ -25,7 +22,7 @@ public class HealthResourceTest {
           .when().get("/health")
           .then()
              .statusCode(HttpStatus.SC_OK)
-             .body(is(String.format(HealthResource.GREETINGS, serviceName, serviceVersion)));
+             .body(is(String.format(HealthResource.GREETINGS, SERVICE_NAME, SERVICE_VERSION)));
     }
 
 }

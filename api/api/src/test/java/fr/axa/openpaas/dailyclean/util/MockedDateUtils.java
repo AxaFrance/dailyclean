@@ -2,7 +2,7 @@ package fr.axa.openpaas.dailyclean.util;
 
 import io.quarkus.test.Mock;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.time.LocalDate;
 
 @Mock
