@@ -148,6 +148,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Container'
+        labels:
+          type: object
+          additionalProperties:
+            type: string
     Container:
       properties:
         name:
