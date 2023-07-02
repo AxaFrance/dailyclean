@@ -14,8 +14,8 @@ import io.quarkus.scheduler.Scheduled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.InternalServerErrorException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.InternalServerErrorException;
 import java.time.ZonedDateTime;
 
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;

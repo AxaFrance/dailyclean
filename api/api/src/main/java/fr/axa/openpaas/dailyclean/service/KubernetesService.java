@@ -13,8 +13,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.InternalServerErrorException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.InternalServerErrorException;
 import java.util.List;
 import java.util.stream.Collectors;
 
