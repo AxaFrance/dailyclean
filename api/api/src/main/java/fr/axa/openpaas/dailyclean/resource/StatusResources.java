@@ -22,12 +22,12 @@ public class StatusResources {
     public Status getStatus() {
         Status status = new Status();
         status.setNamespace(kubernetesService.getNamespace());
-        status.setDeployments(kubernetesService.getDeployments());
+        status.setWorkloads(kubernetesService.getWorloads());
 
-        long started = status.getDeployments().stream()
+        long started = status.getWorkloads().stream()
                 .filter(deployment -> deployment.getIsDailycleaned() && deployment.getCurrent().intValue() >= 1)
                 .count();
-        long stopped = status.getDeployments().stream()
+        long stopped = status.getWorkloads().stream()
                 .filter(deployment -> deployment.getIsDailycleaned() && deployment.getCurrent().intValue() == 0)
                 .count();
 

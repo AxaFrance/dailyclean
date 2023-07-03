@@ -114,9 +114,9 @@ const monthlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, 
     return amountGo * priceMonth * target * ratio;
 } 
 
-const costTotalMonth = (deployments, ratio=1, priceMonth=105, apiDataState) => {
+const costTotalMonth = (workloads, ratio=1, priceMonth=105, apiDataState) => {
     const reducer = (accumulator, currentValue) => accumulator + monthlyCost(findMaxGoResource(currentValue), currentValue.target, currentValue.isDailycleaned, ratio, priceMonth, apiDataState);
-    return deployments.reduce(reducer, 0);
+    return workloads.reduce(reducer, 0);
 } 
 
 const yearlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, apiDataState, isFullYear=true) => {
@@ -130,9 +130,9 @@ const yearlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, a
     return cost;
 }
 
-const totalCostPerYear = (deployments, ratio=1, priceMonth=105, apiDataState, isFullYear=true) => {
+const totalCostPerYear = (workloads, ratio=1, priceMonth=105, apiDataState, isFullYear=true) => {
     const reducer = (accumulator, currentValue) => accumulator + yearlyCost(findMaxGoResource(currentValue), currentValue.target, currentValue.isDailycleaned, ratio, priceMonth, apiDataState, isFullYear);
-    return deployments.reduce(reducer, 0);
+    return workloads.reduce(reducer, 0);
 }
 
 const formatPrice =(price, local, currency) =>{
@@ -182,17 +182,17 @@ const computeRatio = (state, apiState)=>{
 
 const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr", currency="EUR"}) => {
     const apiConfiguration = computeRatio(apiConfigurationState, apiState);
-    const costTotalM = costTotalMonth(apiState.data.deployments, apiConfiguration.ratio, priceByMonth, apiState.data.state)
-    const costTotalMwithoutDailyClean = costTotalMonth(apiState.data.deployments, 1, priceByMonth, apiState.data.state);
-    const costTotalY = totalCostPerYear(apiState.data.deployments, apiConfiguration.ratio, priceByMonth, apiState.data.state, apiConfiguration.isFullYear);
-    const costTotalYwithoutDailyClean = totalCostPerYear(apiState.data.deployments,1, priceByMonth, apiState.data.state, true);
+    const costTotalM = costTotalMonth(apiState.data.workloads, apiConfiguration.ratio, priceByMonth, apiState.data.state)
+    const costTotalMwithoutDailyClean = costTotalMonth(apiState.data.workloads, 1, priceByMonth, apiState.data.state);
+    const costTotalY = totalCostPerYear(apiState.data.workloads, apiConfiguration.ratio, priceByMonth, apiState.data.state, apiConfiguration.isFullYear);
+    const costTotalYwithoutDailyClean = totalCostPerYear(apiState.data.workloads,1, priceByMonth, apiState.data.state, true);
  return (<div className="deployment">
     <h3 className="af-title"><span className={"deployment__state deployment__state--" + apiState.data.state.toLowerCase()}></span> {getTitle(apiState.data.state)}</h3>
     <Table>
         <Table.Header>
             <Table.Tr>
                 <Table.Th rowSpan="2">
-                    <span className="af-table-th-content">Deployments </span>
+                    <span className="af-table-th-content">Deployments and StatefulSets</span>
                 </Table.Th>
                 <Table.Th rowSpan="2">
                     <span className="af-table-th-content">Ready </span>
@@ -224,7 +224,7 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
             </Table.Tr>
         </Table.Header>
         <Table.Body>
-            {apiState.data.deployments.map(d =><Table.Tr key={d.id}>
+            {apiState.data.workloads.map(d =><Table.Tr key={d.id}>
                 <Table.Td>
                     <Popover
                         placement="right"

@@ -1,7 +1,9 @@
 package fr.axa.openpaas.dailyclean.service;
 
-import fr.axa.openpaas.dailyclean.model.Deployment;
+import fr.axa.openpaas.dailyclean.model.Workload;
 import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
+import fr.axa.openpaas.dailyclean.util.wrapper.DeploymentWrapper;
+import fr.axa.openpaas.dailyclean.util.wrapper.StatefulSetWrapper;
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.batch.v1.CronJob;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
@@ -109,11 +111,23 @@ public class KubernetesService {
         return kubernetesClient.getNamespace();
     }
 
-    public List<Deployment> getDeployments() {
-        return kubernetesClient.apps().deployments().inNamespace(getNamespace()).list().getItems()
+    /**
+     * Get all deployments and statefulsets in the namespace
+     * @return
+     */
+    public List<Workload> getWorloads() {
+        List<Workload> deployments = kubernetesClient.apps().deployments().inNamespace(getNamespace()).list()
+                .getItems()
                 .stream()
-                .map(deployment -> KubernetesUtils.mapDeployment(deployment, dailycleanLabelName))
+                .map(deployment -> KubernetesUtils.mapWorkload(new DeploymentWrapper(deployment), dailycleanLabelName))
                 .collect(Collectors.toList());
+        List<Workload> statefulSets = kubernetesClient.apps().statefulSets().inNamespace(getNamespace()).list()
+                .getItems()
+                .stream()
+                .map(statefulSet -> KubernetesUtils.mapWorkload(new StatefulSetWrapper(statefulSet), dailycleanLabelName))
+                .collect(Collectors.toList());
+        deployments.addAll(statefulSets);
+        return deployments;
     }
 
     public void updatingCronJobIfNeeded() {

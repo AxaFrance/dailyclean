@@ -3,16 +3,19 @@ package fr.axa.openpaas.dailyclean.util;
 import static fr.axa.openpaas.dailyclean.util.ScriptPlaceholder.*;
 
 import fr.axa.openpaas.dailyclean.model.Container;
-import fr.axa.openpaas.dailyclean.model.Deployment;
+import fr.axa.openpaas.dailyclean.model.Workload;
 import fr.axa.openpaas.dailyclean.model.Port;
 import fr.axa.openpaas.dailyclean.model.Resource;
 import fr.axa.openpaas.dailyclean.service.KubernetesArgument;
+import fr.axa.openpaas.dailyclean.util.wrapper.IWorkloadWrapper;
 import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.PodTemplateSpec;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
 import io.fabric8.kubernetes.api.model.apps.DeploymentStatus;
+import io.fabric8.kubernetes.api.model.apps.StatefulSetSpec;
+import io.fabric8.kubernetes.api.model.apps.StatefulSetStatus;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.io.BufferedReader;
@@ -79,18 +82,16 @@ public final class KubernetesUtils {
         return getName(argument, JOB_NAME);
     }
 
-    public static Deployment mapDeployment(io.fabric8.kubernetes.api.model.apps.Deployment deployment,
-                                           String dailycleanLabelName) {
-        Deployment res = new Deployment();
-        ObjectMeta metadata = deployment.getMetadata();
+    public static Workload mapWorkload(IWorkloadWrapper workload,
+                                       String dailycleanLabelName) {
+        Workload res = new Workload();
+        res.setType(workload.getType());
+        ObjectMeta metadata = workload.getMetadata();
         res.setId(metadata.getName());
 
-        DeploymentStatus status = deployment.getStatus();
-        if(status != null) {
-            int replicas = status.getReplicas() != null ? status.getReplicas() : 0;
-            int current = status.getReadyReplicas() != null ? status.getReadyReplicas() : 0;
-            res.setTarget(BigDecimal.valueOf(replicas));
-            res.setCurrent(BigDecimal.valueOf(current));
+        if(workload.getStatus() != null) {
+            res.setTarget(BigDecimal.valueOf(workload.getReplicas()));
+            res.setCurrent(BigDecimal.valueOf(workload.getReadyReplicas()));
         }
 
         Boolean dailycleaned = null;
@@ -99,16 +100,15 @@ public final class KubernetesUtils {
             dailycleaned = BooleanUtils.toBooleanObject(labels.get(dailycleanLabelName));
             res.setLabels(new HashMap<>(labels));
         }
-        res.setIsDailycleaned(dailycleaned == null || dailycleaned);
+        res.setIsDailycleaned(workload.isDailycleaned(dailycleaned));
 
         Map<String, String> annotations = metadata.getAnnotations();
         if(annotations != null) {
             res.setAnnotations(new HashMap<>(annotations));
         }
 
-        DeploymentSpec spec = deployment.getSpec();
-        if(spec != null) {
-            PodTemplateSpec templateSpec = spec.getTemplate();
+        if(workload.getSpec() != null) {
+            PodTemplateSpec templateSpec = workload.getPodTemplateSpec();
             if(templateSpec != null && templateSpec.getSpec() != null
                     && templateSpec.getSpec().getContainers() != null) {
                 res.setContainers(templateSpec.getSpec().getContainers().stream()
