@@ -158,6 +158,8 @@ public class StatusResourceTest {
                         is(deployment.getTarget().intValue()))
                 .body(getDeploymentJsonPath(deployment.getId(), "labels"),
                         is(deployment.getLabels()))
+                .body(getDeploymentJsonPath(deployment.getId(), "annotations"),
+                        is(deployment.getAnnotations()))
                 .body(getDeploymentJsonPath(deployment.getId(), "containers.size()"),
                         is(deployment.getContainers().size()))
                 .body(getDeploymentJsonPath(deployment.getId(), "containers[0].name"),

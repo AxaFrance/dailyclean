@@ -152,6 +152,10 @@ components:
           type: object
           additionalProperties:
             type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
     Container:
       properties:
         name:

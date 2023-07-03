@@ -90,12 +90,17 @@ public final class KubernetesUtils {
         }
 
         Boolean dailycleaned = null;
-        if(deployment.getMetadata().getLabels() != null) {
-            Map<String, String> labels = deployment.getMetadata().getLabels();
+        Map<String, String> labels = deployment.getMetadata().getLabels();
+        if(labels != null) {
             dailycleaned = BooleanUtils.toBooleanObject(labels.get(dailycleanLabelName));
             res.setLabels(new HashMap<>(labels));
         }
         res.setIsDailycleaned(dailycleaned == null || dailycleaned);
+
+        Map<String, String> annotations = deployment.getMetadata().getAnnotations();
+        if(annotations != null) {
+            res.setAnnotations(new HashMap<>(annotations));
+        }
 
         DeploymentSpec spec = deployment.getSpec();
         if(spec != null) {
