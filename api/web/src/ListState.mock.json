@@ -1,7 +1,7 @@
 {
     "namespace": "ri-openfaas-fn-dev-fr",
     "state": "STARTED",
-    "deployments": [
+    "workloads": [
       {
         "id": "alertmanager",
         "current": 1,
