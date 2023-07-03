@@ -128,11 +128,11 @@ components:
             - STARTED
             - STOPPED
             - IN_PROGRESS
-        deployments:
+        workloads:
           type: array
           items:
-            $ref: '#/components/schemas/Deployment'
-    Deployment:
+            $ref: '#/components/schemas/Workload'
+    Workload:
       properties:
         id:
           type: string
@@ -156,6 +156,11 @@ components:
           type: object
           additionalProperties:
             type: string
+        type:
+          type: string
+          enum:
+            - DEPLOYMENT
+            - STATEFULSET
     Container:
       properties:
         name:

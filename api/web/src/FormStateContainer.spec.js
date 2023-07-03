@@ -21,7 +21,7 @@ const initialState = {
     data: {
         state:STOPPED,
         namespace: "",
-        deployments:[]
+        workloads:[]
     },
     status: resilienceStatus.EMPTY,
 }

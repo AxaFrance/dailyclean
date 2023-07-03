@@ -32,6 +32,8 @@ kubectl apply -f dailyclean-serviceaccount.yml
 kubectl apply -f deployment-dailyclean.yml
 # Install three instances of kubernetes-bootcamp
 kubectl apply -f deployment-others.yml
+# Install MySql
+kubectl apply -f deployment-mysql.yml
 ```
 
 Now, open your favorite browser and enter the url of dailyclean-api service : http://localhost:30001
