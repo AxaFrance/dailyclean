@@ -3,6 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kubernetes-bootcamp1
+  labels:
+    deployment/kind: bootcamp
+  annotations:
+    slimfaas: "false"
 spec:
   selector:
     matchLabels:
