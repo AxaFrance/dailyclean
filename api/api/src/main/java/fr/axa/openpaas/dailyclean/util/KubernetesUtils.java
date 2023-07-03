@@ -3,7 +3,7 @@ package fr.axa.openpaas.dailyclean.util;
 import static fr.axa.openpaas.dailyclean.util.ScriptPlaceholder.*;
 
 import fr.axa.openpaas.dailyclean.model.Container;
-import fr.axa.openpaas.dailyclean.model.Deployment;
+import fr.axa.openpaas.dailyclean.model.Workload;
 import fr.axa.openpaas.dailyclean.model.Port;
 import fr.axa.openpaas.dailyclean.model.Resource;
 import fr.axa.openpaas.dailyclean.service.KubernetesArgument;
@@ -11,6 +11,7 @@ import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.PodTemplateSpec;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
+import io.fabric8.kubernetes.api.model.apps.StatefulSetSpec;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.io.BufferedReader;
@@ -77,9 +78,10 @@ public final class KubernetesUtils {
         return getName(argument, JOB_NAME);
     }
 
-    public static Deployment mapDeployment(io.fabric8.kubernetes.api.model.apps.Deployment deployment,
+    public static Workload mapDeployment(io.fabric8.kubernetes.api.model.apps.Deployment deployment,
                                            String dailycleanLabelName) {
-        Deployment res = new Deployment();
+        Workload res = new Workload();
+        res.setType(Workload.TypeEnum.DEPLOYMENT);
         res.setId(deployment.getMetadata().getName());
         if(deployment.getStatus() != null) {
             int replicas = deployment.getStatus().getReplicas() != null ? deployment.getStatus().getReplicas() : 0;
@@ -103,6 +105,45 @@ public final class KubernetesUtils {
         }
 
         DeploymentSpec spec = deployment.getSpec();
+        if(spec != null) {
+            PodTemplateSpec templateSpec = spec.getTemplate();
+            if(templateSpec != null && templateSpec.getSpec() != null
+                    && templateSpec.getSpec().getContainers() != null) {
+                res.setContainers(templateSpec.getSpec().getContainers().stream()
+                        .map(KubernetesUtils::mapContainer)
+                        .collect(Collectors.toList()));
+            }
+        }
+        return res;
+    }
+
+    public static Workload mapStateulSet(io.fabric8.kubernetes.api.model.apps.StatefulSet deployment,
+                                           String dailycleanLabelName) {
+        Workload res = new Workload();
+        res.setType(Workload.TypeEnum.STATEFULSET);
+        res.setId(deployment.getMetadata().getName());
+        if(deployment.getStatus() != null) {
+            int replicas = deployment.getStatus().getReplicas() != null ? deployment.getStatus().getReplicas() : 0;
+            int current =
+                    deployment.getStatus().getReadyReplicas() != null ? deployment.getStatus().getReadyReplicas() : 0;
+            res.setTarget(BigDecimal.valueOf(replicas));
+            res.setCurrent(BigDecimal.valueOf(current));
+        }
+
+        Boolean dailycleaned = null;
+        Map<String, String> labels = deployment.getMetadata().getLabels();
+        if(labels != null) {
+            dailycleaned = BooleanUtils.toBooleanObject(labels.get(dailycleanLabelName));
+            res.setLabels(new HashMap<>(labels));
+        }
+        res.setIsDailycleaned(dailycleaned == null || dailycleaned);
+
+        Map<String, String> annotations = deployment.getMetadata().getAnnotations();
+        if(annotations != null) {
+            res.setAnnotations(new HashMap<>(annotations));
+        }
+
+        StatefulSetSpec spec = deployment.getSpec();
         if(spec != null) {
             PodTemplateSpec templateSpec = spec.getTemplate();
             if(templateSpec != null && templateSpec.getSpec() != null

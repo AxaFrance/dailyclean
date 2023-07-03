@@ -48,7 +48,7 @@ const initialState = {
   data: {
       state:"",
       namespace: "",
-      deployments:[]
+      workloads:[]
   },
   status: resilienceStatus.LOADING,
   firstStatus: resilienceStatus.LOADING,

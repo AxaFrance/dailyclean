@@ -1,6 +1,7 @@
 package fr.axa.openpaas.dailyclean.resource;
 
 import fr.axa.openpaas.dailyclean.model.Status;
+import fr.axa.openpaas.dailyclean.model.Workload;
 import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerPort;
@@ -41,7 +42,7 @@ public class StatusResourceTest {
 
     private static final String DEPLOY_ML = "deployMl";
     private static final String DEPLOY_ES = "deployEs";
-    private static final String DEPLOYMENT_JSON_PATH = "deployments.find { deployment -> deployment.id == '%s' }.%s";
+    private static final String DEPLOYMENT_JSON_PATH = "workloads.find { workload -> workload.id == '%s' }.%s";
 
     @KubernetesTestServer
     KubernetesServer mockServer;
@@ -65,11 +66,11 @@ public class StatusResourceTest {
         final String namespace = createDeploymentsAndGetNamespace(deploymentDailyclean, deploymentMl, deploymentEs);
 
         // Map
-        fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedDailyclean =
+        Workload deploymentReturnedDailyclean =
                 KubernetesUtils.mapDeployment(deploymentDailyclean, DAILYCLEAN_LABEL_NAME);
-        fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedMl =
+        Workload deploymentReturnedMl =
                 KubernetesUtils.mapDeployment(deploymentMl, DAILYCLEAN_LABEL_NAME);
-        fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedEs =
+        Workload deploymentReturnedEs =
                 KubernetesUtils.mapDeployment(deploymentEs, DAILYCLEAN_LABEL_NAME);
 
         // Test
@@ -86,11 +87,11 @@ public class StatusResourceTest {
         final String namespace = createDeploymentsAndGetNamespace(deploymentDailyclean, deploymentMl, deploymentEs);
 
         // Map
-        fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedDailyclean =
+        Workload deploymentReturnedDailyclean =
                 KubernetesUtils.mapDeployment(deploymentDailyclean, DAILYCLEAN_LABEL_NAME);
-        fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedMl =
+        Workload deploymentReturnedMl =
                 KubernetesUtils.mapDeployment(deploymentMl, DAILYCLEAN_LABEL_NAME);
-        fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedEs =
+        Workload deploymentReturnedEs =
                 KubernetesUtils.mapDeployment(deploymentEs, DAILYCLEAN_LABEL_NAME);
 
         // Test
@@ -107,11 +108,11 @@ public class StatusResourceTest {
         final String namespace = createDeploymentsAndGetNamespace(deploymentDailyclean, deploymentMl, deploymentEs);
 
         // Map
-        fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedDailyclean =
+        Workload deploymentReturnedDailyclean =
                 KubernetesUtils.mapDeployment(deploymentDailyclean, DAILYCLEAN_LABEL_NAME);
-        fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedMl =
+        Workload deploymentReturnedMl =
                 KubernetesUtils.mapDeployment(deploymentMl, DAILYCLEAN_LABEL_NAME);
-        fr.axa.openpaas.dailyclean.model.Deployment deploymentReturnedEs =
+        Workload deploymentReturnedEs =
                 KubernetesUtils.mapDeployment(deploymentEs, DAILYCLEAN_LABEL_NAME);
 
         // Test
@@ -131,13 +132,13 @@ public class StatusResourceTest {
                 .statusCode(HttpStatus.SC_OK)
                 .body("namespace", is(namespace))
                 .body("state", is(STOPPED.value()))
-                .body("deployments", is(empty()));
+                .body("workloads", is(empty()));
 
     }
 
     private void assertGetStatus(String namespace,
                                  Status.StateEnum state,
-                                 fr.axa.openpaas.dailyclean.model.Deployment ... deployments) {
+                                 Workload ... workloads) {
         final ValidatableResponseOptions<ValidatableResponse, Response> response =
             given()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -147,61 +148,61 @@ public class StatusResourceTest {
                 .statusCode(HttpStatus.SC_OK)
                 .body("namespace", is(namespace))
                 .body("state", is(state.value()))
-                .body("deployments.size()", is(deployments.length));
+                .body("workloads.size()", is(workloads.length));
 
-        Arrays.stream(deployments).forEach(deployment -> response
-                .body(getDeploymentJsonPath(deployment.getId(), "isDailycleaned"),
-                        is(deployment.getIsDailycleaned()))
-                .body(getDeploymentJsonPath(deployment.getId(), "current"),
-                        is(deployment.getCurrent().intValue()))
-                .body(getDeploymentJsonPath(deployment.getId(), "target"),
-                        is(deployment.getTarget().intValue()))
-                .body(getDeploymentJsonPath(deployment.getId(), "labels"),
-                        is(deployment.getLabels()))
-                .body(getDeploymentJsonPath(deployment.getId(), "annotations"),
-                        is(deployment.getAnnotations()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers.size()"),
-                        is(deployment.getContainers().size()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].name"),
-                        is(deployment.getContainers().get(0).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].image"),
-                        is(deployment.getContainers().get(0).getImage()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[0].format"),
-                        is(deployment.getContainers().get(0).getResourceLimits().get(0).getFormat()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[0].name"),
-                        is(deployment.getContainers().get(0).getResourceLimits().get(0).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[0].amount"),
-                        is(deployment.getContainers().get(0).getResourceLimits().get(0).getAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[0].raw_amount"),
-                        is(deployment.getContainers().get(0).getResourceLimits().get(0).getRawAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[1].format"),
-                        is(deployment.getContainers().get(0).getResourceLimits().get(1).getFormat()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[1].name"),
-                        is(deployment.getContainers().get(0).getResourceLimits().get(1).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[1].amount"),
-                        is(deployment.getContainers().get(0).getResourceLimits().get(1).getAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[1].raw_amount"),
-                        is(deployment.getContainers().get(0).getResourceLimits().get(1).getRawAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[0].format"),
-                        is(deployment.getContainers().get(0).getResourceRequests().get(0).getFormat()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[0].name"),
-                        is(deployment.getContainers().get(0).getResourceRequests().get(0).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[0].amount"),
-                        is(deployment.getContainers().get(0).getResourceRequests().get(0).getAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[0].raw_amount"),
-                        is(deployment.getContainers().get(0).getResourceRequests().get(0).getRawAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[1].format"),
-                        is(deployment.getContainers().get(0).getResourceRequests().get(1).getFormat()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[1].name"),
-                        is(deployment.getContainers().get(0).getResourceRequests().get(1).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[1].amount"),
-                        is(deployment.getContainers().get(0).getResourceRequests().get(1).getAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[1].raw_amount"),
-                        is(deployment.getContainers().get(0).getResourceRequests().get(1).getRawAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].ports[0].port"),
-                        is(deployment.getContainers().get(0).getPorts().get(0).getPort()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].ports[0].protocol"),
-                        is(deployment.getContainers().get(0).getPorts().get(0).getProtocol())));
+        Arrays.stream(workloads).forEach(workload -> response
+                .body(getDeploymentJsonPath(workload.getId(), "isDailycleaned"),
+                        is(workload.getIsDailycleaned()))
+                .body(getDeploymentJsonPath(workload.getId(), "current"),
+                        is(workload.getCurrent().intValue()))
+                .body(getDeploymentJsonPath(workload.getId(), "target"),
+                        is(workload.getTarget().intValue()))
+                .body(getDeploymentJsonPath(workload.getId(), "labels"),
+                        is(workload.getLabels()))
+                .body(getDeploymentJsonPath(workload.getId(), "annotations"),
+                        is(workload.getAnnotations()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers.size()"),
+                        is(workload.getContainers().size()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].name"),
+                        is(workload.getContainers().get(0).getName()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].image"),
+                        is(workload.getContainers().get(0).getImage()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_limits[0].format"),
+                        is(workload.getContainers().get(0).getResourceLimits().get(0).getFormat()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_limits[0].name"),
+                        is(workload.getContainers().get(0).getResourceLimits().get(0).getName()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_limits[0].amount"),
+                        is(workload.getContainers().get(0).getResourceLimits().get(0).getAmount()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_limits[0].raw_amount"),
+                        is(workload.getContainers().get(0).getResourceLimits().get(0).getRawAmount()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_limits[1].format"),
+                        is(workload.getContainers().get(0).getResourceLimits().get(1).getFormat()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_limits[1].name"),
+                        is(workload.getContainers().get(0).getResourceLimits().get(1).getName()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_limits[1].amount"),
+                        is(workload.getContainers().get(0).getResourceLimits().get(1).getAmount()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_limits[1].raw_amount"),
+                        is(workload.getContainers().get(0).getResourceLimits().get(1).getRawAmount()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_requests[0].format"),
+                        is(workload.getContainers().get(0).getResourceRequests().get(0).getFormat()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_requests[0].name"),
+                        is(workload.getContainers().get(0).getResourceRequests().get(0).getName()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_requests[0].amount"),
+                        is(workload.getContainers().get(0).getResourceRequests().get(0).getAmount()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_requests[0].raw_amount"),
+                        is(workload.getContainers().get(0).getResourceRequests().get(0).getRawAmount()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_requests[1].format"),
+                        is(workload.getContainers().get(0).getResourceRequests().get(1).getFormat()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_requests[1].name"),
+                        is(workload.getContainers().get(0).getResourceRequests().get(1).getName()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_requests[1].amount"),
+                        is(workload.getContainers().get(0).getResourceRequests().get(1).getAmount()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].resource_requests[1].raw_amount"),
+                        is(workload.getContainers().get(0).getResourceRequests().get(1).getRawAmount()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].ports[0].port"),
+                        is(workload.getContainers().get(0).getPorts().get(0).getPort()))
+                .body(getDeploymentJsonPath(workload.getId(), "containers[0].ports[0].protocol"),
+                        is(workload.getContainers().get(0).getPorts().get(0).getProtocol())));
     }
 
     private static String getDeploymentJsonPath(final String id, final String fieldName) {
