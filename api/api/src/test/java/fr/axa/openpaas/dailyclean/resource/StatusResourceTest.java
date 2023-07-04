@@ -149,59 +149,67 @@ public class StatusResourceTest {
                 .body("state", is(state.value()))
                 .body("deployments.size()", is(deployments.length));
 
-        Arrays.stream(deployments).forEach(deployment -> response
-                .body(getDeploymentJsonPath(deployment.getId(), "isDailycleaned"),
+        Arrays.stream(deployments).forEach(deployment -> {
+            assertDeployment(response, deployment);
+        });
+    }
+
+    private static void assertDeployment(ValidatableResponseOptions<ValidatableResponse, Response> response,
+                                         fr.axa.openpaas.dailyclean.model.Deployment deployment) {
+        String deploymentId = deployment.getId();
+        response
+                .body(getDeploymentJsonPath(deploymentId, "isDailycleaned"),
                         is(deployment.getIsDailycleaned()))
-                .body(getDeploymentJsonPath(deployment.getId(), "current"),
+                .body(getDeploymentJsonPath(deploymentId, "current"),
                         is(deployment.getCurrent().intValue()))
-                .body(getDeploymentJsonPath(deployment.getId(), "target"),
+                .body(getDeploymentJsonPath(deploymentId, "target"),
                         is(deployment.getTarget().intValue()))
-                .body(getDeploymentJsonPath(deployment.getId(), "labels"),
+                .body(getDeploymentJsonPath(deploymentId, "labels"),
                         is(deployment.getLabels()))
-                .body(getDeploymentJsonPath(deployment.getId(), "annotations"),
+                .body(getDeploymentJsonPath(deploymentId, "annotations"),
                         is(deployment.getAnnotations()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers.size()"),
+                .body(getDeploymentJsonPath(deploymentId, "containers.size()"),
                         is(deployment.getContainers().size()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].name"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].name"),
                         is(deployment.getContainers().get(0).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].image"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].image"),
                         is(deployment.getContainers().get(0).getImage()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[0].format"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_limits[0].format"),
                         is(deployment.getContainers().get(0).getResourceLimits().get(0).getFormat()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[0].name"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_limits[0].name"),
                         is(deployment.getContainers().get(0).getResourceLimits().get(0).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[0].amount"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_limits[0].amount"),
                         is(deployment.getContainers().get(0).getResourceLimits().get(0).getAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[0].raw_amount"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_limits[0].raw_amount"),
                         is(deployment.getContainers().get(0).getResourceLimits().get(0).getRawAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[1].format"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_limits[1].format"),
                         is(deployment.getContainers().get(0).getResourceLimits().get(1).getFormat()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[1].name"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_limits[1].name"),
                         is(deployment.getContainers().get(0).getResourceLimits().get(1).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[1].amount"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_limits[1].amount"),
                         is(deployment.getContainers().get(0).getResourceLimits().get(1).getAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_limits[1].raw_amount"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_limits[1].raw_amount"),
                         is(deployment.getContainers().get(0).getResourceLimits().get(1).getRawAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[0].format"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_requests[0].format"),
                         is(deployment.getContainers().get(0).getResourceRequests().get(0).getFormat()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[0].name"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_requests[0].name"),
                         is(deployment.getContainers().get(0).getResourceRequests().get(0).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[0].amount"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_requests[0].amount"),
                         is(deployment.getContainers().get(0).getResourceRequests().get(0).getAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[0].raw_amount"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_requests[0].raw_amount"),
                         is(deployment.getContainers().get(0).getResourceRequests().get(0).getRawAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[1].format"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_requests[1].format"),
                         is(deployment.getContainers().get(0).getResourceRequests().get(1).getFormat()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[1].name"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_requests[1].name"),
                         is(deployment.getContainers().get(0).getResourceRequests().get(1).getName()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[1].amount"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_requests[1].amount"),
                         is(deployment.getContainers().get(0).getResourceRequests().get(1).getAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].resource_requests[1].raw_amount"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].resource_requests[1].raw_amount"),
                         is(deployment.getContainers().get(0).getResourceRequests().get(1).getRawAmount()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].ports[0].port"),
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].ports[0].port"),
                         is(deployment.getContainers().get(0).getPorts().get(0).getPort()))
-                .body(getDeploymentJsonPath(deployment.getId(), "containers[0].ports[0].protocol"),
-                        is(deployment.getContainers().get(0).getPorts().get(0).getProtocol())));
+                .body(getDeploymentJsonPath(deploymentId, "containers[0].ports[0].protocol"),
+                        is(deployment.getContainers().get(0).getPorts().get(0).getProtocol()));
     }
 
     private static String getDeploymentJsonPath(final String id, final String fieldName) {
