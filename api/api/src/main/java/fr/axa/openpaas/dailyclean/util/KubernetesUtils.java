@@ -8,9 +8,11 @@ import fr.axa.openpaas.dailyclean.model.Port;
 import fr.axa.openpaas.dailyclean.model.Resource;
 import fr.axa.openpaas.dailyclean.service.KubernetesArgument;
 import io.fabric8.kubernetes.api.model.ContainerPort;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.PodTemplateSpec;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
+import io.fabric8.kubernetes.api.model.apps.DeploymentStatus;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.io.BufferedReader;
@@ -80,24 +82,26 @@ public final class KubernetesUtils {
     public static Deployment mapDeployment(io.fabric8.kubernetes.api.model.apps.Deployment deployment,
                                            String dailycleanLabelName) {
         Deployment res = new Deployment();
-        res.setId(deployment.getMetadata().getName());
-        if(deployment.getStatus() != null) {
-            int replicas = deployment.getStatus().getReplicas() != null ? deployment.getStatus().getReplicas() : 0;
-            int current =
-                    deployment.getStatus().getReadyReplicas() != null ? deployment.getStatus().getReadyReplicas() : 0;
+        ObjectMeta metadata = deployment.getMetadata();
+        res.setId(metadata.getName());
+
+        DeploymentStatus status = deployment.getStatus();
+        if(status != null) {
+            int replicas = status.getReplicas() != null ? status.getReplicas() : 0;
+            int current = status.getReadyReplicas() != null ? status.getReadyReplicas() : 0;
             res.setTarget(BigDecimal.valueOf(replicas));
             res.setCurrent(BigDecimal.valueOf(current));
         }
 
         Boolean dailycleaned = null;
-        Map<String, String> labels = deployment.getMetadata().getLabels();
+        Map<String, String> labels = metadata.getLabels();
         if(labels != null) {
             dailycleaned = BooleanUtils.toBooleanObject(labels.get(dailycleanLabelName));
             res.setLabels(new HashMap<>(labels));
         }
         res.setIsDailycleaned(dailycleaned == null || dailycleaned);
 
-        Map<String, String> annotations = deployment.getMetadata().getAnnotations();
+        Map<String, String> annotations = metadata.getAnnotations();
         if(annotations != null) {
             res.setAnnotations(new HashMap<>(annotations));
         }
