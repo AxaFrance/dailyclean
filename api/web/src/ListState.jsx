@@ -4,20 +4,31 @@ import Table from '@axa-fr/react-toolkit-table';
 import Popover from '@axa-fr/react-toolkit-popover';
 import {STOPPED, STARTED} from './state';
 import {endWeekModeEnum, startWeekModeEnum} from './FormConfiguration';
+import {computeIsFunction, computeState} from './state.js';
 import '@axa-fr/react-toolkit-table/dist/table.scss';
 import '@axa-fr/react-toolkit-popover/dist/popover.scss';
 
 import './ListState.scss'
+import {Badge} from "@axa-fr/react-toolkit-all";
+import '@axa-fr/react-toolkit-badge/dist/af-badge.css';
 
-const cssState = (d, more="") => {
-    if(!d.isDailycleaned){
+const cssState = (deployment, state, more="") => {
+    const cssStopped = "af-table-body-content af-table-body-content--stopped " + more;
+    if(computeIsDailyClean(deployment)){
+        if(state === "STOPPED"){
+            return cssStopped;
+        }
+        
         return "af-table-body-content af-table-body-content--not-daily-cleaned " + more;
     }
-    if(d.current !== d.target) {
+    if(computeIsFunction(deployment)){
+        return "af-table-body-content af-table-body-content--function " + more;
+    }
+    if(deployment.current !== deployment.target) {
         return "af-table-body-content af-table-body-content--in-progress " + more;
     }
-    if(d.current === d.target && d.current === 0 ){
-        return "af-table-body-content af-table-body-content--stopped " + more;
+    if(deployment.current === deployment.target && deployment.current === 0 ){
+        return cssStopped;
     }
     return "af-table-body-content af-table-body-content--ok " + more;
 };
@@ -31,13 +42,18 @@ const getTitle = (state) => {
     return "In progress";
 }
 
+const computeIsDailyClean = (deployment) => {
+    return (deployment && deployment.labels && deployment.labels["axa.com/dailyclean"] === "false");
+}
+
 const Containers = ({deployment}) => {
     if(!deployment.containers) return null;
-    return <>{deployment.containers.map(c =>c.image)}</>
+    return <>{deployment.containers.map(c => c.image)}</>
 }
 
 const Resources = ({container, deployment, priceByMonth, apiState, locale, currency}) => {
     if(!container.resource_limits || !container.resource_requests) return <span>No resource found</span>
+    const isDailyCleaned = !computeIsDailyClean(deployment);
     return <> <h2>{container.name}</h2>
          <h4>Resource limits:</h4>
         <ul> {container.resource_limits.map(r =><li>{r.name} : {r.amount}{r.format}</li>)}</ul>
@@ -45,8 +61,8 @@ const Resources = ({container, deployment, priceByMonth, apiState, locale, curre
         <ul> {container.resource_requests.map(r =><li>{r.name} : {r.amount}{r.format}</li>)}</ul>
         <h4>Estimated cost for 1 pod:</h4>
         <ul>
-            <li>{formatPrice(monthlyCost(findMaxGoResource(deployment), 1, deployment.isDailycleaned, 1, priceByMonth, apiState.data.state), locale, currency)} / month</li>
-            <li>{formatPrice(yearlyCost(findMaxGoResource(deployment), 1, deployment.isDailycleaned, 1, priceByMonth, apiState.data.state, true), locale, currency)} / year</li>
+            <li>{formatPrice(monthlyCost(findMaxGoResource(deployment), 1, isDailyCleaned, 1, priceByMonth, apiState.data.state), locale, currency)} / month</li>
+            <li>{formatPrice(yearlyCost(findMaxGoResource(deployment), 1, isDailyCleaned, 1, priceByMonth, apiState.data.state, true), locale, currency)} / year</li>
         </ul>
         <h4>Price by month for 1 Go:</h4>
         <ul>{formatPrice(priceByMonth, locale, currency)}</ul>
@@ -58,18 +74,17 @@ const ContainerResources = ({deployment, priceByMonth, apiState, locale, currenc
     return <>{deployment.containers.map(c =><Resources container={c} deployment={deployment} priceByMonth={priceByMonth} apiState={apiState} locale={locale} currency={currency} />)}</>
 }
 
-
 const findMaxGoResource = (deployment) => {
     if(!deployment.containers) return 0;
     
     const gos = deployment.containers.map(container => {
         let goResourceLimit = 0;
-        const resourceLimit = container.resource_limits.filter(rl => rl.name == "memory");
+        const resourceLimit = container.resource_limits.filter(rl => rl.name === "memory");
         if(resourceLimit.length > 0) {
             goResourceLimit = convertToGo(resourceLimit[0].amount, resourceLimit[0].format);
         }
         let goRequestLimit = 0;
-        const requestLimit = container.resource_requests.filter(rq => rq.name == "memory");
+        const requestLimit = container.resource_requests.filter(rq => rq.name === "memory");
         if(requestLimit.length > 0) {
             goRequestLimit = convertToGo(requestLimit[0].amount, requestLimit[0].format);
         }
@@ -107,7 +122,7 @@ const monthlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, 
         return amountGo * priceMonth * target;
     }
     
-    if(target == 0 && apiDataState === "STOPPED"){
+    if(target === 0 && apiDataState === "STOPPED"){
         target = 1;
     }
 
@@ -115,7 +130,7 @@ const monthlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, 
 } 
 
 const costTotalMonth = (workloads, ratio=1, priceMonth=105, apiDataState) => {
-    const reducer = (accumulator, currentValue) => accumulator + monthlyCost(findMaxGoResource(currentValue), currentValue.target, currentValue.isDailycleaned, ratio, priceMonth, apiDataState);
+    const reducer = (accumulator, currentValue) => accumulator + monthlyCost(findMaxGoResource(currentValue), currentValue.target, computeIsDailyClean(currentValue), ratio, priceMonth, apiDataState);
     return workloads.reduce(reducer, 0);
 } 
 
@@ -131,17 +146,17 @@ const yearlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, a
 }
 
 const totalCostPerYear = (workloads, ratio=1, priceMonth=105, apiDataState, isFullYear=true) => {
-    const reducer = (accumulator, currentValue) => accumulator + yearlyCost(findMaxGoResource(currentValue), currentValue.target, currentValue.isDailycleaned, ratio, priceMonth, apiDataState, isFullYear);
+    const reducer = (accumulator, currentValue) => accumulator + yearlyCost(findMaxGoResource(currentValue), currentValue.target, computeIsDailyClean(currentValue), ratio, priceMonth, apiDataState, isFullYear);
     return workloads.reduce(reducer, 0);
 }
 
 const formatPrice =(price, local, currency) =>{
-    var formatter = new Intl.NumberFormat(local, {
+    const formatter = new Intl.NumberFormat(local, {
         style: 'currency',
         currency,
         minimumFractionDigits: 2, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
         maximumFractionDigits: 2, // (causes 2500.99 to be printed as $2,501)
-      });
+    });
     return formatter.format(price);
 }
 
@@ -180,14 +195,21 @@ const computeRatio = (state, apiState)=>{
     return { ratio: ratio * hourInADay /24, isFullYear: true }; 
 }
 
+
 const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr", currency="EUR"}) => {
     const apiConfiguration = computeRatio(apiConfigurationState, apiState);
-    const costTotalM = costTotalMonth(apiState.data.workloads, apiConfiguration.ratio, priceByMonth, apiState.data.state)
-    const costTotalMwithoutDailyClean = costTotalMonth(apiState.data.workloads, 1, priceByMonth, apiState.data.state);
-    const costTotalY = totalCostPerYear(apiState.data.workloads, apiConfiguration.ratio, priceByMonth, apiState.data.state, apiConfiguration.isFullYear);
-    const costTotalYwithoutDailyClean = totalCostPerYear(apiState.data.workloads,1, priceByMonth, apiState.data.state, true);
+    let ratio = apiConfiguration.ratio;
+    let data = apiState.data;
+    let workloads = data.workloads;
+    const state = computeState(workloads);
+    const costTotalM = costTotalMonth(workloads, ratio, priceByMonth, state)
+    const costTotalMwithoutDailyClean = costTotalMonth(workloads, 1, priceByMonth, state);
+    const costTotalY = totalCostPerYear(workloads, ratio, priceByMonth, state, apiConfiguration.isFullYear);
+    const costTotalYwithoutDailyClean = totalCostPerYear(workloads,1, priceByMonth, state, true);
+    
+
  return (<div className="deployment">
-    <h3 className="af-title"><span className={"deployment__state deployment__state--" + apiState.data.state.toLowerCase()}></span> {getTitle(apiState.data.state)}</h3>
+    <h3 className="af-title"><span className={"deployment__state deployment__state--" + state.toLowerCase()}></span> {getTitle(state)}</h3>
     <Table>
         <Table.Header>
             <Table.Tr>
@@ -224,7 +246,7 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
             </Table.Tr>
         </Table.Header>
         <Table.Body>
-            {apiState.data.workloads.map(d =><Table.Tr key={d.id}>
+            {workloads.map(d =><Table.Tr key={d.id}>
                 <Table.Td>
                     <Popover
                         placement="right"
@@ -235,19 +257,23 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
                             <ContainerResources deployment={d} priceByMonth={priceByMonth} apiState={apiState} locale={locale} currency={currency} />
                         </Popover.Pop>
                         <Popover.Over>
-                            <span className={cssState(d, "af-table-body-content--more")}>{d.id}</span>    
+                            <span className={cssState(d, state, "af-table-body-content--more")}>{d.id}</span>
                         </Popover.Over>
                     </Popover>
-                    <span className="af-table-body-content--containers"> <Containers deployment={d} /></span>
+                    <div className={"dailyclean-badges"}>
+                    {computeIsFunction(d) && <Badge classModifier="function">Function</Badge>}
+                    {d.type === "STATEFULSET" && <Badge classModifier="statefulset">Statefulset</Badge>}
+                        </div>
+                        <span className="af-table-body-content--containers"> <Containers deployment={d} />  </span>
                 </Table.Td>
                 <Table.Td>
-                    <span className={cssState(d)}>{d.current}/{d.target}</span>
+                    <span className={cssState(d, state)}>{d.current}/{d.target}</span>
                 </Table.Td>
                 <Table.Td>
-                    <span>{formatPrice(monthlyCost(findMaxGoResource(d), d.target, d.isDailycleaned, apiConfiguration.ratio, priceByMonth, apiState.data.state), locale, currency)}</span>
+                    <span>{formatPrice(monthlyCost(findMaxGoResource(d), d.target, !computeIsDailyClean(d), ratio, priceByMonth, data.state), locale, currency)}</span>
                 </Table.Td>
                 <Table.Td>
-                    <span>{formatPrice(yearlyCost(findMaxGoResource(d), d.target, d.isDailycleaned, apiConfiguration.ratio, priceByMonth, apiState.data.state, apiConfiguration.isFullYear), locale, currency)}</span>
+                    <span>{formatPrice(yearlyCost(findMaxGoResource(d), d.target, !computeIsDailyClean(d), ratio, priceByMonth, data.state, apiConfiguration.isFullYear), locale, currency)}</span>
                 </Table.Td>
             </Table.Tr>)}
             <Table.Tr>

@@ -3,7 +3,7 @@
 import withResilience, { resilienceStatus } from './withResilience';
 import {postAsync, urls} from './api'
 import FormState from './FormState';
-import {STOPPED, STARTED} from './state';
+import {STOPPED, STARTED, computeState} from './state';
 
 const FormWithResiliance = withResilience(FormState);
 
@@ -16,7 +16,9 @@ const initialState = {
 const FormStateContainer= ({fetch, apiState}) => {
 
     const [state, setState] = useState(initialState)
-    const currentState = apiState.data.state;
+    let data = apiState.data;
+    let workloads = data.workloads;
+    const currentState = computeState(workloads);
     useEffect(() => {
         const submit = {disabled:true};
         if(state.submit.disabled) {
@@ -60,7 +62,7 @@ const FormStateContainer= ({fetch, apiState}) => {
         });
     };
 
-    return (<FormWithResiliance state={state} onSubmit={onSubmit} onChange={onChange} status={state.status} />);
+    return (<FormWithResiliance state={state} onSubmit={onSubmit} onChange={onChange} status={state.status} currentState={currentState} />);
 }
 
 export default FormStateContainer;

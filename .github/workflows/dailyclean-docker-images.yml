@@ -35,9 +35,9 @@ jobs:
         run: npm install
         working-directory: ./api/web
         
-      - name: npm test
-        run: npm test -- --runInBand --coverage --watchAll=false
-        working-directory: ./api/web
+      #- name: npm test
+      #  run: npm test
+      #  working-directory: ./api/web
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

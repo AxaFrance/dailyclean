@@ -5,6 +5,7 @@ import React from "react";
 import { resilienceStatus } from './withResilience';
 import sleep from './sleep';
 import {STOPPED} from './state';
+import { describe, it, expect } from 'vitest';
 
 const fetch = (status =200) => async () => {
     await sleep(1);
@@ -28,7 +29,7 @@ const initialState = {
 
 describe(`FormStateContainer`, () => {
 
-    test(`submit should save data with success`, async () => {
+    it(`submit should save data with success`, async () => {
         render(<FormStateContainer fetch={fetch(200)} apiState={initialState}/>);
         const textLoader = screen.queryByText("State");
         
@@ -52,7 +53,7 @@ describe(`FormStateContainer`, () => {
         expect(screen.getByRole('button')).toHaveAttribute('disabled');
     });
 
-    test(`submit should fail`, async () => {
+    it(`submit should fail`, async () => {
         render(<FormStateContainer fetch={fetch(500)} apiState={initialState}/>);
         const textLoader = screen.queryByText("State");
         expect(textLoader).toBeTruthy();
