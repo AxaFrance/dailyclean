@@ -68,7 +68,7 @@ metadata:
 
 ```yaml
 metadata:
-  name: dailyclean-api
+  name: fibonacci1
   labels:
     # if true, dailyclean web UI will consider this pod as a function
     axa.com/function: 'true' 
