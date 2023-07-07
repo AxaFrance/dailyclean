@@ -49,6 +49,7 @@ jobs:
             -Dsonar.java.libraries=.
             -Dsonar.coverage.jacoco.xmlReportPaths=**/target/jacoco-report/jacoco.xml
             -Dsonar.javascript.lcov.reportPaths=api/web/coverage/lcov.info
+            -Dsonar.javascript.file.suffixes=js,jsx
             -Dsonar.python.version=3
             -Dsonar.exclusions=**/*.spec.js,**/*.stories.js,**/src/coverage/**,**/*.scss,**/__snapshots__/**,**/node_modules/**,**/src/.storybook/**,**/src/storybook-static/**,**/__mocks__/**
             -Dsonar.coverage.exclusions=**src/test/**/*.*
