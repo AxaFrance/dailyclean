@@ -19,6 +19,18 @@ export default defineConfig({
     coverage: {
       reporter: ['json', 'lcov', 'text', 'clover', 'html'],
     },
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/coverage/**',
+      '**/.{idea,git,cache,output,temp}/**',
+      './storybook/**',
+      './public/**',
+      './tests/**',
+      './tests/**',
+      './**/*.stories.js',
+      './**/*.spec.js',
+    ],
     setupFiles: './tests/setup.js',
   },
 })
