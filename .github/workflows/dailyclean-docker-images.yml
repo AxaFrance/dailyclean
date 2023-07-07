@@ -68,10 +68,14 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN  }}
-      - name: Add tag to output step
+      - name: Add tag to output step for main branch
         id: tag
-        if: github.ref == 'refs/heads/main'
-        run: echo "::set-output name=new_version::${{ steps.tag_version.outputs.new_version }}"
+        run: |
+          if [ '${{ github.ref }}' = 'refs/heads/main' ]; then
+            echo "new_version=${{ steps.tag_version.outputs.new_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "new_version=pr-${{ github.event.number }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
+          fi
 
   build_api:
     needs: tags
