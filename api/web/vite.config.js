@@ -7,7 +7,11 @@ export default defineConfig({
     svgr({
     svgrOptions: {
       // svgr options
-    },
+    }, 
+      resolve: {
+        // Workaround to fix inline dependency of a dependency
+        mainFields: ['module'],
+      },
   }),],
   test: {
     globals: true,
