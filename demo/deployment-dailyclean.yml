@@ -17,7 +17,7 @@ spec:
       serviceAccountName: dailyclean
       containers:
         - name: dailyclean-api
-          image: axaguildev/dailyclean-api:pr-80-302
+          image: axaguildev/dailyclean-api:latest
           env:
             - name: SERVICE_JOB_IMAGENAME
               value: axaguildev/dailyclean-job:latest

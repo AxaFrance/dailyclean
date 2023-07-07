@@ -20,13 +20,11 @@ spec:
             - name: BASE_FUNCTION_URL
               value: "http://{function_name}.license-preproduction.svc.cluster.local:5000"
             - name: ASPNETCORE_URLS
-              value: http://+:5000
+              value: "http://+:5000"
             - name: NAMESPACE
               value: "license-preproduction"
             - name: MOCK_REDIS
               value: "true"
-            - name : POD_SCALED_UP_BY_DEFAULT_WHEN_INFRASTRUCTURE_HAS_NEVER_CALLED
-            - value : "false"
           resources:
             limits:
               memory: "76Mi"
