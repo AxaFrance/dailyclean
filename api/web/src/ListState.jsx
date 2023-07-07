@@ -15,13 +15,12 @@ import '@axa-fr/react-toolkit-badge/dist/af-badge.css';
 const cssState = (deployment, state, more="") => {
     const cssStopped = "af-table-body-content af-table-body-content--stopped " + more;
     if(computeIsDailyClean(deployment)){
-        if(state === "STOPPED"){
-            return cssStopped;
-        }
-        
         return "af-table-body-content af-table-body-content--not-daily-cleaned " + more;
     }
     if(computeIsFunction(deployment)){
+        if(state === "STOPPED"){
+            return cssStopped;
+        }
         return "af-table-body-content af-table-body-content--function " + more;
     }
     if(deployment.current !== deployment.target) {
