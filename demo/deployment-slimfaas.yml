@@ -25,8 +25,6 @@ spec:
               value: "license-preproduction"
             - name: MOCK_REDIS
               value: "true"
-            #- name: REDIS_CONNECTION_STRING
-            #  value: "redis-ha-haproxy:6379"
           resources:
             limits:
               memory: "76Mi"
