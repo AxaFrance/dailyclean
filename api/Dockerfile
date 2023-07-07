@@ -12,7 +12,7 @@ WORKDIR ${APP_ROOT}
 COPY --chown=${USER} ./web .
 USER root
 RUN npm ci
-RUN npm test
+RUN npm test -- --run
 RUN npm run build 
     
 FROM registry.access.redhat.com/ubi9/ubi:9.1.0-1782 AS build
