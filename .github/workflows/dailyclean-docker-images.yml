@@ -74,81 +74,27 @@ jobs:
         run: echo "::set-output name=new_version::${{ steps.tag_version.outputs.new_version }}"
 
   build_api:
-    environment: dailyclean
     needs: tags
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Log in to Docker Hub
-      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      with:
-        images: axaguildev/dailyclean-api
-
-    - name: Build and push Docker image
-      if: github.ref == 'refs/heads/main'
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      with:
-        context: ./api
-        push: true
-        tags: axaguildev/dailyclean-api:${{ needs.tags.outputs.new_version }},axaguildev/dailyclean-api:latest
-        labels: ${{ steps.meta.outputs.labels }}
-
-    - name: Build and push Docker image
-      if: github.ref != 'refs/heads/main'
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      with:
-        context: ./api
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-
+    uses: ./.github/workflows/Docker.yml
+    with:
+      image_name: "axaguildev/dailyclean-api"
+      image_version: "${{ needs.tags.outputs.new_version }}"
+      image_build_args: ""
+      image_context: ./api
+      image_file: "./api/Dockerfile"
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      
   build_job:
-    environment: dailyclean
     needs: tags
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Log in to Docker Hub
-      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      with:
-        images: axaguildev/dailyclean-job
-
-    - name: Build and push Docker image
-      if: github.ref == 'refs/heads/main'
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      with:
-        context: ./job/dailyclean
-        push: true
-        tags: axaguildev/dailyclean-job:${{ needs.tags.outputs.new_version }},axaguildev/dailyclean-job:latest
-        labels: ${{ steps.meta.outputs.labels }}
-
-    - name: Build and push Docker image
-      if: github.ref != 'refs/heads/main'
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      with:
-        context: ./job/dailyclean
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+    uses: ./.github/workflows/Docker.yml
+    with:
+      image_name: "axaguildev/dailyclean-job"
+      image_version: "${{ needs.tags.outputs.new_version }}"
+      image_build_args: ""
+      image_context: ./job/dailyclean
+      image_file: "./job/dailyclean/Dockerfile"
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
