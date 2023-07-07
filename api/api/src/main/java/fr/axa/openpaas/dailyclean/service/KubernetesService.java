@@ -113,15 +113,16 @@ public class KubernetesService {
 
     /**
      * Get all deployments and statefulsets in the namespace
-     * @return
+     * @return A list of workloads
      */
-    public List<Workload> getWorloads() {
-        List<Workload> deployments = kubernetesClient.apps().deployments().inNamespace(getNamespace()).list()
+    public List<Workload> getWorkloads() {
+        var apps = kubernetesClient.apps();
+        var deployments = apps.deployments().inNamespace(getNamespace()).list()
                 .getItems()
                 .stream()
                 .map(deployment -> KubernetesUtils.mapWorkload(new DeploymentWrapper(deployment), dailycleanLabelName))
                 .collect(Collectors.toList());
-        List<Workload> statefulSets = kubernetesClient.apps().statefulSets().inNamespace(getNamespace()).list()
+        var statefulSets = apps.statefulSets().inNamespace(getNamespace()).list()
                 .getItems()
                 .stream()
                 .map(statefulSet -> KubernetesUtils.mapWorkload(new StatefulSetWrapper(statefulSet), dailycleanLabelName))
