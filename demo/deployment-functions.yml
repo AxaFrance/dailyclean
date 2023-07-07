@@ -1,0 +1,153 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fibonacci1
+spec:
+  selector:
+    matchLabels:
+      app: fibonacci1
+  template:
+    metadata:
+      labels:
+        app: fibonacci1
+        axa.com/function: 'true'
+      annotations:
+        SlimFaas/Function: "true"
+        SlimFaas/ReplicasMin: "0"
+        SlimFaas/ReplicasAtStart: "1"
+        SlimFaas/ReplicasStartAsSoonAsOneFunctionRetrieveARequest: "true"
+        SlimFaas/TimeoutSecondBeforeSetReplicasMin: "300"
+        SlimFaas/NumberParallelRequest : "10"
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: fibonacci1
+          image: axaguildev/fibonacci:latest
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:5000
+          resources:
+            limits:
+              memory: "96Mi"
+              cpu: "50m"
+            requests:
+              memory: "96Mi"
+              cpu: "10m"
+          ports:
+            - containerPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fibonacci2
+spec:
+  selector:
+    matchLabels:
+      app: fibonacci2
+  template:
+    metadata:
+      labels:
+        app: fibonacci2
+        axa.com/function: 'true'
+      annotations:
+        SlimFaas/Function: "true"
+        SlimFaas/ReplicasMin: "0"
+        SlimFaas/ReplicasAtStart: "1"
+        SlimFaas/ReplicasStartAsSoonAsOneFunctionRetrieveARequest: "true"
+        SlimFaas/TimeoutSecondBeforeSetReplicasMin: "300"
+        SlimFaas/NumberParallelRequest : "10"
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: fibonacci2
+          image: axaguildev/fibonacci:latest
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:5000
+          resources:
+            limits:
+              memory: "96Mi"
+              cpu: "50m"
+            requests:
+              memory: "96Mi"
+              cpu: "10m"
+          ports:
+            - containerPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fibonacci3
+spec:
+  selector:
+    matchLabels:
+      app: fibonacci3
+  template:
+    metadata:
+      labels:
+        app: fibonacci3
+        axa.com/function: 'true'
+      annotations:
+        SlimFaas/Function: "true"
+        SlimFaas/ReplicasMin: "0"
+        SlimFaas/ReplicasAtStart: "1"
+        SlimFaas/ReplicasStartAsSoonAsOneFunctionRetrieveARequest: "true"
+        SlimFaas/TimeoutSecondBeforeSetReplicasMin: "300"
+        SlimFaas/NumberParallelRequest : "10"
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: fibonacci3
+          image: axaguildev/fibonacci:latest
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:5000
+          resources:
+            limits:
+              memory: "96Mi"
+              cpu: "50m"
+            requests:
+              memory: "96Mi"
+              cpu: "10m"
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fibonacci1
+spec:
+  selector:
+    app: fibonacci1
+  type: NodePort
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30012
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fibonacci2
+spec:
+  selector:
+    app: fibonacci2
+  type: NodePort
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30013
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fibonacci3
+spec:
+  selector:
+    app: fibonacci3
+  type: NodePort
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30014
