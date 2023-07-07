@@ -26,7 +26,7 @@ const initialState = {
     },
     status: resilienceStatus.EMPTY,
 }
-
+const delay = ms => new Promise(res => setTimeout(res, ms));
 describe(`FormStateContainer`, () => {
 
     it(`submit should save data with success`, async () => {
@@ -36,9 +36,8 @@ describe(`FormStateContainer`, () => {
         expect(textLoader).toBeTruthy();
         expect(screen.getByRole('button')).toHaveAttribute('disabled');
 
-        const item = screen.queryByText("Turn environment");
+        const item = screen.queryByText("off");
         fireEvent.click(item);
-
         expect(screen.getByRole('button')).not.toHaveAttribute('disabled');
 
         const fireSumbit = () => {
@@ -59,7 +58,7 @@ describe(`FormStateContainer`, () => {
         expect(textLoader).toBeTruthy();
         expect(screen.getByRole('button')).toHaveAttribute('disabled');
 
-        const item = screen.queryByText("Turn environment");
+        const item = screen.queryByText("off");
         fireEvent.click(item);
         expect(screen.getByRole('button')).not.toHaveAttribute('disabled');
 

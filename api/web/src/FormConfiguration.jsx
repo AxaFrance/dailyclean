@@ -10,9 +10,7 @@ import '@axa-fr/react-toolkit-button/dist/button.scss';
 import '@axa-fr/react-toolkit-form-core/dist/form.scss';
 
 import './FormConfiguration.scss'
-
-export const startWeekModeEnum = { workedDays:"0", allDays:"1", disabled:"2"};
-export const endWeekModeEnum = { enabled:"0", disabled:"1" };
+import {endWeekModeEnum, startWeekModeEnum} from "./apiConstants.js";
 
 const optionsStart = [
     { label: 'Working days (Monday to Friday)', value: startWeekModeEnum.workedDays },

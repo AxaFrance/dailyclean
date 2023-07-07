@@ -3,13 +3,13 @@ import React from 'react';
 import Table from '@axa-fr/react-toolkit-table';
 import Popover from '@axa-fr/react-toolkit-popover';
 import {STOPPED, STARTED} from './state';
-import {endWeekModeEnum, startWeekModeEnum} from './FormConfiguration';
+import {endWeekModeEnum, startWeekModeEnum} from "./apiConstants.js";
 import {computeIsFunction, computeState} from './state.js';
 import '@axa-fr/react-toolkit-table/dist/table.scss';
 import '@axa-fr/react-toolkit-popover/dist/popover.scss';
 
 import './ListState.scss'
-import {Badge} from "@axa-fr/react-toolkit-all";
+import Badge from "@axa-fr/react-toolkit-badge";
 import '@axa-fr/react-toolkit-badge/dist/af-badge.css';
 
 const cssState = (deployment, state, more="") => {

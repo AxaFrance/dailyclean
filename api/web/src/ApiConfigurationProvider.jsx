@@ -1,5 +1,5 @@
 import React from "react";
-import {endWeekModeEnum, startWeekModeEnum} from './FormConfiguration';
+import {endWeekModeEnum, startWeekModeEnum} from './apiConstants.js';
 import '@axa-fr/react-toolkit-alert/dist/alert.scss';
 import '@axa-fr/react-toolkit-loader/dist/spinner.scss';
 
