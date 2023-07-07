@@ -21,7 +21,7 @@ Daily clean only use kubernetes native API.
 
 To test dailyclean on your local machine by using kubernetes with Docker Desktop, please use these commands:
 
-```
+```bash
 git clone https://github.com/AxaGuilDEv/dailyclean.git
 cd dailyclean/demo
 kubectl create namespace license-preproduction
@@ -34,6 +34,14 @@ kubectl apply -f deployment-dailyclean.yml
 kubectl apply -f deployment-others.yml
 # Install MySql
 kubectl apply -f deployment-mysql.yml
+# Create a custom service account for slimfaas
+# SlimFaas require to ba able to request Kubernetes API
+kubectl apply -f slimfaas-serviceaccount.yml
+# Install slimfaas pod
+kubectl apply -f deployment-slimfaas.yml
+# Install three instances of fibonacci functions
+# fibonacci1, fibonacci2 and fibonacci3
+kubectl apply -f deployment-functions.yml
 ```
 
 Now, open your favorite browser and enter the url of dailyclean-api service : http://localhost:30001
@@ -47,6 +55,24 @@ DailyClean is a pod that have to be install in your namespace.
 It create cron job that start or stop your pods. 
 - API is in native GraalVM so it is lightweight.
 - User interface is in React/Javascript.
+
+you can use specific labels to configure DailyClean in your Kubernetes scripts:
+
+```yaml
+metadata:
+  name: dailyclean-api
+  labels:
+    # if false, dailyclean will not stop this pod
+    axa.com/dailyclean: 'false' 
+```
+
+```yaml
+metadata:
+  name: dailyclean-api
+  labels:
+    # if true, dailyclean web UI will consider this pod as a function
+    axa.com/function: 'true' 
+```
 
 ## Contribute
 
