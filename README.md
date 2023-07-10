@@ -34,14 +34,6 @@ kubectl apply -f deployment-dailyclean.yml
 kubectl apply -f deployment-others.yml
 # Install MySql
 kubectl apply -f deployment-mysql.yml
-# Create a custom service account for slimfaas
-# SlimFaas require to ba able to request Kubernetes API
-kubectl apply -f slimfaas-serviceaccount.yml
-# Install slimfaas pod
-kubectl apply -f deployment-slimfaas.yml
-# Install three instances of fibonacci functions
-# fibonacci1, fibonacci2 and fibonacci3
-kubectl apply -f deployment-functions.yml
 ```
 
 Now, open your favorite browser and enter the url of dailyclean-api service : http://localhost:30001
