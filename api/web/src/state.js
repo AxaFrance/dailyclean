@@ -5,14 +5,18 @@ export const IN_PROGRESS = "IN_PROGRESS";
 
 export const computeState = (workloads) =>
 {
-    const workloadInProgress = workloads.find(w => !computeIsFunction(w) && w.current !== w.target)
+    const workloadInProgress = workloads.find(w => !computeIsFunction(w) && w.current === 0 && w.target > 0 && !computeIsDailyClean(d))
     if(workloadInProgress) return "IN_PROGRESS";
 
-    const workload = workloads.find(w => !computeIsFunction(w) && w.target === 0)
-    return workload != null ? "STOPPED" : "STARTED";
+    const workloadStopped = workloads.find(w => !computeIsFunction(w) && w.target === 0 && !computeIsDailyClean(d))
+    return workloadStopped != null ? "STOPPED" : "STARTED";
 }
 
 
-export const computeIsFunction = (deployment) => {
-    return (deployment && deployment.labels && deployment.labels["axa.com/function"] === "true");
+export const computeIsFunction = (workload) => {
+    return (workload && workload.labels && workload.labels["axa.com/function"] === "true");
+}
+
+export const computeIsDailyClean = (workload) => {
+    return (workload && workload.labels && workload.labels["axa.com/dailyclean"] === "false");
 }

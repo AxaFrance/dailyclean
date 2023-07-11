@@ -4,7 +4,7 @@ import Table from '@axa-fr/react-toolkit-table';
 import Popover from '@axa-fr/react-toolkit-popover';
 import {STOPPED, STARTED} from './state';
 import {endWeekModeEnum, startWeekModeEnum} from "./apiConstants.js";
-import {computeIsFunction, computeState} from './state.js';
+import {computeIsFunction, computeState, computeIsDailyClean} from './state.js';
 import '@axa-fr/react-toolkit-table/dist/table.scss';
 import '@axa-fr/react-toolkit-popover/dist/popover.scss';
 
@@ -41,9 +41,6 @@ const getTitle = (state) => {
     return "In progress";
 }
 
-const computeIsDailyClean = (deployment) => {
-    return (deployment && deployment.labels && deployment.labels["axa.com/dailyclean"] === "false");
-}
 
 const Containers = ({deployment}) => {
     if(!deployment.containers) return null;
