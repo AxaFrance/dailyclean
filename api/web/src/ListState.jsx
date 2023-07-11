@@ -50,27 +50,28 @@ const Containers = ({deployment}) => {
     return <>{deployment.containers.map(c => c.image)}</>
 }
 
-const Resources = ({container, deployment, priceByMonth, apiState, locale, currency}) => {
+const Resources = ({container, workload, priceByMonth, apiState, locale, currency}) => {
     if(!container.resource_limits || !container.resource_requests) return <span>No resource found</span>
-    const isDailyCleaned = !computeIsDailyClean(deployment);
-    return <> <h2>{container.name}</h2>
+    const isDailyCleaned = !computeIsDailyClean(workload);
+    return <> 
+        <h2>{container.name}</h2>
         <h4>Resource limits:</h4>
         <ul> {container.resource_limits.map(r =><li key={r.name}>{r.name} : {r.amount}{r.format}</li>)}</ul>
         <h4>Resource Requests:</h4>
         <ul> {container.resource_requests.map(r =><li key={r.name}>{r.name} : {r.amount}{r.format}</li>)}</ul>
         <h4>Estimated cost for 1 pod:</h4>
         <ul>
-            <li>{formatPrice(monthlyCost(findMaxGoResource(deployment), 1, isDailyCleaned, 1, priceByMonth, apiState.data.state), locale, currency)} / month</li>
-            <li>{formatPrice(yearlyCost(findMaxGoResource(deployment), 1, isDailyCleaned, 1, priceByMonth, apiState.data.state, true), locale, currency)} / year</li>
+            <li>{formatPrice(monthlyCost(findMaxGoResource(workload), 1, isDailyCleaned, 1, priceByMonth, apiState.data.state), locale, currency)} / month</li>
+            <li>{formatPrice(yearlyCost(findMaxGoResource(workload), 1, isDailyCleaned, 1, priceByMonth, apiState.data.state, true), locale, currency)} / year</li>
         </ul>
         <h4>Price by month for 1 Go:</h4>
         <ul>{formatPrice(priceByMonth, locale, currency)}</ul>
     </>
 }
 
-const ContainerResources = ({deployment, priceByMonth, apiState, locale, currency}) => {
-    if(!deployment.containers) return <span>No container</span>;
-    return <>{deployment.containers.map(c =><Resources container={c} deployment={deployment} priceByMonth={priceByMonth} apiState={apiState} locale={locale} currency={currency} />)}</>
+const ContainerResources = ({workload, priceByMonth, apiState, locale, currency}) => {
+    if(!workload.containers) return <span>No container</span>;
+    return <>{workload.containers.map(c =><Resources key={workload.id} container={c} workload={workload} priceByMonth={priceByMonth} apiState={apiState} locale={locale} currency={currency} />)}</>
 }
 
 const findMaxGoResource = (deployment) => {
@@ -198,7 +199,6 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
     const state = computeState(workloads);
     const apiConfiguration = computeRatio(apiConfigurationState, state);
     let ratio = apiConfiguration.ratio;
-    console.log(ratio)
     const costTotalM = costTotalMonth(workloads, ratio, priceByMonth, state)
     const costTotalMonthWithoutDailyClean = costTotalMonth(workloads, 1, priceByMonth, state);
     const costTotalY = totalCostPerYear(workloads, ratio, priceByMonth, state, apiConfiguration.isFullYear);
@@ -250,7 +250,7 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
                         classModifier='deployment'
                     >
                         <Popover.Pop>
-                            <ContainerResources deployment={d} priceByMonth={priceByMonth} apiState={apiState} locale={locale} currency={currency} />
+                            <ContainerResources workload={d} priceByMonth={priceByMonth} apiState={apiState} locale={locale} currency={currency} />
                         </Popover.Pop>
                         <Popover.Over>
                             <span className={cssState(d, state, "af-table-body-content--more")}>{d.id}</span>

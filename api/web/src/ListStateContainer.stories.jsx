@@ -31,7 +31,7 @@ const fetch = (status =200) => async (url, config) => {
 
 const apiConfiguration = {
     endWeekMode: endWeekModeEnum.enabled,
-    startWeekMode : startWeekModeEnum.workedDays,
+    startWeekMode : startWeekModeEnum.disabled,
     endHour: 18,
     startHour: 9
 }
