@@ -7,14 +7,14 @@ const timezoneOffsetHour = () => {
 
 export const getLocalHour=(hourUTC) => {
     const date = new Date();
-    date.setHours(hourUTC + timezoneOffsetHour());
+    date.setHours(hourUTC - timezoneOffsetHour());
     const hour = date.getHours();
     return hour;
 }
 
 export const getUTCHour=(hourLocal) => {
     const date = new Date();
-    date.setHours(hourLocal - timezoneOffsetHour());
+    date.setHours(hourLocal + timezoneOffsetHour());
     return date.getHours()
 }
 
