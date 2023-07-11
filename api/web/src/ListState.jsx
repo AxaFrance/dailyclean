@@ -54,10 +54,10 @@ const Resources = ({container, deployment, priceByMonth, apiState, locale, curre
     if(!container.resource_limits || !container.resource_requests) return <span>No resource found</span>
     const isDailyCleaned = !computeIsDailyClean(deployment);
     return <> <h2>{container.name}</h2>
-         <h4>Resource limits:</h4>
-        <ul> {container.resource_limits.map(r =><li>{r.name} : {r.amount}{r.format}</li>)}</ul>
+        <h4>Resource limits:</h4>
+        <ul> {container.resource_limits.map(r =><li key={r.name}>{r.name} : {r.amount}{r.format}</li>)}</ul>
         <h4>Resource Requests:</h4>
-        <ul> {container.resource_requests.map(r =><li>{r.name} : {r.amount}{r.format}</li>)}</ul>
+        <ul> {container.resource_requests.map(r =><li key={r.name}>{r.name} : {r.amount}{r.format}</li>)}</ul>
         <h4>Estimated cost for 1 pod:</h4>
         <ul>
             <li>{formatPrice(monthlyCost(findMaxGoResource(deployment), 1, isDailyCleaned, 1, priceByMonth, apiState.data.state), locale, currency)} / month</li>
@@ -69,7 +69,7 @@ const Resources = ({container, deployment, priceByMonth, apiState, locale, curre
 }
 
 const ContainerResources = ({deployment, priceByMonth, apiState, locale, currency}) => {
-    if(!deployment.containers) return <span>No container</span>;;
+    if(!deployment.containers) return <span>No container</span>;
     return <>{deployment.containers.map(c =><Resources container={c} deployment={deployment} priceByMonth={priceByMonth} apiState={apiState} locale={locale} currency={currency} />)}</>
 }
 
@@ -116,12 +116,11 @@ const convertToGo = (amount, format) => {
     }
 }
 
-const monthlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, apiDataState) => {
-    if(!isDailycleaned){
+const monthlyCost = (amountGo, target, isDailyCleaned, ratio=1, priceMonth=105, apiDataState) => {
+    if(!isDailyCleaned){
         return amountGo * priceMonth * target;
     }
-    
-    if(target === 0 && apiDataState === "STOPPED"){
+    if(target === 0 && apiDataState === STOPPED){
         target = 1;
     }
 
@@ -129,7 +128,7 @@ const monthlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, 
 } 
 
 const costTotalMonth = (workloads, ratio=1, priceMonth=105, apiDataState) => {
-    const reducer = (accumulator, currentValue) => accumulator + monthlyCost(findMaxGoResource(currentValue), currentValue.target, computeIsDailyClean(currentValue), ratio, priceMonth, apiDataState);
+    const reducer = (accumulator, currentValue) => accumulator + monthlyCost(findMaxGoResource(currentValue), currentValue.target, !computeIsDailyClean(currentValue), ratio, priceMonth, apiDataState);
     return workloads.reduce(reducer, 0);
 } 
 
@@ -145,7 +144,7 @@ const yearlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, a
 }
 
 const totalCostPerYear = (workloads, ratio=1, priceMonth=105, apiDataState, isFullYear=true) => {
-    const reducer = (accumulator, currentValue) => accumulator + yearlyCost(findMaxGoResource(currentValue), currentValue.target, computeIsDailyClean(currentValue), ratio, priceMonth, apiDataState, isFullYear);
+    const reducer = (accumulator, currentValue) => accumulator + yearlyCost(findMaxGoResource(currentValue), currentValue.target, !computeIsDailyClean(currentValue), ratio, priceMonth, apiDataState, isFullYear);
     return workloads.reduce(reducer, 0);
 }
 
@@ -162,8 +161,7 @@ const formatPrice =(price, local, currency) =>{
 const computeRatio = (state, apiState)=>{
     const form = state;
 
-    const isStopped = apiState.data.state === "STOPPED";
-
+    const isStopped = apiState === STOPPED;
     if(form.endWeekMode === endWeekModeEnum.disabled){
         if(form.startWeekMode !== startWeekModeEnum.disabled){
             return { ratio: 1, isFullYear: true};
@@ -174,7 +172,6 @@ const computeRatio = (state, apiState)=>{
     if(form.startWeekMode === startWeekModeEnum.disabled){
         return { ratio: 0, isFullYear: false};
     }
-
     let ratio = 1;
     let startHour = form.startHour;
     let endHour = form.endHour;
@@ -190,22 +187,22 @@ const computeRatio = (state, apiState)=>{
             ratio = 0;
             break;
     }
-
     return { ratio: ratio * hourInADay /24, isFullYear: true }; 
 }
 
 
 const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr", currency="EUR"}) => {
-    const apiConfiguration = computeRatio(apiConfigurationState, apiState);
-    let ratio = apiConfiguration.ratio;
+   
     let data = apiState.data;
     let workloads = data.workloads;
     const state = computeState(workloads);
+    const apiConfiguration = computeRatio(apiConfigurationState, state);
+    let ratio = apiConfiguration.ratio;
+    console.log(ratio)
     const costTotalM = costTotalMonth(workloads, ratio, priceByMonth, state)
-    const costTotalMwithoutDailyClean = costTotalMonth(workloads, 1, priceByMonth, state);
+    const costTotalMonthWithoutDailyClean = costTotalMonth(workloads, 1, priceByMonth, state);
     const costTotalY = totalCostPerYear(workloads, ratio, priceByMonth, state, apiConfiguration.isFullYear);
-    const costTotalYwithoutDailyClean = totalCostPerYear(workloads,1, priceByMonth, state, true);
-    
+    const costTotalYearWithoutDailyClean = totalCostPerYear(workloads,1, priceByMonth, state, true);
 
  return (<div className="deployment">
     <h3 className="af-title"><span className={"deployment__state deployment__state--" + state.toLowerCase()}></span> {getTitle(state)}</h3>
@@ -291,10 +288,10 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
                     <span className="af-table-body-content--total-without-daily">Without dailyclean you should pay (for 1 pod instead of 0)</span>
                 </Table.Td>
                 <Table.Td>
-                    <span className="af-table-body-content--total-without-daily">{formatPrice(costTotalMwithoutDailyClean, locale, currency)}</span>
+                    <span className="af-table-body-content--total-without-daily">{formatPrice(costTotalMonthWithoutDailyClean, locale, currency)}</span>
                 </Table.Td>
                 <Table.Td>
-                    <span className="af-table-body-content--total-without-daily">{formatPrice(costTotalYwithoutDailyClean, locale, currency)}</span>
+                    <span className="af-table-body-content--total-without-daily">{formatPrice(costTotalYearWithoutDailyClean, locale, currency)}</span>
                 </Table.Td>
             </Table.Tr>
             <Table.Tr>
@@ -302,10 +299,10 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
                     <span className="af-table-body-content--total-with-daily">With dailyclean you save (for 1 pod instead of 0)</span>
                 </Table.Td>
                 <Table.Td>
-                    <span className="af-table-body-content--total-with-daily">{formatPrice(costTotalMwithoutDailyClean-costTotalM, locale, currency)}</span>
+                    <span className="af-table-body-content--total-with-daily">{formatPrice(costTotalMonthWithoutDailyClean - costTotalM, locale, currency)}</span>
                 </Table.Td>
                 <Table.Td>
-                    <span className="af-table-body-content--total-with-daily">{formatPrice(costTotalYwithoutDailyClean-costTotalY, locale, currency)}</span>
+                    <span className="af-table-body-content--total-with-daily">{formatPrice(costTotalYearWithoutDailyClean - costTotalY, locale, currency)}</span>
                 </Table.Td>
             </Table.Tr>
         </Table.Body>
