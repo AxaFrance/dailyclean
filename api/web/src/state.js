@@ -6,10 +6,10 @@ export const IN_PROGRESS = "IN_PROGRESS";
 export const computeState = (workloads) =>
 {
     const workloadInProgress = workloads.find(w => !computeIsFunction(w) && w.current === 0 && w.target > 0 && !computeIsDailyClean(w))
-    if(workloadInProgress) return "IN_PROGRESS";
+    if(workloadInProgress) return IN_PROGRESS;
 
     const workloadStopped = workloads.find(w => !computeIsFunction(w) && w.target === 0 && !computeIsDailyClean(w))
-    return workloadStopped != null ? "STOPPED" : "STARTED";
+    return workloadStopped != null ? STOPPED : STARTED;
 }
 
 
