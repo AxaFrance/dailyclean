@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Header } from './Header';
+import Header from './Header';
 import FormConfigurationContainer from './FormConfigurationContainer';
 import sleep from './sleep';
 

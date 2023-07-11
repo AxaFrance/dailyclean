@@ -21,7 +21,7 @@ Daily clean only use kubernetes native API.
 
 To test dailyclean on your local machine by using kubernetes with Docker Desktop, please use these commands:
 
-```
+```bash
 git clone https://github.com/AxaGuilDEv/dailyclean.git
 cd dailyclean/demo
 kubectl create namespace license-preproduction
@@ -47,6 +47,25 @@ DailyClean is a pod that have to be install in your namespace.
 It create cron job that start or stop your pods. 
 - API is in native GraalVM so it is lightweight.
 - User interface is in React/Javascript.
+
+you can use specific labels to configure DailyClean in your Kubernetes scripts:
+
+```yaml
+metadata:
+  name: my-api
+  labels:
+    # if false, dailyclean will not stop this pod for deployment
+    axa.com/dailyclean: 'false' 
+    # WARNING: default value is true for DEPLOYMENT and false for STATEFULTSET
+```
+
+```yaml
+metadata:
+  name: fibonacci1
+  labels:
+    # if true, dailyclean web UI will consider this pod as a function
+    axa.com/function: 'true' 
+```
 
 ## Contribute
 

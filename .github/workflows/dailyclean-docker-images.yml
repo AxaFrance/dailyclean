@@ -29,14 +29,14 @@ jobs:
         
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'
           
       - name: npm install
         run: npm install
         working-directory: ./api/web
         
       - name: npm test
-        run: npm test -- --runInBand --coverage --watchAll=false
+        run: npm test -- --run
         working-directory: ./api/web
       
       - name: SonarCloud Scan
@@ -49,6 +49,7 @@ jobs:
             -Dsonar.java.libraries=.
             -Dsonar.coverage.jacoco.xmlReportPaths=**/target/jacoco-report/jacoco.xml
             -Dsonar.javascript.lcov.reportPaths=api/web/coverage/lcov.info
+            -Dsonar.javascript.file.suffixes=js,jsx
             -Dsonar.python.version=3
             -Dsonar.exclusions=**/*.spec.js,**/*.stories.js,**/src/coverage/**,**/*.scss,**/__snapshots__/**,**/node_modules/**,**/src/.storybook/**,**/src/storybook-static/**,**/__mocks__/**
             -Dsonar.coverage.exclusions=**src/test/**/*.*
@@ -68,87 +69,37 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN  }}
-      - name: Add tag to output step
+      - name: Add tag to output step for main branch
         id: tag
-        if: github.ref == 'refs/heads/main'
-        run: echo "::set-output name=new_version::${{ steps.tag_version.outputs.new_version }}"
+        run: |
+          if [ '${{ github.ref }}' = 'refs/heads/main' ]; then
+            echo "new_version=${{ steps.tag_version.outputs.new_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "new_version=pr-${{ github.event.number }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
+          fi
 
   build_api:
-    environment: dailyclean
     needs: tags
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Log in to Docker Hub
-      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      with:
-        images: axaguildev/dailyclean-api
-
-    - name: Build and push Docker image
-      if: github.ref == 'refs/heads/main'
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      with:
-        context: ./api
-        push: true
-        tags: axaguildev/dailyclean-api:${{ needs.tags.outputs.new_version }},axaguildev/dailyclean-api:latest
-        labels: ${{ steps.meta.outputs.labels }}
-
-    - name: Build and push Docker image
-      if: github.ref != 'refs/heads/main'
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      with:
-        context: ./api
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-
+    uses: ./.github/workflows/Docker.yml
+    with:
+      image_name: "axaguildev/dailyclean-api"
+      image_version: "${{ needs.tags.outputs.new_version }}"
+      image_build_args: ""
+      image_context: ./api
+      image_file: "./api/Dockerfile"
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      
   build_job:
-    environment: dailyclean
     needs: tags
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Log in to Docker Hub
-      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      with:
-        images: axaguildev/dailyclean-job
-
-    - name: Build and push Docker image
-      if: github.ref == 'refs/heads/main'
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      with:
-        context: ./job/dailyclean
-        push: true
-        tags: axaguildev/dailyclean-job:${{ needs.tags.outputs.new_version }},axaguildev/dailyclean-job:latest
-        labels: ${{ steps.meta.outputs.labels }}
-
-    - name: Build and push Docker image
-      if: github.ref != 'refs/heads/main'
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      with:
-        context: ./job/dailyclean
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+    uses: ./.github/workflows/Docker.yml
+    with:
+      image_name: "axaguildev/dailyclean-job"
+      image_version: "${{ needs.tags.outputs.new_version }}"
+      image_build_args: ""
+      image_context: ./job/dailyclean
+      image_file: "./job/dailyclean/Dockerfile"
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

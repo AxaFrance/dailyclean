@@ -33,7 +33,6 @@ const ListStateContainer = (props) => {
         const currency = getCurrency();
         setState({priceByMonth, locale, currency})
     }, []);
-
    
     return <ListState {...props} priceByMonth={state.priceByMonth} locale={state.local} currency={state.currency} />
 }

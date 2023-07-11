@@ -1,7 +1,7 @@
 ﻿
 
 const timezoneOffsetHour = () => {
-    var x = new Date();
+    const x = new Date();
     return x.getTimezoneOffset() / 60;
 }
 

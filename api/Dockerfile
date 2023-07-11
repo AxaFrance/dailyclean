@@ -1,5 +1,5 @@
 
-FROM node:16-buster AS web
+FROM node:18-buster AS web
 
 ENV \
     APP_ROOT=/app_root \
@@ -12,7 +12,7 @@ WORKDIR ${APP_ROOT}
 COPY --chown=${USER} ./web .
 USER root
 RUN npm ci
-RUN npm test --  --runInBand --coverage --watchAll=false
+RUN npm test -- --run
 RUN npm run build 
     
 FROM registry.access.redhat.com/ubi9/ubi:9.1.0-1782 AS build
@@ -78,7 +78,7 @@ ENV PATH=${JAVA_HOME}/bin:${PATH}
 
 COPY --chown=${USER} ./api .
 RUN rm -Rf ./src/main/resources/META-INF/resources
-COPY --chown=${USER} --from=web ${APP_ROOT}/build ./src/main/resources/META-INF/resources
+COPY --chown=${USER} --from=web ${APP_ROOT}/dist ./src/main/resources/META-INF/resources
 
 RUN mvn package -Pnative -B
 

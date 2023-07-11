@@ -1,4 +1,19 @@
 
+.dailyclean-badges {
+  float: right
+}
+
+.af-badge{
+  &--function {
+    background-color: rgb(153 179 172);
+  }
+  &--statefulset{
+    background-color: rgb(122 122 121);
+  }
+}
+
+
+
 
 .af-table-body-content {
   &--ok{
@@ -17,6 +32,10 @@
   }
   &--stopped{
     color: #920404;
+    cursor: help;
+  }
+  &--function{
+    color: #5454ff;
     cursor: help;
   }
   &--not-daily-cleaned {
@@ -38,6 +57,7 @@
     font-weight: bold;
     color: rgb(84, 182, 128);
   }
+
 }
 
 .af-table-th-content{

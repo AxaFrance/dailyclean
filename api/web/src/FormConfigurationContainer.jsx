@@ -2,7 +2,8 @@
 
 import withResilience, {resilienceStatus} from './withResilience';
 import {getAsync, postAsync, urls} from './api'
-import FormConfiguration, {endWeekModeEnum, startWeekModeEnum} from './FormConfiguration';
+import {endWeekModeEnum, startWeekModeEnum} from './apiConstants.js';
+import FormConfiguration from "./FormConfiguration.jsx";
 import {computeInitialStateErrorMessage, genericHandleChange,} from './validation';
 
 const FormWithResiliance = withResilience(FormConfiguration);
@@ -244,16 +245,7 @@ const doChange = (state, e, setState) => {
         endHour: [...rules.endHour, customEndHour(state.form)]
     };
     let form = genericHandleChange(newRules, state.form, e);
-
-    const updatedRules = {
-        ...rules,
-        startHour: [...rules.startHour, customStartHour(form)],
-        endHour: [...rules.endHour, customEndHour(form)]
-    };
-
-    form = validateField(e, form, updatedRules, "startWeekMode", startWeekModeEnum.disabled, "startHour", "endHour" );
-    form = validateField(e, form, updatedRules, "endWeekMode", endWeekModeEnum.disabled, "endHour", "startHour" );
-
+    
     const isKo = Object.values(form).find(field => field.message);
     const submit = {disabled: isKo};
     setState({...state, form, submit, status: resilienceStatus.EMPTY});

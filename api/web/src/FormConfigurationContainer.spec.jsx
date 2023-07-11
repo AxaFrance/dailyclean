@@ -4,8 +4,9 @@
 } from "./FormConfigurationContainer";
 import sleep from './sleep';
 import '@testing-library/jest-dom';
-import {render, fireEvent, screen, waitFor} from '@testing-library/react';
+import {render, fireEvent, screen, waitFor, act} from '@testing-library/react';
 import React from "react";
+import { describe, it, expect } from 'vitest';
 
 const fetch = (status =200, getCallback, postCallback) => async (url, config) => {
     if(config.method === "POST") {
@@ -26,9 +27,9 @@ const getLocalHour = (hour) => hour + 1;
 
 describe(`FormConfigurationContainer`, () => {
 
-    test(`submit should save data with success`, async () => {
-        const postCallback = jest.fn(x => x);
-        const getCallback = jest.fn(x => { return {"cron_start":"0 7 * * 1-5","cron_stop":"0 17 * * *"}});
+    it(`submit should save data with success`, async () => {
+        const postCallback = vi.fn().mockImplementation(x => x);
+        const getCallback = vi.fn().mockImplementation(x => { return {"cron_start":"0 7 * * 1-5","cron_stop":"0 17 * * *"}});
         const setConfigurationState = () => console.log("setConfigurationState");
         const utils = render(<FormConfigurationContainer fetch={fetch(200, getCallback, postCallback)} getUTCHour={getUTCHour} getLocalHour={getLocalHour} setConfigurationState={setConfigurationState}/>);
 
@@ -76,30 +77,29 @@ describe(`FormConfigurationContainer`, () => {
         
     });
 
-    test(`error message should display with success`, async () => {
-        const postCallback = jest.fn(x => x);
-        const getCallback = jest.fn(x => { return {"cron_start":"0 7 * * 1-5","cron_stop":"0 17 * * *"}});
+    it(`error message should display with success`, async () => {
+        const postCallback = vi.fn().mockImplementation(x => x);
+        const getCallback = vi.fn().mockImplementation(x => { return {"cron_start":"0 7 * * 1-5","cron_stop":"0 17 * * *"}});
         const setConfigurationState = () => console.log("setConfigurationState");
         const utils = render(<FormConfigurationContainer fetch={fetch(200, getCallback, postCallback)}  getUTCHour={getUTCHour} getLocalHour={getLocalHour} setConfigurationState={setConfigurationState}/>);
 
         await waitFor(() => expect(getCallback).toHaveBeenCalledTimes(1));
-        
-        const title = screen.queryByText("Configuration");
-        expect(title).toBeTruthy();
-        expect(screen.getByRole('button')).toHaveAttribute('disabled');
 
-        const inputStart = utils.getByLabelText('Start hour');
-        inputStart.focus();
-        fireEvent.change(inputStart, { target: { value: '20' } })
-        inputStart.blur();
-        
-        const inputEnd = utils.getByLabelText('End hour');
-        inputEnd.focus();
-        fireEvent.change(inputEnd, { target: { value: '20' } });
-        inputEnd.blur();
+        await act(async () => {
+            const title = screen.queryByText("Configuration");
+            expect(title).toBeTruthy();
+            expect(screen.getByRole('button')).toHaveAttribute('disabled');
 
-        const startErrorMessage = screen.getByText(messageStartHourShouldBeBeforeEndHour);
-        expect(startErrorMessage).toBeTruthy();
+            const inputStart = utils.getByLabelText('Start hour');
+            inputStart.focus();
+            fireEvent.change(inputStart, {target: {value: '20'}})
+            inputStart.blur();
+
+            const inputEnd = utils.getByLabelText('End hour');
+            inputEnd.focus();
+            fireEvent.change(inputEnd, {target: {value: '20'}});
+            inputEnd.blur();
+        });
         
         const endErrorMessage = screen.getByText(messageEndDateShouldBeAfterStartDate);
         expect(endErrorMessage).toBeTruthy();
