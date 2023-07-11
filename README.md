@@ -52,10 +52,11 @@ you can use specific labels to configure DailyClean in your Kubernetes scripts:
 
 ```yaml
 metadata:
-  name: dailyclean-api
+  name: my-api
   labels:
-    # if false, dailyclean will not stop this pod
+    # if false, dailyclean will not stop this pod for deployment
     axa.com/dailyclean: 'false' 
+    # WARNING: default value is true for DEPLOYMENT and false for STATEFULTSET
 ```
 
 ```yaml
