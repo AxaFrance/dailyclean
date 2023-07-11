@@ -34,6 +34,7 @@ const mockStarted = {
     "workloads": [
         {
             "id": "alertmanager",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "type": "DEPLOYMENT",
@@ -41,6 +42,7 @@ const mockStarted = {
         },
         {
             "id": "dailyclean-api",
+            "isDailycleaned": false,
             "current": 1,
             "target": 1,
             "labels": {
@@ -81,6 +83,7 @@ const mockStarted = {
         },
         {
             "id": "flux",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "type": "DEPLOYMENT",
@@ -88,6 +91,7 @@ const mockStarted = {
         },
         {
             "id": "helm-operator",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "containers": [
@@ -107,6 +111,7 @@ const mockStarted = {
         },
         {
             "id": "jaeger-collector",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "type": "DEPLOYMENT",
@@ -114,6 +119,7 @@ const mockStarted = {
         },
         {
             "id": "jaeger-query",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "type": "DEPLOYMENT",
@@ -121,6 +127,7 @@ const mockStarted = {
         },
         {
             "id": "kube-state-metrics",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "type": "DEPLOYMENT",
@@ -128,6 +135,7 @@ const mockStarted = {
         },
         {
             "id": "memcached",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "type": "DEPLOYMENT",
@@ -135,6 +143,7 @@ const mockStarted = {
         },
         {
             "id": "redis-ha-haproxy",
+            "isDailycleaned": true,
             "current": 3,
             "target": 3,
             "type": "STATEFULSET",
@@ -181,6 +190,7 @@ const mockStarted = {
         },
         {
             "id": "ri",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "labels": {
@@ -190,6 +200,7 @@ const mockStarted = {
         },
         {
             "id": "ri-classify",
+            "isDailycleaned": true,
             "current": 0,
             "target": 0,
             "labels": {
@@ -238,6 +249,7 @@ const mockStarted = {
         },
         {
             "id": "ri-file",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "labels": {
@@ -247,6 +259,7 @@ const mockStarted = {
         },
         {
             "id": "ri-ocr",
+            "isDailycleaned": true,
             "current": 2,
             "target": 2,
             "labels": {
@@ -256,6 +269,7 @@ const mockStarted = {
         },
         {
             "id": "ri-splitter",
+            "isDailycleaned": true,
             "current": 1,
             "target": 1,
             "labels": {
@@ -273,6 +287,7 @@ export const mockStateOff = {
     "workloads": [
         {
             "id": "alertmanager",
+            "isDailycleaned": true,
             "current": 0,
             "target": 0,
             "type": "DEPLOYMENT"
@@ -284,6 +299,7 @@ export const mockStateInProgress = {
     "workloads": [
         {
             "id": "alertmanager",
+            "isDailycleaned": true,
             "current": 0,
             "target": 1,
             "type": "DEPLOYMENT"

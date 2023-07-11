@@ -4,7 +4,7 @@ import Table from '@axa-fr/react-toolkit-table';
 import Popover from '@axa-fr/react-toolkit-popover';
 import {STOPPED, STARTED} from './state';
 import {endWeekModeEnum, startWeekModeEnum} from "./apiConstants.js";
-import {computeIsFunction, computeState, computeIsDailyClean} from './state.js';
+import {computeIsFunction, computeState, computeIsDailyCleaned} from './state.js';
 import '@axa-fr/react-toolkit-table/dist/table.scss';
 import '@axa-fr/react-toolkit-popover/dist/popover.scss';
 
@@ -14,7 +14,7 @@ import '@axa-fr/react-toolkit-badge/dist/af-badge.css';
 
 const cssState = (deployment, state, more="") => {
     const cssStopped = "af-table-body-content af-table-body-content--stopped " + more;
-    if(computeIsDailyClean(deployment)){
+    if(!computeIsDailyCleaned(deployment)){
         return "af-table-body-content af-table-body-content--not-daily-cleaned " + more;
     }
     if(computeIsFunction(deployment)){
@@ -49,7 +49,7 @@ const Containers = ({deployment}) => {
 
 const Resources = ({container, workload, priceByMonth, apiState, locale, currency}) => {
     if(!container.resource_limits || !container.resource_requests) return <span>No resource found</span>
-    const isDailyCleaned = !computeIsDailyClean(workload);
+    const isDailyCleaned = computeIsDailyCleaned(workload);
     return <> 
         <h2>{container.name}</h2>
         <h4>Resource limits:</h4>
@@ -126,7 +126,7 @@ const monthlyCost = (amountGo, target, isDailyCleaned, ratio=1, priceMonth=105, 
 } 
 
 const costTotalMonth = (workloads, ratio=1, priceMonth=105, apiDataState) => {
-    const reducer = (accumulator, currentValue) => accumulator + monthlyCost(findMaxGoResource(currentValue), currentValue.target, !computeIsDailyClean(currentValue), ratio, priceMonth, apiDataState);
+    const reducer = (accumulator, currentValue) => accumulator + monthlyCost(findMaxGoResource(currentValue), currentValue.target, computeIsDailyCleaned(currentValue), ratio, priceMonth, apiDataState);
     return workloads.reduce(reducer, 0);
 } 
 
@@ -142,7 +142,7 @@ const yearlyCost = (amountGo, target, isDailycleaned, ratio=1, priceMonth=105, a
 }
 
 const totalCostPerYear = (workloads, ratio=1, priceMonth=105, apiDataState, isFullYear=true) => {
-    const reducer = (accumulator, currentValue) => accumulator + yearlyCost(findMaxGoResource(currentValue), currentValue.target, !computeIsDailyClean(currentValue), ratio, priceMonth, apiDataState, isFullYear);
+    const reducer = (accumulator, currentValue) => accumulator + yearlyCost(findMaxGoResource(currentValue), currentValue.target, computeIsDailyCleaned(currentValue), ratio, priceMonth, apiDataState, isFullYear);
     return workloads.reduce(reducer, 0);
 }
 
@@ -263,10 +263,10 @@ const ListState = ({apiState, apiConfigurationState, priceByMonth, locale="FR-fr
                     <span className={cssState(d, state)}>{d.current}/{d.target}</span>
                 </Table.Td>
                 <Table.Td>
-                    <span>{formatPrice(monthlyCost(findMaxGoResource(d), d.target, !computeIsDailyClean(d), ratio, priceByMonth, data.state), locale, currency)}</span>
+                    <span>{formatPrice(monthlyCost(findMaxGoResource(d), d.target, computeIsDailyCleaned(d), ratio, priceByMonth, data.state), locale, currency)}</span>
                 </Table.Td>
                 <Table.Td>
-                    <span>{formatPrice(yearlyCost(findMaxGoResource(d), d.target, !computeIsDailyClean(d), ratio, priceByMonth, data.state, apiConfiguration.isFullYear), locale, currency)}</span>
+                    <span>{formatPrice(yearlyCost(findMaxGoResource(d), d.target, computeIsDailyCleaned(d), ratio, priceByMonth, data.state, apiConfiguration.isFullYear), locale, currency)}</span>
                 </Table.Td>
             </Table.Tr>)}
             <Table.Tr>
