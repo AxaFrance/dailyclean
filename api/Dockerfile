@@ -38,7 +38,7 @@ RUN INSTALL_PKGS="java-17-openjdk java-17-openjdk-devel" && \
 WORKDIR ${HOME}
 
 RUN curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O && \
-    #echo "sha512sum apache-maven-${MAVEN_VERSION}-bin.tar.gz" && \
+    ##echo "sha512sum apache-maven-${MAVEN_VERSION}-bin.tar.gz" && \
     echo "$MAVEN_DOWNLOAD_SUM  apache-maven-${MAVEN_VERSION}-bin.tar.gz" | sha512sum -c - && \
     tar xvfz apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
     mkdir -p ${MAVEN_DIR} && \
