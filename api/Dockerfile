@@ -13,8 +13,8 @@ COPY --chown=${USER} ./web .
 USER root
 RUN npm ci
 RUN npm test -- --run
-RUN npm run build 
-    
+RUN npm run build
+
 FROM registry.access.redhat.com/ubi9/ubi:9.1.0-1782 AS build
 
 ENV \
@@ -26,8 +26,8 @@ WORKDIR ${APP_ROOT}
 
 USER root
 
-ENV MAVEN_VERSION 3.9.3
-ENV MAVEN_DOWNLOAD_SUM 400fc5b6d000c158d5ee7937543faa06b6bda8408caa2444a9c947c21472fde0f0b64ac452b8cec8855d528c0335522ed5b6c8f77085811c7e29e1bedbb5daa2
+ENV MAVEN_VERSION 3.9.5
+ENV MAVEN_DOWNLOAD_SUM 4810523ba025104106567d8a15a8aa19db35068c8c8be19e30b219a1d7e83bcab96124bf86dc424b1cd3c5edba25d69ec0b31751c136f88975d15406cab3842b
 ENV MAVEN_DIR=/opt/maven
 
 RUN INSTALL_PKGS="java-17-openjdk java-17-openjdk-devel" && \
@@ -46,7 +46,7 @@ RUN curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/
     rm ${MAVEN_DIR}/conf/settings.xml && \
     #cp /opt/configurations/settings.xml ${MAVEN_DIR}/conf/settings.xml && \
     rm -Rf apache-maven-${MAVEN_VERSION}
-    
+
 
 ENV PATH ${MAVEN_DIR}/bin:$PATH
 
@@ -70,7 +70,7 @@ RUN curl -fsSL https://github.com/graalvm/mandrel/releases/download/mandrel-${MA
     tar xvfz mandrel-${JAVA_VERSION}-linux-amd64-${MANDREL_VERSION}.tar.gz && \
     rm mandrel-${JAVA_VERSION}-linux-amd64-${MANDREL_VERSION}.tar.gz && \
     mv mandrel-${JAVA_VERSION}-${MANDREL_VERSION} mandrel && \
-    rm -Rf mandrel/demo mandrel/man 
+    rm -Rf mandrel/demo mandrel/man
 
 ENV JAVA_HOME=${APP_ROOT}/mandrel
 ENV GRAALVM_HOME=${APP_ROOT}/mandrel
