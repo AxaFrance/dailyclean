@@ -1,0 +1,5 @@
+apiVersion: v2
+name: dailyclean
+description: A Helm chart to deploy the dailyclean application
+type: application
+version: 0.0.1
