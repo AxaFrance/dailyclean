@@ -14,8 +14,8 @@ export default {
   component: Header,
 };
 
-const getUTCHour = (hour) => hour -1;
-const getLocalHour = (hour) => hour + 1;
+const getUTCHour = (hour) => hour;
+const getLocalHour = (hour) => hour;
 
 const fetch = (status =200) => async (url, config) => {
   if(config.method === "POST") {

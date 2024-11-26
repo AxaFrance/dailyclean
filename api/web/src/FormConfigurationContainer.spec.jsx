@@ -22,8 +22,8 @@ const fetch = (status =200, getCallback, postCallback) => async (url, config) =>
     };
 };
 
-const getUTCHour = (hour) => hour -1;
-const getLocalHour = (hour) => hour + 1;
+const getUTCHour = (hour) => hour;
+const getLocalHour = (hour) => hour;
 
 describe(`FormConfigurationContainer`, () => {
 
@@ -34,19 +34,19 @@ describe(`FormConfigurationContainer`, () => {
         const utils = render(<FormConfigurationContainer fetch={fetch(200, getCallback, postCallback)} getUTCHour={getUTCHour} getLocalHour={getLocalHour} setConfigurationState={setConfigurationState}/>);
 
         await waitFor(() => expect(getCallback).toHaveBeenCalledTimes(1));
-        
+
         const title = screen.queryByText("Configuration");
         expect(title).toBeTruthy();
         expect(screen.getByRole('button')).toHaveAttribute('disabled');
 
         const inputStart = utils.getByLabelText('Start hour');
-        fireEvent.change(inputStart, { target: { value: '3' } })
+        fireEvent.change(inputStart, { target: { value: '2' } })
 
         const item = screen.queryByText("All days");
         fireEvent.click(item);
 
         const inputEnd = utils.getByLabelText('End hour');
-        fireEvent.change(inputEnd, { target: { value: '19' } });
+        fireEvent.change(inputEnd, { target: { value: '18' } });
         expect(screen.getByRole('button')).not.toHaveAttribute('disabled');
 
         const fireSumbit = () => {
@@ -74,7 +74,7 @@ describe(`FormConfigurationContainer`, () => {
 
         expect(screen.getByRole('alert')).toHaveTextContent("SuccessSave done succesfully.");
         expect(screen.getByRole('button')).toHaveAttribute('disabled');
-        
+
     });
 
     it(`error message should display with success`, async () => {
@@ -100,11 +100,11 @@ describe(`FormConfigurationContainer`, () => {
             fireEvent.change(inputEnd, {target: {value: '20'}});
             inputEnd.blur();
         });
-        
+
         const endErrorMessage = screen.getByText(messageEndDateShouldBeAfterStartDate);
         expect(endErrorMessage).toBeTruthy();
 
         expect(screen.getByRole('button')).toHaveAttribute('disabled');
     });
-    
+
 });
