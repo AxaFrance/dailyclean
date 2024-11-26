@@ -46,13 +46,15 @@ public final class KubernetesUtils {
     public static InputStream createCronJobAsInputStream(KubernetesArgument argument,
                                                          String cron,
                                                          String imgName,
-                                                         String serviceAccountName) {
+                                                         String serviceAccountName,
+                                                         String timeZone) {
         String text = getFileAsString("scripts/cronjob.yml");
         String cronJobAsdString = text.replace(NAME.getPlaceholder(), getCronName(argument))
                 .replace(ARGUMENT.getPlaceholder(), argument.getValue())
                 .replace(SCHEDULE.getPlaceholder(), cron)
                 .replace(IMG_NAME.getPlaceholder(), imgName)
-                .replace(SERVICE_ACCOUNT_NAME.getPlaceholder(), serviceAccountName);
+                .replace(SERVICE_ACCOUNT_NAME.getPlaceholder(), serviceAccountName)
+                .replace(TIME_ZONE.getPlaceholder(), timeZone);
 
         return new ByteArrayInputStream(cronJobAsdString.getBytes());
     }

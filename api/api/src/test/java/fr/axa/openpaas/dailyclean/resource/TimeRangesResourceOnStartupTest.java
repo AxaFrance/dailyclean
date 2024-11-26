@@ -31,9 +31,9 @@ public class TimeRangesResourceOnStartupTest extends AbstractTimeRangesResourceT
 
         // Create cron jobs with old versions
         InputStream cronJobStart =
-                KubernetesUtils.createCronJobAsInputStream(START, CRON_10_00, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME);
+                KubernetesUtils.createCronJobAsInputStream(START, CRON_10_00, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
         InputStream cronJobStop =
-                KubernetesUtils.createCronJobAsInputStream(STOP, CRON_10_00, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME);
+                KubernetesUtils.createCronJobAsInputStream(STOP, CRON_10_00, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
 
         client.load(cronJobStart).inNamespace(namespace).createOrReplace();
         client.load(cronJobStop).inNamespace(namespace).createOrReplace();
@@ -67,7 +67,7 @@ public class TimeRangesResourceOnStartupTest extends AbstractTimeRangesResourceT
 
         // Create cron jobs with old versions
         InputStream cronJobStart =
-                KubernetesUtils.createCronJobAsInputStream(START, cronStart, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME);
+                KubernetesUtils.createCronJobAsInputStream(START, cronStart, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
 
         client.load(cronJobStart).inNamespace(namespace).createOrReplace();
 
@@ -102,7 +102,7 @@ public class TimeRangesResourceOnStartupTest extends AbstractTimeRangesResourceT
 
         // Create cron jobs with old versions
         InputStream cronJobStop =
-                KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME);
+                KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, OLD_IMAGE_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
 
         client.load(cronJobStop).inNamespace(namespace).createOrReplace();
 

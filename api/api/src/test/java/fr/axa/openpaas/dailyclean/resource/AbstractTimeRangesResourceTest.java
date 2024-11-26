@@ -17,6 +17,7 @@ public abstract class AbstractTimeRangesResourceTest {
     protected static final String CRON_20_00 = "0 20 * * *";
     protected static final String IMG_NAME = "axaguildev/dailyclean-job:latest";
     protected static final String SERVICE_ACCOUNT_NAME = "default";
+    protected static final String TIME_ZONE = "CET";
 
     @KubernetesTestServer
     KubernetesServer mockServer;
