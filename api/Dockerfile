@@ -1,9 +1,9 @@
 
 FROM registry.access.redhat.com/ubi9/nodejs-22 AS web
-
 ENV \
   APP_ROOT=/opt/app-root \
   HOME=/opt/app-root \
+  PATH=/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   USER=1001
 
 WORKDIR ${APP_ROOT}
@@ -14,10 +14,10 @@ RUN npm test -- --run
 RUN npm run build
 
 FROM registry.access.redhat.com/ubi9/ubi:latest AS build
-
 ENV \
   APP_ROOT=/opt/app-root \
   HOME=/opt/app-root \
+  PATH=/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   USER=1001
 
 WORKDIR ${APP_ROOT}
@@ -81,10 +81,10 @@ COPY --chown=${USER} --from=web ${APP_ROOT}/dist ./src/main/resources/META-INF/r
 RUN mvn package -Pnative -B
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS runtime
-
 ENV \
   APP_ROOT=/opt/app-root \
   HOME=/opt/app-root \
+  PATH=/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   USER=1001
 
 WORKDIR ${APP_ROOT}
