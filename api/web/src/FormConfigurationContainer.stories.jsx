@@ -14,9 +14,6 @@ export default {
   component: Header,
 };
 
-const getUTCHour = (hour) => hour;
-const getLocalHour = (hour) => hour;
-
 const fetch = (status =200) => async (url, config) => {
   if(config.method === "POST") {
     return {
@@ -42,8 +39,6 @@ const Template = (args) => <FormConfigurationContainer {...args} />;
 
 export const FormConfiguration = Template.bind({});
 FormConfiguration.args = {
-  getUTCHour,
-  getLocalHour,
   fetch: fetch(200),
   setConfigurationState
 };

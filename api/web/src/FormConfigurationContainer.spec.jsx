@@ -22,16 +22,13 @@ const fetch = (status =200, getCallback, postCallback) => async (url, config) =>
     };
 };
 
-const getUTCHour = (hour) => hour;
-const getLocalHour = (hour) => hour;
-
 describe(`FormConfigurationContainer`, () => {
 
     it(`submit should save data with success`, async () => {
         const postCallback = vi.fn().mockImplementation(x => x);
         const getCallback = vi.fn().mockImplementation(x => { return {"cron_start":"0 7 * * 1-5","cron_stop":"0 17 * * *"}});
         const setConfigurationState = () => console.log("setConfigurationState");
-        const utils = render(<FormConfigurationContainer fetch={fetch(200, getCallback, postCallback)} getUTCHour={getUTCHour} getLocalHour={getLocalHour} setConfigurationState={setConfigurationState}/>);
+        const utils = render(<FormConfigurationContainer fetch={fetch(200, getCallback, postCallback)} setConfigurationState={setConfigurationState}/>);
 
         await waitFor(() => expect(getCallback).toHaveBeenCalledTimes(1));
 
@@ -81,7 +78,7 @@ describe(`FormConfigurationContainer`, () => {
         const postCallback = vi.fn().mockImplementation(x => x);
         const getCallback = vi.fn().mockImplementation(x => { return {"cron_start":"0 7 * * 1-5","cron_stop":"0 17 * * *"}});
         const setConfigurationState = () => console.log("setConfigurationState");
-        const utils = render(<FormConfigurationContainer fetch={fetch(200, getCallback, postCallback)}  getUTCHour={getUTCHour} getLocalHour={getLocalHour} setConfigurationState={setConfigurationState}/>);
+        const utils = render(<FormConfigurationContainer fetch={fetch(200, getCallback, postCallback)} setConfigurationState={setConfigurationState}/>);
 
         await waitFor(() => expect(getCallback).toHaveBeenCalledTimes(1));
 
