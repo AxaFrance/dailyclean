@@ -38,6 +38,9 @@ public class KubernetesService {
     @ConfigProperty(name = "service.job.timeZone")
     String timeZone;
 
+    @ConfigProperty(name = "service.job.defaultCronStop")
+    String defaultCronStop;
+
     @ConfigProperty(name = "service.deployment.label.dailyclean")
     String dailycleanLabelName;
 
@@ -146,6 +149,13 @@ public class KubernetesService {
 
             createStartCronJob(startCronJobAsString);
             createStopCronJob(stopCronJobAsString);
+        }
+    }
+
+    public void createDefaultStopCronJobIfNotExist() {
+        CronJob stop = getCronJob(STOP);
+        if(stop == null) {
+            createCronJob(defaultCronStop, STOP);
         }
     }
 
