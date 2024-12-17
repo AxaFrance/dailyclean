@@ -74,7 +74,7 @@ class PodsResourceOnStartupTest {
 
     private static void createCronJobStop(KubernetesClient client, String namespace) {
         InputStream cronJobAsInputStream =
-                KubernetesUtils.createCronJobAsInputStream(STOP, CRON_10_00, "imagename:1.0.0", "default", "CET");
+                KubernetesUtils.createCronJobAsInputStream(STOP, CRON_10_00, "imagename:1.0.0", "default", "UTC");
         client.load(cronJobAsInputStream).inNamespace(namespace).createOrReplace();
     }
 }
