@@ -2,7 +2,7 @@ import React , { useState } from "react";
 import ReactDOM from 'react-dom';
 import App from './App';
 
-import './scss/grid.css'; 
+import './scss/grid.css';
 import './scss/reboot.css';
 import '@axa-fr/react-toolkit-core/dist/assets/fonts/icons/af-icons.css';
 import '@axa-fr/react-toolkit-core/src/common/scss/core.scss';
@@ -10,7 +10,6 @@ import FormStateContainer from "./FormStateContainer";
 import ListStateContainer from "./ListStateContainer";
 import FormConfigurationContainer from "./FormConfigurationContainer";
 
-import {getLocalHour, getUTCHour} from "./date";
 import './index.scss';
 import ApiStateProvider, { withApiState } from './ApiStateProvider';
 import { withApiConfiguration, ApiConfigurationContext, apiConfigurationInit } from './ApiConfigurationProvider';
@@ -42,7 +41,7 @@ const ConfigurationStateProvider = ({apiState}) => {
         <div className="container">
             <div className="row">
                 <div className="col col-sm-12">
-                    <FormConfigurationContainer fetch={fetch} getLocalHour={getLocalHour} getUTCHour={getUTCHour} setConfigurationState={setConfigurationState} apiState={apiState} />
+                    <FormConfigurationContainer fetch={fetch} setConfigurationState={setConfigurationState} apiState={apiState} />
                 </div>
             </div>
         </div>

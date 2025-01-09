@@ -5,6 +5,7 @@ metadata:
 spec:
   concurrencyPolicy: Forbid
   schedule: '{{schedule}}'
+  timeZone: '{{timeZone}}'
   jobTemplate:
     spec:
       template:

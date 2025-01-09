@@ -136,7 +136,7 @@ public class TimeRangesResourceTest extends AbstractTimeRangesResourceTest {
     public void shouldUpsertExistingTimerangeWithNewOneAndCreate() {
         String cronStart = CRON_10_00;
 
-        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME);
+        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
@@ -163,8 +163,8 @@ public class TimeRangesResourceTest extends AbstractTimeRangesResourceTest {
 
 
     private void initializeExistingCronJobs(String cronStart, String cronStop) {
-        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME);
-        InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, IMG_NAME, SERVICE_ACCOUNT_NAME);
+        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
+        InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, IMG_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();

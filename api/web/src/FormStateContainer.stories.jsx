@@ -16,9 +16,6 @@ export default {
   component: Header,
 };
 
-const getUTCHour = (hour) => hour -1;
-const getLocalHour = (hour) => hour + 1;
-
 const fetch = (status =200) => async (url, config) => {
   if(config.method === "POST") {
     return {
@@ -43,8 +40,6 @@ const Template = (args) => <FormStateContainer {...args} />;
 
 export const FormState = Template.bind({});
 FormState.args = {
-  getUTCHour,
-  getLocalHour,
   fetch: fetch(200),
   apiState:{data:mock}
 };

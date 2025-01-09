@@ -35,6 +35,12 @@ public class KubernetesService {
     @ConfigProperty(name = "service.job.serviceAccountName")
     String serviceAccountName;
 
+    @ConfigProperty(name = "service.job.timeZone")
+    String timeZone;
+
+    @ConfigProperty(name = "service.job.defaultCronStop")
+    String defaultCronStop;
+
     @ConfigProperty(name = "service.deployment.label.dailyclean")
     String dailycleanLabelName;
 
@@ -146,6 +152,13 @@ public class KubernetesService {
         }
     }
 
+    public void createDefaultStopCronJobIfNotExist() {
+        CronJob stop = getCronJob(STOP);
+        if(stop == null) {
+            createCronJob(defaultCronStop, STOP);
+        }
+    }
+
     private boolean isUpdatingCronJobNeeded(CronJob cronJob) {
         boolean res = false;
         if(cronJob != null) {
@@ -193,7 +206,7 @@ public class KubernetesService {
 
         logger.info("Creating cron job from object");
         kubernetesClient.batch().v1().cronjobs().inNamespace(namespace)
-                .load(KubernetesUtils.createCronJobAsInputStream(argument, cron, imgName,serviceAccountName))
+                .load(KubernetesUtils.createCronJobAsInputStream(argument, cron, imgName, serviceAccountName, timeZone))
                 .createOrReplace();
         logger.info("Successfully created cronjob with name {}", KubernetesUtils.getCronName(argument));
     }

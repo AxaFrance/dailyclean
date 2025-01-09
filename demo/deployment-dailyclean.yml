@@ -23,6 +23,8 @@ spec:
               value: axaguildev/dailyclean-job:latest
             - name: SERVICE_JOB_SERVICEACCOUNTNAME
               value: dailyclean
+            - name: SERVICE_JOB_TIMEZONE
+              value: UTC
           resources:
             limits:
               memory: "96Mi"

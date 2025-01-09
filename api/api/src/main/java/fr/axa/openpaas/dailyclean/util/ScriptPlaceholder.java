@@ -6,7 +6,8 @@ public enum ScriptPlaceholder {
     ARGUMENT("{{argument}}"),
     SCHEDULE("{{schedule}}"),
     IMG_NAME("{{imgName}}"),
-    SERVICE_ACCOUNT_NAME("{{serviceAccountName}}"),;
+    SERVICE_ACCOUNT_NAME("{{serviceAccountName}}"),
+    TIME_ZONE("{{timeZone}}"),;
 
     private String placeholder;
     ScriptPlaceholder(String placeholder) {

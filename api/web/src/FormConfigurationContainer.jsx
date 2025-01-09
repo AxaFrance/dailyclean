@@ -99,7 +99,7 @@ function extractEndHour(cron_stop) {
     return "18";
 }
 
-const getTimeRangesAsync = (fetch) => (getLocalHour) => async (setState, state) => {
+const getTimeRangesAsync = (fetch) => async (setState, state) => {
     const response = await getAsync(fetch)(urls.timeranges);
     if (response.status >= 300) {
         setState({
@@ -112,11 +112,11 @@ const getTimeRangesAsync = (fetch) => (getLocalHour) => async (setState, state) 
     const cron_start = timeranges.cron_start;
     let startHour = extractStartHour(cron_start);
     const startWeekMode = extractStartWeek(cron_start);
-    let startHourLocal = getLocalHour(parseInt(startHour, 10));
-    
-    
+    let startHourLocal = Number.parseInt(startHour);
+
+
     const endHour = extractEndHour(timeranges.cron_stop);
-    let endHourLocal = getLocalHour(parseInt(endHour, 10));
+    let endHourLocal = Number.parseInt(endHour);
     const endWeekMode = timeranges.cron_stop ? endWeekModeEnum.enabled : endWeekModeEnum.disabled;
     const form = state.form;
     const newState = {
@@ -133,8 +133,8 @@ const getTimeRangesAsync = (fetch) => (getLocalHour) => async (setState, state) 
     return newState;
 };
 
-const extractTimeRanges=getUTCHour =>(form) => {
-    
+const extractTimeRanges=(form) => {
+
     let startWeekMode;
     switch (form.startWeekMode.value){
         case startWeekModeEnum.workedDays:
@@ -147,7 +147,7 @@ const extractTimeRanges=getUTCHour =>(form) => {
             startWeekMode=null;
             break;
     }
-    
+
     let endWeekMode;
     switch (form.endWeekMode.value){
         case endWeekModeEnum.enabled:
@@ -157,24 +157,24 @@ const extractTimeRanges=getUTCHour =>(form) => {
             endWeekMode=null;
             break;
     }
-    
+
     const timeranges = {};
     if(startWeekMode){
-        timeranges.cron_start = `0 ${getUTCHour(form.startHour.value).toString()} * * ${startWeekMode}`;
+        timeranges.cron_start = `0 ${form.startHour.value} * * ${startWeekMode}`;
     }
     if(endWeekMode){
-        timeranges.cron_stop = `0 ${getUTCHour(form.endHour.value).toString()} * * *`;
+        timeranges.cron_stop = `0 ${form.endHour.value} * * *`;
     }
-    
+
     return timeranges;
 }
 
-const onSubmitAsync = fetch => getUTCHour => async (setState, state) => {
+const onSubmitAsync = fetch => async (setState, state) => {
     if (state.submit.disabled) {
         return null;
     }
     const form = state.form;
-    const timeranges = extractTimeRanges(getUTCHour)(form);
+    const timeranges = extractTimeRanges(form);
     setState({...state, status: resilienceStatus.POST});
     const response = await postAsync(fetch)(urls.timeranges, timeranges);
     const error = response.status >= 300;
@@ -184,8 +184,8 @@ const onSubmitAsync = fetch => getUTCHour => async (setState, state) => {
             status: resilienceStatus.ERROR,
         });
         return null
-    } 
-        
+    }
+
     const newState = {
             ...state,
             status: resilienceStatus.SUCCESS,
@@ -216,14 +216,14 @@ function validateField(e, form, updatedRules, fieldName, disabledValue, fieldNam
     if (e.name === fieldName || e.name === fieldName1) {
         if (e.value === disabledValue) {
             form[fieldName1] = {...form[fieldName1], message: ""}
-            
+
             if(form[fieldName2].message){
                 form = genericHandleChange(updatedRules, form, {name: fieldName2, ...form[fieldName2]});
                 if(form[fieldName2].message) {
                     form[fieldName2].forceDisplayMessage = true;
                 }
             }
-            
+
         } else {
             form = genericHandleChange(updatedRules, form, {name: fieldName1,  ...form[fieldName1]});
             form = genericHandleChange(updatedRules, form, {name: fieldName2, ...form[fieldName2]});
@@ -245,16 +245,16 @@ const doChange = (state, e, setState) => {
         endHour: [...rules.endHour, customEndHour(state.form)]
     };
     let form = genericHandleChange(newRules, state.form, e);
-    
+
     const isKo = Object.values(form).find(field => field.message);
     const submit = {disabled: isKo};
     setState({...state, form, submit, status: resilienceStatus.EMPTY});
 };
 
-const FormConfigurationContainer = ({fetch, getLocalHour, getUTCHour, setConfigurationState}) => {
+const FormConfigurationContainer = ({fetch, setConfigurationState}) => {
     const [state, setState] = useState(initialState);
     useEffect(() => {
-        getTimeRangesAsync(fetch)(getLocalHour)(setState, state).then(newState => {
+        getTimeRangesAsync(fetch)(setState, state).then(newState => {
             if(newState) {
                 const form = newState.form;
                 setConfigurationState({
@@ -268,7 +268,7 @@ const FormConfigurationContainer = ({fetch, getLocalHour, getUTCHour, setConfigu
     }, []);
     const onChange= (e) => doChange(state, e, setState);
     const onSubmit= () => {
-        onSubmitAsync(fetch)(getUTCHour)(setState, state).then(newState => {
+        onSubmitAsync(fetch)(setState, state).then(newState => {
             if(newState) {
                 const form = newState.form;
                 setConfigurationState({

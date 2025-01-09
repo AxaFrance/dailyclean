@@ -1,14 +1,19 @@
 package fr.axa.openpaas.dailyclean.resource;
 
-
 import fr.axa.openpaas.dailyclean.model.StartStopResponse;
 import fr.axa.openpaas.dailyclean.service.KubernetesService;
-
+import io.quarkus.runtime.StartupEvent;
+import jakarta.enterprise.event.Observes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @Path("pods")
 public class PodsResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PodsResource.class);
 
     public final static String STOP_MESSAGE = "Service is stoping ...";
     public final static String START_MESSAGE = "Service is starting ...";
@@ -35,5 +40,10 @@ public class PodsResource {
         StartStopResponse response = new StartStopResponse();
         response.setMessage(START_MESSAGE);
         return response;
+    }
+
+    public void onStart(@Observes StartupEvent ev) {
+        LOGGER.info("The application is starting, default CronjobStop will be create if not exist...");
+        kubernetesService.createDefaultStopCronJobIfNotExist();
     }
 }

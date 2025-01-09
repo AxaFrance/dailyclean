@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  dailyclean-job:
+    build:
+      context: job/dailyclean
+      dockerfile: ./Dockerfile
+    image: dailyclean-job
+    container_name: dailyclean-job
+    tty: true
+    stdin_open: true
+  dailyclean-api:
+    build:
+      context: api
+      dockerfile: ./Dockerfile
+    image: dailyclean-api
+    container_name: dailyclean-api
+    tty: true
+    stdin_open: true
