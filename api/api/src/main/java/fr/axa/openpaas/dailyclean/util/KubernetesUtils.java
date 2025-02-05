@@ -1,22 +1,17 @@
 package fr.axa.openpaas.dailyclean.util;
 
-import static fr.axa.openpaas.dailyclean.util.ScriptPlaceholder.*;
-
 import fr.axa.openpaas.dailyclean.model.Container;
-import fr.axa.openpaas.dailyclean.model.Workload;
 import fr.axa.openpaas.dailyclean.model.Port;
 import fr.axa.openpaas.dailyclean.model.Resource;
+import fr.axa.openpaas.dailyclean.model.Workload;
 import fr.axa.openpaas.dailyclean.service.KubernetesArgument;
 import fr.axa.openpaas.dailyclean.util.wrapper.IWorkloadWrapper;
 import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.PodTemplateSpec;
 import io.fabric8.kubernetes.api.model.Quantity;
-import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
-import io.fabric8.kubernetes.api.model.apps.DeploymentStatus;
-import io.fabric8.kubernetes.api.model.apps.StatefulSetSpec;
-import io.fabric8.kubernetes.api.model.apps.StatefulSetStatus;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -29,10 +24,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static fr.axa.openpaas.dailyclean.util.ScriptPlaceholder.*;
+
 public final class KubernetesUtils {
 
     public static final String CRON_JOB_NAME = "dailyclean";
     public static final String JOB_NAME = "dailyclean-job";
+    public static final String DEFAULT_CRON_WHEN_JOB_IS_SUSPENDED = "0 0 0 0 0";
+
 
     private KubernetesUtils() {}
 
@@ -47,14 +46,16 @@ public final class KubernetesUtils {
                                                          String cron,
                                                          String imgName,
                                                          String serviceAccountName,
-                                                         String timeZone) {
+                                                         String timeZone,
+                                                         Boolean suspend) {
         String text = getFileAsString("scripts/cronjob.yml");
         String cronJobAsdString = text.replace(NAME.getPlaceholder(), getCronName(argument))
                 .replace(ARGUMENT.getPlaceholder(), argument.getValue())
                 .replace(SCHEDULE.getPlaceholder(), cron)
                 .replace(IMG_NAME.getPlaceholder(), imgName)
                 .replace(SERVICE_ACCOUNT_NAME.getPlaceholder(), serviceAccountName)
-                .replace(TIME_ZONE.getPlaceholder(), timeZone);
+                .replace(TIME_ZONE.getPlaceholder(), timeZone)
+                .replace(SUSPEND.getPlaceholder(), Boolean.toString(suspend));
 
         return new ByteArrayInputStream(cronJobAsdString.getBytes());
     }
@@ -82,6 +83,17 @@ public final class KubernetesUtils {
     }
     public static String getJobName(KubernetesArgument argument) {
         return getName(argument, JOB_NAME);
+    }
+
+    public static String geCorrectCronExpression(final String cron) {
+        if(StringUtils.isBlank(cron)) {
+            return DEFAULT_CRON_WHEN_JOB_IS_SUSPENDED;
+        }
+        return cron;
+    }
+
+    public static boolean getCorrectSuspendValue(String cron) {
+        return StringUtils.isBlank(cron);
     }
 
     public static Workload mapWorkload(IWorkloadWrapper workload,

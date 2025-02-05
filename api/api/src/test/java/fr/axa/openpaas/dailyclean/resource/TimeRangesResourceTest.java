@@ -60,7 +60,7 @@ public class TimeRangesResourceTest extends AbstractTimeRangesResourceTest {
         String cronStart = CRON_10_00;
         String cronStop = CRON_20_00;
 
-        initializeExistingCronJobs(cronStart, cronStop);
+        initializeExistingCronJobs(cronStart, cronStop, false);
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -85,11 +85,28 @@ public class TimeRangesResourceTest extends AbstractTimeRangesResourceTest {
     }
 
     @Test
+    public void shouldGetTimeRangesWhenAllExistingCronJobHasBeenSuspendState() {
+        String cronStart = CRON_10_00;
+        String cronStop = CRON_20_00;
+
+        initializeExistingCronJobs(cronStart, cronStop, true);
+
+        given()
+                .contentType(MediaType.APPLICATION_JSON)
+                .when()
+                .get(TIMERANGES_URI)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(CRON_START, is(nullValue()))
+                .body(CRON_STOP, is(nullValue()));
+    }
+
+    @Test
     public void shouldNotDeleteCronJobsIfTimeRangesAreNotSet() {
         String cronStart = CRON_10_00;
         String cronStop = CRON_20_00;
 
-        initializeExistingCronJobs(cronStart, cronStop);
+        initializeExistingCronJobs(cronStart, cronStop, false);
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +123,7 @@ public class TimeRangesResourceTest extends AbstractTimeRangesResourceTest {
         String cronStart = CRON_10_00;
         String cronStop = CRON_20_00;
 
-        initializeExistingCronJobs(cronStart, cronStop);
+        initializeExistingCronJobs(cronStart, cronStop, false);
 
         String newCronStart = CRON_9_00;
 
@@ -125,18 +142,24 @@ public class TimeRangesResourceTest extends AbstractTimeRangesResourceTest {
 
         final String namespace = client.getNamespace();
         List<CronJob> cronJobs = client.batch().v1().cronjobs().inNamespace(namespace).list().getItems();
-        assertThat(cronJobs.size(), is(1));
+        assertThat(cronJobs.size(), is(2));
 
-        CronJob cronJob = cronJobs.get(0);
-        assertThat(cronJob.getMetadata().getName(), is(KubernetesUtils.getCronName(START)));
-        assertThat(cronJob.getSpec().getSchedule(), is(newCronStart));
+        CronJob startCronJob = findCronJobWithName(KubernetesUtils.getCronName(START), client);
+        CronJob stopCronJob = findCronJobWithName(KubernetesUtils.getCronName(STOP), client);
+
+        assertThat(startCronJob.getMetadata().getName(), is(KubernetesUtils.getCronName(START)));
+        assertThat(startCronJob.getSpec().getSchedule(), is(newCronStart));
+        assertThat(startCronJob.getSpec().getSuspend(), is(false));
+        assertThat(stopCronJob.getMetadata().getName(), is(KubernetesUtils.getCronName(STOP)));
+        assertThat(stopCronJob.getSpec().getSchedule(), is(DEFAULT_SUSPENDED_CRON));
+        assertThat(stopCronJob.getSpec().getSuspend(), is(true));
     }
 
     @Test
     public void shouldUpsertExistingTimerangeWithNewOneAndCreate() {
         String cronStart = CRON_10_00;
 
-        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
+        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE, false);
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
@@ -162,9 +185,9 @@ public class TimeRangesResourceTest extends AbstractTimeRangesResourceTest {
 
 
 
-    private void initializeExistingCronJobs(String cronStart, String cronStop) {
-        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
-        InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, IMG_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE);
+    private void initializeExistingCronJobs(String cronStart, String cronStop, Boolean suspend) {
+        InputStream cronJobStart = KubernetesUtils.createCronJobAsInputStream(START, cronStart, IMG_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE, suspend);
+        InputStream cronJobStop = KubernetesUtils.createCronJobAsInputStream(STOP, cronStop, IMG_NAME, SERVICE_ACCOUNT_NAME, TIME_ZONE, suspend);
 
         KubernetesClient client = mockServer.getClient();
         final String namespace = client.getNamespace();
@@ -186,5 +209,9 @@ public class TimeRangesResourceTest extends AbstractTimeRangesResourceTest {
             assertThat(cronJob.getSpec().getSchedule(), anyOf(is(cronStart), is(cronStop)));
             assertThat(cronJob.getMetadata().getName(), anyOf(is(startCronJobName), is(stopCronJobName)));
         });
+    }
+
+    private CronJob findCronJobWithName(final String cronJobName, final KubernetesClient client) {
+        return client.batch().v1().cronjobs().inNamespace(client.getNamespace()).withName(cronJobName).get();
     }
 }
