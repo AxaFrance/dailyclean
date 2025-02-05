@@ -6,6 +6,7 @@ spec:
   concurrencyPolicy: Forbid
   schedule: '{{schedule}}'
   timeZone: '{{timeZone}}'
+  suspend: '{{suspend}}'
   jobTemplate:
     spec:
       template:

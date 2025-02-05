@@ -56,9 +56,10 @@ public class KubernetesService {
      * @param cron The cron given by the end user.
      */
     public void createStartCronJob(String cron) {
-        if(StringUtils.isNotBlank(cron)) {
-            createCronJob(cron, START);
-        }
+        Boolean suspended = KubernetesUtils.getCorrectSuspendValue(cron);
+        String cronExpressionToApply = KubernetesUtils.geCorrectCronExpression(cron);
+
+        createCronJob(cronExpressionToApply, suspended, START);
     }
 
     /**
@@ -67,9 +68,10 @@ public class KubernetesService {
      * @param cron The cron given by the end user.
      */
     public void createStopCronJob(String cron) {
-        if(StringUtils.isNotBlank(cron)) {
-            createCronJob(cron, STOP);
-        }
+        Boolean suspended = KubernetesUtils.getCorrectSuspendValue(cron);
+        String cronExpressionToApply = KubernetesUtils.geCorrectCronExpression(cron);
+
+        createCronJob(cronExpressionToApply, suspended, STOP);
     }
 
     /**
@@ -155,7 +157,7 @@ public class KubernetesService {
     public void createDefaultStopCronJobIfNotExist() {
         CronJob stop = getCronJob(STOP);
         if(stop == null) {
-            createCronJob(defaultCronStop, STOP);
+            createCronJob(defaultCronStop, false, STOP);
         }
     }
 
@@ -183,7 +185,11 @@ public class KubernetesService {
     }
 
     private String getCronAsStringFromCronJob(CronJob cronJob) {
-        return cronJob != null ? cronJob.getSpec().getSchedule() : null;
+        return cronJobIsNotSuspended(cronJob) ? cronJob.getSpec().getSchedule() : null;
+    }
+
+    private boolean cronJobIsNotSuspended(final CronJob cronJob) {
+        return cronJob != null && !cronJob.getSpec().getSuspend();
     }
 
     private String getContainerImageName(CronJob cronJob) {
@@ -200,13 +206,13 @@ public class KubernetesService {
         return res;
     }
 
-    private void createCronJob(String cron, KubernetesArgument argument) {
+    private void createCronJob(String cron, Boolean suspend, KubernetesArgument argument) {
         assertImgNameIsNotBlanck();
         final String namespace = getNamespace();
 
         logger.info("Creating cron job from object");
         kubernetesClient.batch().v1().cronjobs().inNamespace(namespace)
-                .load(KubernetesUtils.createCronJobAsInputStream(argument, cron, imgName, serviceAccountName, timeZone))
+                .load(KubernetesUtils.createCronJobAsInputStream(argument, cron, imgName, serviceAccountName, timeZone, suspend))
                 .createOrReplace();
         logger.info("Successfully created cronjob with name {}", KubernetesUtils.getCronName(argument));
     }
