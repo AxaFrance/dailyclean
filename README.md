@@ -11,7 +11,7 @@
 
 ## About
 
-Daily clean is all you to turn on or off automatically or manually all your pods your kubernetes namespace.
+Daily clean is all you need to turn on or off automatically or manually all your pods your kubernetes namespace.
 Save the planet with DailyClean.
 Daily clean only use kubernetes native API.
 
