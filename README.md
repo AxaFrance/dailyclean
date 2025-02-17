@@ -6,6 +6,7 @@
 - [About](#about)
 - [Getting Started](#getting-started)
 - [How Does It Work](#how-does-it-work)
+- [Configure your DailyClean](#configure-your-dailyclean)
 - [Contribute](#contribute)
 - [Authors](#authors)
 
@@ -66,6 +67,12 @@ metadata:
     # if true, dailyclean web UI will consider this pod as a function
     axa.com/function: 'true' 
 ```
+
+## Configure your DailyClean
+
+| Environment Variable                   | Description                                                                                                                                        | Default value |
+|----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| `SERVICE_UNAUTHORIZED_NAMESPACE_REGEX` | If needed, it is possible to specify a regex matching the Kubernetes namespaces on which the automatic start or stop actions should not be applied |               |
 
 ## Contribute
 

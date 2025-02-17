@@ -2,6 +2,7 @@ package fr.axa.openpaas.dailyclean.service;
 
 import fr.axa.openpaas.dailyclean.model.Workload;
 import fr.axa.openpaas.dailyclean.util.KubernetesUtils;
+import fr.axa.openpaas.dailyclean.util.NamespaceVerifier;
 import fr.axa.openpaas.dailyclean.util.wrapper.DeploymentWrapper;
 import fr.axa.openpaas.dailyclean.util.wrapper.StatefulSetWrapper;
 import io.fabric8.kubernetes.api.model.Container;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.InternalServerErrorException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static fr.axa.openpaas.dailyclean.service.KubernetesArgument.START;
@@ -43,6 +45,9 @@ public class KubernetesService {
 
     @ConfigProperty(name = "service.deployment.label.dailyclean")
     String dailycleanLabelName;
+
+    @ConfigProperty(name = "service.unauthorized.namespace.regex")
+    Optional<String> unauthorizedNamespaceRegex;
 
     private final KubernetesClient kubernetesClient;
 
@@ -208,6 +213,8 @@ public class KubernetesService {
 
     private void createCronJob(String cron, Boolean suspend, KubernetesArgument argument) {
         assertImgNameIsNotBlanck();
+        assertThatNamespaceIsAuthorized();
+
         final String namespace = getNamespace();
 
         logger.info("Creating cron job from object");
@@ -239,6 +246,16 @@ public class KubernetesService {
     private void assertImgNameIsNotBlanck() {
         if (StringUtils.isBlank(imgName)) {
             throw new InternalServerErrorException("The image name is not properly set.");
+        }
+    }
+
+    private void assertThatNamespaceIsAuthorized() {
+        final String currentNamespace = kubernetesClient.getNamespace();
+
+        if(unauthorizedNamespaceRegex.isPresent() &&
+                NamespaceVerifier.isNotAuthorize(currentNamespace, unauthorizedNamespaceRegex.get())){
+            throw new InternalServerErrorException(
+                    "Create CronJob action is not authorized for this namespace. Actual regex for unauthorized namespace : %s".formatted(unauthorizedNamespaceRegex.get()));
         }
     }
 
