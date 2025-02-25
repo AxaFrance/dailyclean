@@ -18,6 +18,7 @@
       <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
       <quarkus.platform.version>3.17.3</quarkus.platform.version>
       <surefire-plugin.version>3.5.2</surefire-plugin.version>
+      <jacoco.version>0.8.12</jacoco.version>
       <package>fr.axa.openpaas.dailyclean</package>
   </properties>
   <dependencyManagement>
@@ -139,6 +140,24 @@
               <output>${project.build.directory}/generated-sources</output>
             </configuration>
           </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+            <execution>
+                <id>default-prepare-agent</id>
+                <goals>
+                    <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                    <exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>
+                    <destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
+                    <append>true</append>
+                </configuration>
+            </execution>
         </executions>
       </plugin>
     </plugins>
