@@ -6,19 +6,19 @@
   <artifactId>dailyclean-api</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <properties>
-      <compiler-plugin.version>3.13.0</compiler-plugin.version>
+      <compiler-plugin.version>3.14.1</compiler-plugin.version>
       <maven.compiler.parameters>true</maven.compiler.parameters>
-      <maven.compiler.source>21</maven.compiler.source>
-      <maven.compiler.target>21</maven.compiler.target>
+      <maven.compiler.source>25</maven.compiler.source>
+      <maven.compiler.target>25</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-      <quarkus-plugin.version>3.17.3</quarkus-plugin.version>
+      <quarkus-plugin.version>3.29.0</quarkus-plugin.version>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
       <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-      <quarkus.platform.version>3.17.3</quarkus.platform.version>
-      <surefire-plugin.version>3.5.2</surefire-plugin.version>
-      <jacoco.version>0.8.12</jacoco.version>
+      <quarkus.platform.version>3.29.0</quarkus.platform.version>
+      <surefire-plugin.version>3.5.4</surefire-plugin.version>
+      <jacoco.version>0.8.14</jacoco.version>
       <package>fr.axa.openpaas.dailyclean</package>
   </properties>
   <dependencyManagement>
@@ -112,7 +112,7 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>6.3.0</version>
+        <version>7.16.0</version>
         <executions>
           <execution>
             <goals>
@@ -174,7 +174,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.22.2</version>
+            <version>3.5.4</version>
             <executions>
               <execution>
                 <goals>
@@ -193,7 +193,7 @@
           </plugin>
           <plugin>
             <artifactId>maven-archetype-plugin</artifactId>
-            <version>3.2.0</version>
+            <version>3.4.1</version>
           </plugin>
         </plugins>
       </build>
