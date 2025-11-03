@@ -13,7 +13,7 @@ jobs:
     name: Sonar Cloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -27,7 +27,7 @@ jobs:
         run: mvn --batch-mode --update-snapshots verify
         working-directory: ./api/api
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v6
         with:
           node-version: '22'
 
@@ -39,22 +39,9 @@ jobs:
         run: npm test -- --run
         working-directory: ./api/web
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.organization=axaguildev
-            -Dsonar.projectKey=AxaGuilDEv_dailyclean
-            -Dsonar.java.binaries=api/api/target/classes
-            -Dsonar.java.libraries=.
-            -Dsonar.coverage.jacoco.xmlReportPaths=**/target/jacoco-report/jacoco.xml
-            -Dsonar.javascript.lcov.reportPaths=api/web/coverage/lcov.info
-            -Dsonar.javascript.file.suffixes=js,jsx
-            -Dsonar.python.version=3
-            -Dsonar.exclusions=**/*.spec.js,**/*.stories.js,**/src/coverage/**,**/*.scss,**/__snapshots__/**,**/node_modules/**,**/src/.storybook/**,**/src/storybook-static/**,**/__mocks__/**
-            -Dsonar.coverage.exclusions=**src/test/**/*.*
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   tags:
@@ -62,7 +49,7 @@ jobs:
     outputs:
       new_version: ${{ steps.tag.outputs.new_version }}
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v5
       - name: Bump version and push tag
         id: tag_version
         if: github.ref == 'refs/heads/main'
