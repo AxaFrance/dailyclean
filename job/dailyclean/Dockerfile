@@ -1,5 +1,5 @@
 
-FROM registry.access.redhat.com/ubi10/python-312-minimal as build
+FROM registry.access.redhat.com/ubi10/python-312-minimal AS build
 ENV \
   APP_ROOT=/opt/app-root \
   HOME=/opt/app-root \
@@ -11,7 +11,7 @@ WORKDIR ${APP_ROOT}
 RUN python3 -m pip install --compile --no-cache-dir --root ${APP_ROOT}/packages kubernetes
 RUN mv ${APP_ROOT}/packages/${APP_ROOT}/* ${APP_ROOT}/packages && rm -rf ${APP_ROOT}/packages/opt
 
-FROM registry.access.redhat.com/ubi10/python-312-minimal as run
+FROM registry.access.redhat.com/ubi10/python-312-minimal AS run
 ENV \
   APP_ROOT=/opt/app-root \
   HOME=/opt/app-root \

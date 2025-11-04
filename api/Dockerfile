@@ -24,8 +24,8 @@ WORKDIR ${APP_ROOT}
 
 USER root
 
-ENV MAVEN_VERSION 3.9.11
-ENV MAVEN_DOWNLOAD_SUM bcfe4fe305c962ace56ac7b5fc7a08b87d5abd8b7e89027ab251069faebee516b0ded8961445d6d91ec1985dfe30f8153268843c89aa392733d1a3ec956c9978
+ENV MAVEN_VERSION=3.9.11
+ENV MAVEN_DOWNLOAD_SUM=bcfe4fe305c962ace56ac7b5fc7a08b87d5abd8b7e89027ab251069faebee516b0ded8961445d6d91ec1985dfe30f8153268843c89aa392733d1a3ec956c9978
 ENV MAVEN_DIR=/opt/maven
 
 RUN printf "[Adoptium]\nname=Adoptium\nbaseurl=https://packages.adoptium.net/artifactory/rpm/rhel/10/x86_64/\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.adoptium.net/artifactory/api/gpg/key/public\n" > /etc/yum.repos.d/adoptium.repo
@@ -47,7 +47,7 @@ RUN curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/
     rm -Rf apache-maven-${MAVEN_VERSION}
 
 
-ENV PATH ${MAVEN_DIR}/bin:$PATH
+ENV PATH=${MAVEN_DIR}/bin:$PATH
 
 RUN rm -r /var/cache/dnf && \
     INSTALL_PKGS="glibc-devel zlib-ng-compat-devel gcc" && \
@@ -58,10 +58,10 @@ RUN rm -r /var/cache/dnf && \
     rpm -V libstdc++-static && \
     dnf -y clean all --enablerepo='*'
 
-ENV JAVA_VERSION java25
-ENV MANDREL_VERSION 25.0.0.1-Final
-ENV MANDREL_DOWNLOAD_SUM d4eaeacc7737d7f0285164c56472d5cdd5f44228597b38329d8b436594c15af5
-ENV MANDREL_DIR /opt/mandrel
+ENV JAVA_VERSION=java25
+ENV MANDREL_VERSION=25.0.0.1-Final
+ENV MANDREL_DOWNLOAD_SUM=d4eaeacc7737d7f0285164c56472d5cdd5f44228597b38329d8b436594c15af5
+ENV MANDREL_DIR=/opt/mandrel
 
 WORKDIR ${APP_ROOT}
 
