@@ -18,6 +18,8 @@ ENV \
   PATH=/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   USER=1001
 
+ENV PYTHONPATH=${APP_ROOT}/.local/lib64/python3.12/site-packages
+
 WORKDIR ${APP_ROOT}
 
 COPY --chown=${USER} --from=build ${APP_ROOT}/packages ./.local
