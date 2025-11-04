@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "tsc --noEmit && eslint src --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -25,6 +25,7 @@
     "vitest": "^2.1.5"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@storybook/addon-essentials": "^8.4.5",
     "@storybook/addon-interactions": "^8.4.5",
     "@storybook/addon-links": "^8.4.5",
@@ -34,6 +35,8 @@
     "@storybook/testing-library": "^0.2.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
     "@vitejs/plugin-react": "^4.3.3",
     "@vitest/coverage-v8": "^2.1.5",
     "eslint": "^9.15.0",
@@ -41,10 +44,12 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "eslint-plugin-storybook": "^0.11.1",
+    "globals": "^16.5.0",
     "jsdom": "^25.0.1",
     "prop-types": "^15.8.1",
     "sass": "1.81.0",
     "storybook": "^8.4.5",
+    "typescript": "^5.9.3",
     "vite": "^5.4.11"
   }
 }
