@@ -19,18 +19,18 @@ import io.fabric8.kubernetes.api.model.apps.StatefulSet;
 import io.fabric8.kubernetes.api.model.apps.StatefulSetSpec;
 import io.fabric8.kubernetes.api.model.apps.StatefulSetStatus;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.kubernetes.client.KubernetesServer;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.response.ValidatableResponseOptions;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import jakarta.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -44,7 +44,6 @@ import static org.hamcrest.Matchers.empty;
 @WithKubernetesTestServer
 @QuarkusTest
 public class StatusResourceTest {
-
 
     private static final String DEPLOY_DAILYCLEAN = "deployDailyclean";
     private static final String DEPLOY_ML = "deployMl";
@@ -92,7 +91,6 @@ public class StatusResourceTest {
                 KubernetesUtils.mapWorkload(new StatefulSetWrapper(mysqlStatefulSet), DAILYCLEAN_LABEL_NAME);
         Workload redisStatefulSetReturned =
                 KubernetesUtils.mapWorkload(new StatefulSetWrapper(redisStatefulSet), DAILYCLEAN_LABEL_NAME);
-
 
         // Test
         assertGetStatus(namespace, STARTED, deploymentReturnedDailyclean, deploymentReturnedMl, deploymentReturnedEs,
@@ -143,7 +141,6 @@ public class StatusResourceTest {
         createDeployments(deploymentDailyclean, deploymentMl, deploymentEs);
         createStatefulSets(mysqlStatefulSet, redisStatefulSet);
         final String namespace = getNamespace();
-
 
         // Map
         Workload deploymentReturnedDailyclean =
@@ -335,7 +332,6 @@ public class StatusResourceTest {
         container.getPorts().add(port);
         podSpec.getContainers().add(container);
         templateSpec.setSpec(podSpec);
-
 
         ResourceRequirements resourceRequirements = new ResourceRequirements();
         resourceRequirements.setLimits(new HashMap<>());

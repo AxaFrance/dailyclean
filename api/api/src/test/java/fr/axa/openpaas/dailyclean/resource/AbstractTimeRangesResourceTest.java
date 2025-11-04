@@ -1,7 +1,7 @@
 package fr.axa.openpaas.dailyclean.resource;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.quarkus.test.kubernetes.client.KubernetesServer;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import org.junit.jupiter.api.BeforeEach;
 
