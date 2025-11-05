@@ -33,11 +33,7 @@ const FormPlateformState = ({
   children,
 }: {
   state: FormState;
-  onChange: (data: {
-    value: string | number;
-    name: string;
-    id: string;
-  }) => void;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
   onSubmit: React.MouseEventHandler<HTMLButtonElement>;
   children?: ReactNode;
 }) => (

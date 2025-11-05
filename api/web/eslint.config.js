@@ -12,7 +12,7 @@ export default [
     ignores: ["dist", "node_modules", "storybook-static", "coverage"],
   },
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*.{js,jsx,ts,tsx,mts}"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
@@ -29,16 +29,16 @@ export default [
         ...globals.es2020,
       },
     },
-    settings: {
-      react: {
-        version: "18.2",
-      },
-    },
     plugins: {
       react,
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       "@typescript-eslint": tseslint,
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
     },
     rules: {
       ...js.configs.recommended.rules,

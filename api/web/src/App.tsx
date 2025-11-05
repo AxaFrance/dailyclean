@@ -1,16 +1,14 @@
-import React from "react";
-
-import Header from "./Header";
-import Title from "./Title";
 import Footer from "./Footer";
+import Header from "./Header";
+import HeaderTitle from "./Title";
 
-
-const App= ({children}) => <>
+const App = ({ children }) => (
+  <>
     <Header />
-    <Title />
+    <HeaderTitle />
     {children}
     <Footer />
-  </>;
-
+  </>
+);
 
 export default App;

@@ -8,7 +8,6 @@ export type ResilienceStatus =
   | "ERROR";
 
 export type HourForm = {
-  viewValue: string;
   value: number;
   message: string;
   forceDisplayMessage: boolean;

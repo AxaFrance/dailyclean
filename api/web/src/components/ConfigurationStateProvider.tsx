@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { ApiConfigurationContext, apiConfigurationDefault } from "../ApiConfigurationProvider";
+import {
+  ApiConfigurationContext,
+  apiConfigurationDefault,
+} from "../ApiConfigurationProvider";
 import App from "../App";
 import FormConfigurationContainer from "../FormConfigurationContainer";
 import FormStateContainer from "../FormStateContainer";
@@ -24,7 +27,10 @@ const ConfigurationStateProvider = ({
         <div className="container">
           <div className="row">
             <div className="col col-sm-12">
-              <FormStateContainer fetch={fetch} apiState={apiState} />
+              <FormStateContainer
+                fetch={fetch}
+                workloads={apiState.data.workloads}
+              />
             </div>
           </div>
         </div>

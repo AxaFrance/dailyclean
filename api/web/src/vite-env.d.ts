@@ -1,9 +1,3 @@
 /// <reference types="vite/client" />
-
-interface ImportMetaEnv {
-  readonly VITE_ENABLE_MOCK: string
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv
-}
+/// <reference types="vite-plugin-svgr/client" />
+/// <reference types="vitest" />

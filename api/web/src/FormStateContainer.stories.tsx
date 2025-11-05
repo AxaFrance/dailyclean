@@ -7,8 +7,8 @@ import "@axa-fr/react-toolkit-core/src/common/scss/core.scss";
 import "./scss/grid.css";
 import "./scss/reboot.css";
 
+import { ComponentProps } from "react";
 import mock from "./ListState.mock";
-import { ApiState } from "./types/api";
 
 export default {
   title: "State/FormStateContainer",
@@ -23,10 +23,7 @@ const fetch = (status = 200) => {
   );
 };
 
-interface TemplateArgs {
-  fetch: (url: string, config?: RequestInit) => Promise<Response>;
-  apiState: ApiState;
-}
+type TemplateArgs = ComponentProps<typeof FormStateContainer>;
 
 const Template = (args: TemplateArgs) => <FormStateContainer {...args} />;
 Template.displayName = "FormStateTemplate";
@@ -36,9 +33,5 @@ export const FormState = Template.bind({}) as typeof Template & {
 };
 FormState.args = {
   fetch: fetch(200),
-  apiState: {
-    data: mock,
-    status: "EMPTY",
-    firstStatus: "EMPTY",
-  },
+  workloads: mock.workloads,
 };
