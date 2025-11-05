@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { ApiConfigurationContext } from "./ApiConfigurationProvider";
 import { ListState } from "./ListState";
 import { ApiData } from "./types/api";
@@ -22,36 +22,23 @@ const getCurrency = () => {
 
 const ListStateContainer = (props: { apiState: ApiData }) => {
   const apiConfigurationState = useContext(ApiConfigurationContext);
-  const [state, setState] = useState({
-    priceByMonth: 75,
-    locale: "FR-fr",
-    currency: "EUR",
-  });
-
-  useEffect(() => {
-    const priceByMonth = getPriceByMonth();
-    const languages: readonly string[] =
-      Array.isArray(window.navigator.languages) &&
-      window.navigator.languages.length > 0
-        ? window.navigator.languages
-        : [window.navigator.language || "FR-fr"];
-    const locale: string =
-      languages && languages.length > 0 ? languages[0] : "FR-fr";
-    const currency = getCurrency();
-    setState({
-      priceByMonth,
-      locale: locale || "FR-fr",
-      currency: currency || "EUR",
-    });
-  }, []);
+  const priceByMonth = getPriceByMonth();
+  const languages: readonly string[] =
+    Array.isArray(window.navigator.languages) &&
+    window.navigator.languages.length > 0
+      ? window.navigator.languages
+      : [window.navigator.language || "FR-fr"];
+  const locale: string =
+    languages && languages.length > 0 ? languages[0] : "FR-fr";
+  const currency = getCurrency();
 
   return (
     <ListState
       apiState={props.apiState}
       apiConfigurationState={apiConfigurationState}
-      priceByMonth={state.priceByMonth}
-      locale={state.locale}
-      currency={state.currency}
+      priceByMonth={priceByMonth}
+      locale={locale || "FR-fr"}
+      currency={currency || "EUR"}
     />
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { getAsync, postAsync, urls } from "./api";
 import { endWeekModeEnum, startWeekModeEnum } from "./apiConstants";
@@ -25,13 +25,11 @@ interface FormConfigurationContainerProps {
 
 const preInitialForm: Form = {
   startHour: {
-    viewValue: "9",
     value: 9,
     message: "",
     forceDisplayMessage: false,
   },
   endHour: {
-    viewValue: "18",
     value: 18,
     message: "",
     forceDisplayMessage: false,
@@ -177,12 +175,10 @@ const getTimeRangesAsync =
       form: {
         startHour: {
           ...form.startHour,
-          viewValue: startHourLocal.toString(),
           value: startHourLocal,
         },
         endHour: {
           ...form.endHour,
-          viewValue: endHourLocal.toString(),
           value: endHourLocal,
         },
         startWeekMode: { ...form.startWeekMode, value: startWeekMode },
@@ -320,8 +316,17 @@ const FormConfigurationContainer = ({
     });
   }, [fetch, setConfigurationState]);
 
-  const onChange = (e: { name: string; value: string | number }) =>
-    doChange(state, e, setState);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    doChange(
+      state,
+      {
+        name,
+        value: type === "checkbox" ? (checked ? 1 : 0) : value,
+      },
+      setState,
+    );
+  };
   const onSubmit = () => {
     void onSubmitAsync(fetch)(setState, state).then((newState) => {
       if (newState) {
