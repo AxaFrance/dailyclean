@@ -2,8 +2,7 @@ import FormConfigurationContainer from "./FormConfigurationContainer";
 import Header from "./Header";
 import { createMockFetch } from "./test-utils/mockResponse";
 
-import "@axa-fr/react-toolkit-core/dist/assets/fonts/icons/af-icons.css";
-import "@axa-fr/react-toolkit-core/src/common/scss/core.scss";
+import "@axa-fr/design-system-slash-css/dist/common/common.scss";
 import "./scss/grid.css";
 import "./scss/reboot.css";
 

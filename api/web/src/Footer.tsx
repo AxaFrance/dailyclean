@@ -1,16 +1,8 @@
-
-import { Footer } from '@axa-fr/react-toolkit-layout-footer';
-import logo from '@axa-fr/react-toolkit-core/dist/assets/logo-axa.svg';
-
-import '@axa-fr/react-toolkit-layout-footer/dist/footer.scss';
+import logo from "@axa-fr/design-system-slash-css/logo-axa.svg";
+import { Footer } from "@axa-fr/design-system-slash-react";
 
 function FooterComponent() {
-  return (
-    <Footer
-    icon={logo}
-    copyright={'AXA France'}
-  />
-  );
+  return <Footer icon={logo}>AXA France</Footer>;
 }
 
 export default FooterComponent;

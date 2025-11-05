@@ -1,5 +1,4 @@
-import "@axa-fr/react-toolkit-core/dist/assets/fonts/icons/af-icons.css";
-import "@axa-fr/react-toolkit-core/src/common/scss/core.scss";
+import "@axa-fr/design-system-slash-css/dist/common/common.scss";
 import { createRoot } from "react-dom/client";
 import ApiStateProvider from "./ApiStateProvider";
 import createAppWrapperComponent from "./components/AppWrapper";
