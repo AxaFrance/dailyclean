@@ -1,13 +1,10 @@
-import Alert from "@axa-fr/react-toolkit-alert";
-import "@axa-fr/react-toolkit-alert/dist/alert.scss";
-import Loader, { LoaderModes } from "@axa-fr/react-toolkit-loader";
-import "@axa-fr/react-toolkit-loader/dist/spinner.scss";
-import { ComponentType, forwardRef } from "react";
+import { Alert, Loader } from "@axa-fr/design-system-slash-react";
+import { ComponentProps, ComponentType, forwardRef } from "react";
 import { ResilienceStatus } from "./types/form";
 
 interface WithResilienceProps {
   status: ResilienceStatus;
-  loaderMode?: (typeof LoaderModes)[keyof typeof LoaderModes];
+  loaderMode?: ComponentProps<typeof Loader>["mode"];
 }
 
 const withResilience = <P extends object>(Component: ComponentType<P>) => {
@@ -18,14 +15,14 @@ const withResilience = <P extends object>(Component: ComponentType<P>) => {
       switch (status) {
         case "LOADING":
           return (
-            <Loader mode={loaderMode || LoaderModes.get}>
+            <Loader mode={loaderMode || "get"}>
               <Component {...(componentProps as P)} ref={ref} />
             </Loader>
           );
 
         case "POST":
           return (
-            <Loader mode={loaderMode || LoaderModes.post}>
+            <Loader mode={loaderMode || "post"}>
               <Component {...(componentProps as P)} ref={ref} />
             </Loader>
           );

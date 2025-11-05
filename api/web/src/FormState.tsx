@@ -1,8 +1,4 @@
-import Button from "@axa-fr/react-toolkit-button";
-import "@axa-fr/react-toolkit-button/dist/button.scss";
-import "@axa-fr/react-toolkit-form-core/dist/form.scss";
-import "@axa-fr/react-toolkit-form-input-checkbox/dist/checkbox.scss";
-import { ChoiceInput } from "@axa-fr/react-toolkit-form-input-choice";
+import { Button, ChoiceInput } from "@axa-fr/design-system-slash-react";
 import React from "react";
 import "./FormState.scss";
 import { FormState as FormStateType } from "./types/form";
@@ -19,37 +15,34 @@ const FormState = ({
   children,
 }: {
   state: FormStateType;
-  onChange: (e: { name: string; value: boolean }) => void;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
   onSubmit: () => void;
   children?: React.ReactNode;
-}) => (
-  <>
-    <form className="af-form">
-      {children}
-      <h2 className="af-title--content">State</h2>
-      <ChoiceInput
-        label="Turn environment"
-        id="started"
-        name="started"
-        options={defaultOptions}
-        value={state.started.value.toString()}
-        onChange={onChange}
-        classModifier="state"
-        crossOrigin={undefined}
-        onPointerEnterCapture={undefined}
-        onPointerLeaveCapture={undefined}
-      />
-      <Button
-        className="offset-md-2 btn af-btn"
-        id="id"
-        onClick={onSubmit}
-        disabled={state.submit.disabled}
-        classModifier={state.submit.disabled ? "disabled" : ""}
-      >
-        <span className="af-btn__text">Submit</span>
-      </Button>
-    </form>
-  </>
-);
+}) => {
+  return (
+    <>
+      <form className="af-form">
+        {children}
+        <h2 className="af-title--content">State</h2>
+        <ChoiceInput
+          label="Turn environment"
+          id="started"
+          name="started"
+          options={defaultOptions}
+          value={state.started.value}
+          onChange={onChange}
+          classModifier="state"
+        />
+        <Button
+          className="offset-md-2 btn af-btn"
+          onClick={onSubmit}
+          disabled={state.submit.disabled}
+        >
+          <span className="af-btn__text">Submit</span>
+        </Button>
+      </form>
+    </>
+  );
+};
 
 export default FormState;

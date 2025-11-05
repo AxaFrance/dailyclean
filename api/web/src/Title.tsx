@@ -1,4 +1,3 @@
-import "@axa-fr/react-toolkit-layout-header/dist/HeaderTitle/af-title-bar.css";
 import { ApiStateConsumer } from "./ApiStateProvider";
 import { withApiState } from "./apiStateUtils";
 import { ApiState } from "./types/api";

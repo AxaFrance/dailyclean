@@ -1,4 +1,4 @@
-import Loader, { LoaderModes } from "@axa-fr/react-toolkit-loader";
+import { Loader } from "@axa-fr/design-system-slash-react";
 import React, { ComponentType } from "react";
 import { ApiState } from "./types/api";
 
@@ -21,7 +21,7 @@ export const withApiState = <P extends object>(
       <ApiStateConsumer>
         {(store) =>
           store.firstStatus === "LOADING" ? (
-            <Loader mode={LoaderModes.get}>Loading...</Loader>
+            <Loader mode="get">Loading...</Loader>
           ) : (
             <Component {...props} apiState={store} />
           )
