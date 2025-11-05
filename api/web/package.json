@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:mock": "cross-env VITE_ENABLE_MOCK=true vite",
     "build": "vite build",
     "lint": "tsc --noEmit && eslint src --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -39,6 +40,7 @@
     "@typescript-eslint/parser": "^8.46.3",
     "@vitejs/plugin-react": "^4.3.3",
     "@vitest/coverage-v8": "^2.1.5",
+    "cross-env": "^10.1.0",
     "eslint": "^9.15.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
@@ -46,10 +48,16 @@
     "eslint-plugin-storybook": "^0.11.1",
     "globals": "^16.5.0",
     "jsdom": "^25.0.1",
+    "msw": "^2.11.6",
     "prop-types": "^15.8.1",
     "sass": "1.81.0",
     "storybook": "^8.4.5",
     "typescript": "^5.9.3",
     "vite": "^5.4.11"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

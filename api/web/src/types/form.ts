@@ -29,11 +29,6 @@ export type Form = {
   };
 };
 
-export type Timeranges = {
-  cron_start?: string;
-  cron_stop?: string;
-};
-
 export type FormState = {
   form: Form;
   started: { value: boolean };
