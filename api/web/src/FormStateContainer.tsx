@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { postAsync, urls } from "./api";
 import { endWeekModeEnum, startWeekModeEnum } from "./apiConstants";
 import FormState from "./FormState";
@@ -19,22 +19,18 @@ const initialState: FormStateType = {
     startHour: {
       value: 9,
       message: "",
-      forceDisplayMessage: false,
     },
     endHour: {
       value: 18,
       message: "",
-      forceDisplayMessage: false,
     },
     startWeekMode: {
       value: startWeekModeEnum.disabled,
       message: "",
-      forceDisplayMessage: false,
     },
     endWeekMode: {
       value: endWeekModeEnum.enabled,
       message: "",
-      forceDisplayMessage: false,
     },
   },
   started: { value: false },
@@ -69,13 +65,13 @@ const FormStateContainer = ({ fetch, workloads }: FormStateContainerProps) => {
     setFormState((prev) => computeFormState(prev, currentState));
   }
 
-  const onChange = (e: { name: string; value: boolean }) => {
-    switch (e.name) {
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    switch (e.target.name) {
       case "started": {
         const submit = { disabled: false };
         setFormState((prevState) => ({
           ...prevState,
-          started: { value: e.value },
+          started: { value: e.target.value === "true" },
           submit,
           status: "EMPTY",
         }));

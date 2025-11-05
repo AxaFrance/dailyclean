@@ -1,7 +1,4 @@
-import Popover, { PopoverPlacements } from "@axa-fr/react-toolkit-popover";
-import "@axa-fr/react-toolkit-popover/dist/popover.scss";
-import Table from "@axa-fr/react-toolkit-table";
-import "@axa-fr/react-toolkit-table/dist/table.scss";
+import { Popover, Table, Tag } from "@axa-fr/design-system-slash-react";
 import { endWeekModeEnum, startWeekModeEnum } from "./apiConstants";
 import {
   computeIsDailyCleaned,
@@ -9,8 +6,6 @@ import {
   computeState,
 } from "./state.js";
 
-import Badge from "@axa-fr/react-toolkit-badge";
-import "@axa-fr/react-toolkit-badge/dist/af-badge.css";
 import "./ListState.scss";
 import {
   ApiConfiguration,
@@ -401,7 +396,7 @@ export const ListState = ({
         {getTitle(state)}
       </h3>
       <Table>
-        <Table.Header>
+        <Table.THead>
           <Table.Tr>
             <Table.Th rowSpan={2}>
               <span className="af-table-th-content">
@@ -412,18 +407,21 @@ export const ListState = ({
               <span className="af-table-th-content">Ready </span>
             </Table.Th>
             <Table.Th colSpan={3}>
-              <Popover placement={PopoverPlacements.top} mode="hover">
-                <Popover.Pop>
-                  <h3>Warning</h3>
-                  <p>This is cost estimation only, not the real price.</p>
-                  <p>
-                    Price by month for 1 Go:{" "}
-                    <b>{formatPrice(priceByMonth, locale, currency)}</b>
-                  </p>
-                </Popover.Pop>
-                <Popover.Over>
-                  <span className="af-table-th-content">Estimated cost *</span>
-                </Popover.Over>
+              <Popover
+                placement="top"
+                mode="hover"
+                popoverElement={
+                  <>
+                    <h3>Warning</h3>
+                    <p>This is cost estimation only, not the real price.</p>
+                    <p>
+                      Price by month for 1 Go:{" "}
+                      <b>{formatPrice(priceByMonth, locale, currency)}</b>
+                    </p>
+                  </>
+                }
+              >
+                <span className="af-table-th-content">Estimated cost *</span>
               </Popover>
             </Table.Th>
           </Table.Tr>
@@ -435,62 +433,60 @@ export const ListState = ({
               <span className="af-table-th-content">by year</span>
             </Table.Th>
           </Table.Tr>
-        </Table.Header>
-        <Table.Body>
-          {workloads.map((d) => (
-            <Table.Tr key={d.id}>
+        </Table.THead>
+        <Table.TBody>
+          {workloads.map((workload) => (
+            <Table.Tr key={workload.id}>
               <Table.Td>
                 <Popover
-                  placement={PopoverPlacements.right}
+                  placement="right"
                   mode="hover"
                   classModifier="deployment"
-                >
-                  <Popover.Pop>
+                  popoverElement={
                     <ContainerResources
-                      workload={d}
+                      workload={workload}
                       priceByMonth={priceByMonth}
                       apiState={apiState}
                       locale={locale}
                       currency={currency}
                     />
-                  </Popover.Pop>
-                  <Popover.Over>
-                    <span
-                      className={cssState(
-                        d,
-                        state,
-                        "af-table-body-content--more",
-                      )}
-                    >
-                      {d.id}
-                    </span>
-                  </Popover.Over>
+                  }
+                >
+                  <span
+                    className={cssState(
+                      workload,
+                      state,
+                      "af-table-body-content--more",
+                    )}
+                  >
+                    {workload.id}
+                  </span>
                 </Popover>
                 <div className={"dailyclean-badges"}>
-                  {computeIsFunction(d) && (
-                    <Badge classModifier="function">Function</Badge>
+                  {computeIsFunction(workload) && (
+                    <Tag className="function">Function</Tag>
                   )}
-                  {d.type === "STATEFULSET" && (
-                    <Badge classModifier="statefulset">Statefulset</Badge>
+                  {workload.type === "STATEFULSET" && (
+                    <Tag className="statefulset">Statefulset</Tag>
                   )}
                 </div>
                 <span className="af-table-body-content--containers">
                   {" "}
-                  <Containers deployment={d} />{" "}
+                  <Containers deployment={workload} />{" "}
                 </span>
               </Table.Td>
               <Table.Td>
-                <span className={cssState(d, state)}>
-                  {d.current}/{d.target}
+                <span className={cssState(workload, state)}>
+                  {workload.current}/{workload.target}
                 </span>
               </Table.Td>
               <Table.Td>
                 <span>
                   {formatPrice(
                     monthlyCost(
-                      findMaxGoResource(d),
-                      d.target || 0,
-                      computeIsDailyCleaned(d),
+                      findMaxGoResource(workload),
+                      workload.target || 0,
+                      computeIsDailyCleaned(workload),
                       ratio,
                       priceByMonth,
                       apiState.state,
@@ -504,9 +500,9 @@ export const ListState = ({
                 <span>
                   {formatPrice(
                     yearlyCost(
-                      findMaxGoResource(d),
-                      d.target || 0,
-                      computeIsDailyCleaned(d),
+                      findMaxGoResource(workload),
+                      workload.target || 0,
+                      computeIsDailyCleaned(workload),
                       ratio,
                       priceByMonth,
                       apiState.state,
@@ -576,7 +572,7 @@ export const ListState = ({
               </span>
             </Table.Td>
           </Table.Tr>
-        </Table.Body>
+        </Table.TBody>
       </Table>
     </div>
   );

@@ -10,7 +10,6 @@ export type ResilienceStatus =
 export type HourForm = {
   value: number;
   message: string;
-  forceDisplayMessage: boolean;
 };
 
 export type Form = {
@@ -19,12 +18,10 @@ export type Form = {
   startWeekMode: {
     value: StartWeekMode;
     message: string;
-    forceDisplayMessage: boolean;
   };
   endWeekMode: {
     value: EndWeekMode;
     message: string;
-    forceDisplayMessage: boolean;
   };
 };
 

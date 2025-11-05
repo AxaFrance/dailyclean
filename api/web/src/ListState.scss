@@ -1,89 +1,85 @@
-
 .dailyclean-badges {
-  float: right
+    float: right;
+
+    display: flex;
+    gap: 0.5rem;
+
+    .function {
+        background-color: rgb(153 179 172);
+    }
+    .statefulset {
+        background-color: rgb(122 122 121);
+    }
 }
-
-.af-badge{
-  &--function {
-    background-color: rgb(153 179 172);
-  }
-  &--statefulset{
-    background-color: rgb(122 122 121);
-  }
-}
-
-
-
 
 .af-table-body-content {
-  &--ok{
-    color: blue;
-    cursor: help;
-  }
-  &--more:after {
-    content: "(?)";
-    font-size: 0.8em;
-    margin: 0.2em;
-    color: rgb(182, 179, 179);
-  }
-  &--in-progress{
-    color: darkorange;
-    cursor: help;
-  }
-  &--stopped{
-    color: #920404;
-    cursor: help;
-  }
-  &--function{
-    color: #5454ff;
-    cursor: help;
-  }
-  &--not-daily-cleaned {
-  }
-  &--containers{
-    font-size: 0.8em;
-    color: rgb(119, 119, 119);
-    display: block;
-    margin-top: -4px;
-  }
-  &--total{
-    font-weight: bold;
-  }
-  &--total-without-daily{
-    font-weight: bold;
-    color: rgb(182, 84, 84);
-  }
-  &--total-with-daily{
-    font-weight: bold;
-    color: rgb(84, 182, 128);
-  }
-
+    &--ok {
+        color: blue;
+        cursor: help;
+    }
+    &--more:after {
+        content: "(?)";
+        font-size: 0.8em;
+        margin: 0.2em;
+        color: rgb(182, 179, 179);
+    }
+    &--in-progress {
+        color: darkorange;
+        cursor: help;
+    }
+    &--stopped {
+        color: #920404;
+        cursor: help;
+    }
+    &--function {
+        color: #5454ff;
+        cursor: help;
+    }
+    &--not-daily-cleaned {
+    }
+    &--containers {
+        font-size: 0.8em;
+        color: rgb(119, 119, 119);
+        display: block;
+        margin-top: -4px;
+    }
+    &--total {
+        font-weight: bold;
+    }
+    &--total-without-daily {
+        font-weight: bold;
+        color: rgb(182, 84, 84);
+    }
+    &--total-with-daily {
+        font-weight: bold;
+        color: rgb(84, 182, 128);
+    }
 }
 
-.af-table-th-content{
-  &--today-hours{
-    display: block;
-    font-size: 0.8em;
-  }
+.af-table-th-content {
+    &--today-hours {
+        display: block;
+        font-size: 0.8em;
+    }
 }
 
 .deployment__state {
-  width: 30px;
-  height: 30px;
-  margin-right: 0.4em;
-  border-radius: 20px;
-  display: inline-block;
-  &--started{
-    background: green;
-  }
-  &--in_progress{
-    background: orange;
-  }
-  &--stopped{
-    background: red;
-  }
+    width: 30px;
+    height: 30px;
+    margin-right: 0.4em;
+    border-radius: 20px;
+    display: inline-block;
+    &--started {
+        background: green;
+    }
+    &--in_progress {
+        background: orange;
+    }
+    &--stopped {
+        background: red;
+    }
 }
 
 .af-popover__container--deployment .af-popover__container-pop {
-  width: 320px;
+    width: 320px;
 }

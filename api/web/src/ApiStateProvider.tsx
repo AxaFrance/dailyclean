@@ -1,5 +1,3 @@
-import "@axa-fr/react-toolkit-alert/dist/alert.scss";
-import "@axa-fr/react-toolkit-loader/dist/spinner.scss";
 import React, { useEffect, useRef, useState } from "react";
 import { getAsync, urls } from "./api";
 import { initialState } from "./apiStateUtils";

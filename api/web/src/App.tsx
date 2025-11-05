@@ -1,8 +1,13 @@
+import { ReactNode } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 import HeaderTitle from "./Title";
 
-const App = ({ children }) => (
+interface AppProps {
+  children: ReactNode;
+}
+
+const App = ({ children }: AppProps) => (
   <>
     <Header />
     <HeaderTitle />

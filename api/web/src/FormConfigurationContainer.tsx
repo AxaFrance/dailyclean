@@ -27,22 +27,18 @@ const preInitialForm: Form = {
   startHour: {
     value: 9,
     message: "",
-    forceDisplayMessage: false,
   },
   endHour: {
     value: 18,
     message: "",
-    forceDisplayMessage: false,
   },
   startWeekMode: {
     value: startWeekModeEnum.disabled,
     message: "",
-    forceDisplayMessage: false,
   },
   endWeekMode: {
     value: endWeekModeEnum.enabled,
     message: "",
-    forceDisplayMessage: false,
   },
 };
 
@@ -289,7 +285,6 @@ const doChange = (
         | {
             value: StartWeekMode | EndWeekMode;
             message: string;
-            forceDisplayMessage: boolean;
           },
     ) => field.message,
   );

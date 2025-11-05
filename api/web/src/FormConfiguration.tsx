@@ -1,11 +1,8 @@
-import Button from "@axa-fr/react-toolkit-button";
-
-import "@axa-fr/react-toolkit-button/dist/button.scss";
-import "@axa-fr/react-toolkit-form-core/dist/form.scss";
-import { NumberInput } from "@axa-fr/react-toolkit-form-input-number";
-import { RadioInput } from "@axa-fr/react-toolkit-form-input-radio";
-import "@axa-fr/react-toolkit-form-input-radio/dist/radio.scss";
-import "@axa-fr/react-toolkit-form-input-text/dist/inputtext.scss";
+import {
+  Button,
+  NumberInput,
+  RadioInput,
+} from "@axa-fr/design-system-slash-react";
 
 import React, { ReactNode } from "react";
 import "./FormConfiguration.scss";
@@ -51,9 +48,6 @@ const FormPlateformState = ({
       {...state.form.startHour}
     />
     <RadioInput
-      crossOrigin={undefined}
-      onPointerEnterCapture={undefined}
-      onPointerLeaveCapture={undefined}
       label=""
       id="startWeekMode"
       name="startWeekMode"
@@ -72,9 +66,6 @@ const FormPlateformState = ({
       {...state.form.endHour}
     />
     <RadioInput
-      crossOrigin={undefined}
-      onPointerEnterCapture={undefined}
-      onPointerLeaveCapture={undefined}
       label=""
       id="endWeekMode"
       name="endWeekMode"
@@ -84,10 +75,9 @@ const FormPlateformState = ({
     />
     <Button
       className="offset-md-2 btn af-btn"
-      id="id"
       onClick={onSubmit}
       disabled={state.submit.disabled}
-      classModifier={state.submit.disabled ? "disabled" : ""}
+      variant={state.submit.disabled ? "secondary" : "primary"}
     >
       <span className="af-btn__text">Submit</span>
     </Button>

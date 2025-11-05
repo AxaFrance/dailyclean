@@ -1,13 +1,8 @@
-import { Name, Header} from '@axa-fr/react-toolkit-layout-header';
-import logo from '@axa-fr/react-toolkit-core/dist/assets/logo-axa.svg';
+import logo from "@axa-fr/design-system-slash-css/logo-axa.svg";
+import { Header, Name } from "@axa-fr/design-system-slash-react";
 
-import '@axa-fr/react-toolkit-layout-header/dist/Header/header.scss';
-import '@axa-fr/react-toolkit-layout-header/dist/Infos/infos.scss';
-import '@axa-fr/react-toolkit-layout-header/dist/Name/name.scss';
-import '@axa-fr/react-toolkit-layout-header/dist/User/user.scss';
-import '@axa-fr/react-toolkit-layout-header/dist/Logo/logo.scss';
-
-const HeaderComponent = () => <Header>
+const HeaderComponent = () => (
+  <Header>
     <Name
       title="DailyClean"
       subtitle="Please save the planet"
@@ -15,6 +10,7 @@ const HeaderComponent = () => <Header>
       alt="DailyClean"
       onClick={() => {}}
     />
-  </Header>;
+  </Header>
+);
 
 export default HeaderComponent;

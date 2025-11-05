@@ -1,5 +1,3 @@
-import "@axa-fr/react-toolkit-alert/dist/alert.scss";
-import "@axa-fr/react-toolkit-loader/dist/spinner.scss";
 import React from "react";
 import { endWeekModeEnum, startWeekModeEnum } from "./apiConstants";
 import { ApiConfiguration } from "./types/api";

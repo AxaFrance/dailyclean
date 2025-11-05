@@ -69,10 +69,11 @@ export const initialMockState: MockState = {
         isDailycleaned: true,
         current: 0,
         target: 0,
-        type: "Deployment",
+        type: "STATEFULSET",
         labels: {
           app: "api-server",
           version: "v2.1.0",
+          "axa.com/function": "true",
         },
         annotations: {
           "dailyclean.io/enabled": "true",
