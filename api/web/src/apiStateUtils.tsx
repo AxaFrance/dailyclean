@@ -1,5 +1,5 @@
-import React, { ComponentType } from "react";
 import Loader, { LoaderModes } from "@axa-fr/react-toolkit-loader";
+import React, { ComponentType } from "react";
 import { ApiState } from "./types/api";
 
 export const initialState: ApiState = {

@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import FormStateContainer from "./FormStateContainer";
 import { createMockFetch } from "./test-utils/mockResponse";
-import { ApiData, ApiState } from "./types/api";
+import { ApiData } from "./types/api";
 
 const fetch = (status = 200) => {
   return createMockFetch(status, () => ({}));
@@ -14,15 +14,15 @@ const initialData: ApiData = {
   namespace: "",
   workloads: [],
 };
-const initialState: ApiState = {
-  data: initialData,
-  status: "EMPTY",
-  firstStatus: "EMPTY",
-};
 
 describe(`FormStateContainer`, () => {
   it(`submit should save data with success`, async () => {
-    render(<FormStateContainer fetch={fetch(200)} apiState={initialState} />);
+    render(
+      <FormStateContainer
+        fetch={fetch(200)}
+        workloads={initialData.workloads}
+      />,
+    );
     const textLoader = screen.queryByText("State");
 
     expect(textLoader).toBeTruthy();
@@ -47,7 +47,12 @@ describe(`FormStateContainer`, () => {
   });
 
   it(`submit should fail`, async () => {
-    render(<FormStateContainer fetch={fetch(500)} apiState={initialState} />);
+    render(
+      <FormStateContainer
+        fetch={fetch(500)}
+        workloads={initialData.workloads}
+      />,
+    );
     const textLoader = screen.queryByText("State");
     expect(textLoader).toBeTruthy();
     expect(screen.getByRole("button")).toHaveAttribute("disabled");

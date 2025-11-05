@@ -1,13 +1,13 @@
-import "@axa-fr/react-toolkit-layout-header/dist/Title/title-bar.scss";
+import "@axa-fr/react-toolkit-layout-header/dist/HeaderTitle/af-title-bar.css";
 import { ApiStateConsumer } from "./ApiStateProvider";
 import { withApiState } from "./apiStateUtils";
 import { ApiState } from "./types/api";
 
-interface TitleProps {
+interface HeaderTitleProps {
   apiState: ApiState;
 }
 
-function Title({ apiState }: TitleProps) {
+function HeaderTitle({ apiState }: HeaderTitleProps) {
   return (
     <div className="af-title-bar">
       <div className="af-title-bar__wrapper container">
@@ -17,6 +17,6 @@ function Title({ apiState }: TitleProps) {
   );
 }
 
-const TitleWithApiState = withApiState(Title, ApiStateConsumer);
+const HeaderTitleWithApiState = withApiState(HeaderTitle, ApiStateConsumer);
 
-export default TitleWithApiState;
+export default HeaderTitleWithApiState;
