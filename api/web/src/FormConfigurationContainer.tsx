@@ -3,8 +3,13 @@ import { useEffect, useState } from "react";
 import { getAsync, postAsync, urls } from "./api";
 import { endWeekModeEnum, startWeekModeEnum } from "./apiConstants";
 import FormConfiguration from "./FormConfiguration";
-import { ApiConfiguration, EndWeekMode, StartWeekMode } from "./types/api";
-import { Form, FormState, HourForm, Timeranges } from "./types/form";
+import {
+  ApiConfiguration,
+  EndWeekMode,
+  StartWeekMode,
+  Timeranges,
+} from "./types/api";
+import { Form, FormState, HourForm } from "./types/form";
 import {
   computeInitialStateErrorMessage,
   genericHandleChange,
