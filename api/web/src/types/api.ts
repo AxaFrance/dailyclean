@@ -60,3 +60,8 @@ export type ApiState = {
   status: ResilienceStatus;
   firstStatus: ResilienceStatus;
 };
+
+export type Timeranges = {
+  cron_start?: string;
+  cron_stop?: string;
+};
