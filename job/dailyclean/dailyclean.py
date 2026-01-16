@@ -21,9 +21,75 @@ def main():
     elif sys.argv[1] == 'stop':
         stop(aApiClient, namespace)
 
+def manage_kustomizations_suspend_status(aApiClient, namespace, suspend):
+    coreV1Api_instance = client.CoreV1Api(aApiClient)
+    customObjectsApi_instance = client.CustomObjectsApi(aApiClient)
+
+    try:
+        flux_sa = coreV1Api_instance.read_namespaced_service_account(name='flux', namespace=namespace)
+    except client.exceptions.ApiException as e:
+        print('Service account flux not found or error (%s).\n' % e)
+        return
+
+    print('Service account flux found in namespace %s' % namespace)
+
+    if not (flux_sa.metadata.labels and 'kustomize.toolkit.fluxcd.io/namespace' in flux_sa.metadata.labels):
+        print('Label kustomize.toolkit.fluxcd.io/namespace not found on flux service account')
+        return
+
+    flux_namespace = flux_sa.metadata.labels['kustomize.toolkit.fluxcd.io/namespace']
+    print('Label kustomize.toolkit.fluxcd.io/namespace: %s' % flux_namespace)
+
+    # List and update Kustomization objects
+    try:
+        kustomizations = customObjectsApi_instance.list_namespaced_custom_object(
+            group='kustomize.toolkit.fluxcd.io',
+            version='v1',
+            namespace=flux_namespace,
+            plural='kustomizations'
+        )
+        print('\nKustomization objects targeting namespace %s:' % namespace)
+
+        for kustomization in kustomizations.get('items', []):
+            target_namespace = kustomization.get('spec', {}).get('targetNamespace', '')
+            if target_namespace != namespace:
+                continue
+
+            kustomization_name = kustomization['metadata']['name']
+            print('  - %s' % kustomization_name)
+
+            current_suspend = kustomization.get('spec', {}).get('suspend', False)
+            needs_update = (suspend and not current_suspend) or (not suspend and current_suspend)
+
+            if not needs_update:
+                continue
+
+            action = 'suspending' if suspend else 'unsuspending'
+            status = 'running' if not current_suspend else 'suspended'
+            print('    Kustomization %s is %s, %s...' % (kustomization_name, status, action))
+
+            try:
+                patch_body = {'spec': {'suspend': True if suspend else None}}
+                customObjectsApi_instance.patch_namespaced_custom_object(
+                    group='kustomize.toolkit.fluxcd.io',
+                    version='v1',
+                    namespace=flux_namespace,
+                    plural='kustomizations',
+                    name=kustomization_name,
+                    body=patch_body
+                )
+                print('    Kustomization %s %s successfully' % (kustomization_name, 'suspended' if suspend else 'unsuspended'))
+            except client.exceptions.ApiException as e:
+                print('    Error while %s Kustomization %s (%s)' % (action, kustomization_name, e))
+
+    except client.exceptions.ApiException as e:
+        print('Error while listing Kustomizations (%s).\n' % e)
+
 
 def start(aApiClient, namespace):
     appsV1Api_instance = client.AppsV1Api(aApiClient)
+
+    manage_kustomizations_suspend_status(aApiClient, namespace, suspend=False)
 
     try:
         nodailyclean_deployments = appsV1Api_instance.list_namespaced_deployment(namespace=namespace, watch=False, label_selector='axa.com/dailyclean=false')
@@ -56,6 +122,8 @@ def start(aApiClient, namespace):
 
 def stop(aApiClient, namespace):
     appsV1Api_instance = client.AppsV1Api(aApiClient)
+
+    manage_kustomizations_suspend_status(aApiClient, namespace, suspend=True)
 
     try:
         appsV1Api_instance.read_namespaced_deployment(namespace=namespace, name='flux')
