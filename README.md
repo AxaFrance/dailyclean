@@ -41,6 +41,17 @@ Now, open your favorite browser and enter the url of dailyclean-api service : ht
 
 Enjoy dailyclean !!!!
 
+## Deploy using Helm
+
+Add the helm repository, update and install the chart:
+```bash
+helm repo add dailyclean https://axafrance.github.io/dailyclean/
+helm repo update
+helm install dailyclean dailyclean/dailyclean
+```
+
+Check the [values.yaml](./charts/dailyclean/values.yaml) file to see the available configuration options.
+
 ## How Does It Work
 
 - Daily clean use native kubernetes API, it works with any kubernetes projects. 

@@ -1,0 +1,24 @@
+{{- if .Values.route.enabled -}}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ include "dailyclean.fullname" . }}
+  labels:
+    {{- include "dailyclean.labels" . | nindent 4 }}
+    router: {{ .Values.route.router }}
+  {{- with .Values.route.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  host: {{ .Values.route.host }}
+  to:
+    kind: Service
+    name: {{ include "dailyclean.fullname" . }}
+  port:
+    targetPort: {{ .Values.service.port }}
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+{{- end }}
