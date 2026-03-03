@@ -16,7 +16,12 @@ spec:
               image: '{{imgName}}'
               args:
                 - {{argument}}
-              resources: {}
+              resources:
+                limits:
+                  memory: "50Mi"
+                requests:
+                  cpu: "17m"
+                  memory: "50Mi"
               env:
                 - name: CURRENT_NAMESPACE
                   valueFrom:

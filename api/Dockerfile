@@ -24,8 +24,8 @@ WORKDIR ${APP_ROOT}
 
 USER root
 
-ENV MAVEN_VERSION=3.9.11
-ENV MAVEN_DOWNLOAD_SUM=bcfe4fe305c962ace56ac7b5fc7a08b87d5abd8b7e89027ab251069faebee516b0ded8961445d6d91ec1985dfe30f8153268843c89aa392733d1a3ec956c9978
+ENV MAVEN_VERSION=3.9.12
+ENV MAVEN_DOWNLOAD_SUM=0a1be79f02466533fc1a80abbef8796e4f737c46c6574ede5658b110899942a94db634477dfd3745501c80aef9aac0d4f841d38574373f7e2d24cce89d694f70
 ENV MAVEN_DIR=/opt/maven
 
 RUN printf "[Adoptium]\nname=Adoptium\nbaseurl=https://packages.adoptium.net/artifactory/rpm/rhel/10/x86_64/\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.adoptium.net/artifactory/api/gpg/key/public\n" > /etc/yum.repos.d/adoptium.repo
