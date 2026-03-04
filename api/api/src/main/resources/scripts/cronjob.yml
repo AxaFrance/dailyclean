@@ -18,10 +18,10 @@ spec:
                 - {{argument}}
               resources:
                 limits:
-                  memory: "50Mi"
+                  memory: "96Mi"
                 requests:
-                  cpu: "17m"
-                  memory: "50Mi"
+                  cpu: "33m"
+                  memory: "96Mi"
               env:
                 - name: CURRENT_NAMESPACE
                   valueFrom:
