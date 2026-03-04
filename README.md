@@ -43,9 +43,9 @@ Enjoy dailyclean !!!!
 
 ## How Does It Work
 
-- Daily clean use native kubernetes API, it works with any kubernetes projects. 
-DailyClean is a pod that have to be install in your namespace. 
-It create cron job that start or stop your pods. 
+- Daily clean use native kubernetes API, it works with any kubernetes projects.
+DailyClean is a pod that have to be install in your namespace.
+It create cron job that start or stop your pods.
 - API is in native GraalVM so it is lightweight.
 - User interface is in React/Javascript.
 
@@ -56,7 +56,7 @@ metadata:
   name: my-api
   labels:
     # if false, dailyclean will not stop this pod for deployment
-    axa.com/dailyclean: 'false' 
+    axa.com/dailyclean: 'false'
     # WARNING: default value is true for DEPLOYMENT and false for STATEFULTSET
 ```
 
@@ -65,7 +65,7 @@ metadata:
   name: fibonacci1
   labels:
     # if true, dailyclean web UI will consider this pod as a function
-    axa.com/function: 'true' 
+    axa.com/function: 'true'
 ```
 
 ## Configure your DailyClean
