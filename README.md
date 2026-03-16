@@ -1,5 +1,5 @@
 # DailyClean
-![workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-docker-images.yml/badge.svg) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=AxaGuilDEv_dailyclean&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=AxaGuilDEv_dailyclean) [![Docker API](https://img.shields.io/docker/pulls/axaguildev/dailyclean-api.svg)](https://hub.docker.com/r/axaguildev/dailyclean-api/builds) [![Docker JOB](https://img.shields.io/docker/pulls/axaguildev/dailyclean-job.svg)](https://hub.docker.com/r/axaguildev/dailyclean-job/builds)
+[![workflow](https://github.com/AxaGuilDEv/dailyclean/actions/workflows/dailyclean-docker-images.yml/badge.svg)](https://github.com/AxaFrance/dailyclean/actions/workflows/dailyclean-docker-images.yml) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=AxaGuilDEv_dailyclean&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=AxaGuilDEv_dailyclean) [![Docker API](https://img.shields.io/docker/pulls/axaguildev/dailyclean-api.svg)](https://hub.docker.com/r/axaguildev/dailyclean-api/builds) [![Docker JOB](https://img.shields.io/docker/pulls/axaguildev/dailyclean-job.svg)](https://hub.docker.com/r/axaguildev/dailyclean-job/builds)
 
 ![DailyClean](./dailyclean.gif "DailyClean")
 
